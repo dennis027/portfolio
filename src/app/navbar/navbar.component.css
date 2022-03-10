@@ -104,3 +104,8 @@ g{
   position: absolute;
 right: 0;
 }
+
+.header-right {
+  float: right;
+}
+
