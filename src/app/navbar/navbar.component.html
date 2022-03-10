@@ -1,0 +1,90 @@
+<div>
+<div class="topnav" id="myTopnav">
+    <mat-toolbar color="bg-success">
+      <mat-toolbar-row style="height: 100px; " >
+      
+        <span><a href="home"><img class="logo" id="logo" src="./assets/photos/port.png" alt="" style="  
+          max-width: 180px;
+          height: auto;
+         margin-left:0;"> </a> </span>
+        <button mat-icon-button (click)="sidenav.toggle()" fxShow="true" fxHide.gt-sm style="position:fixed; right:10px">
+            <div class="container" onclick="myFunction(this)"  >
+                <div class="bar1"></div> 
+                <div class="bar2"></div>
+                <div class="bar3"></div>
+              </div>
+          </button>
+          
+        <div fxShow="true" fxHide.lt-md="true" style="padding: 100px;" class="container-fluid" >
+          <!-- The following menu items will be hidden on both SM and XS screen sizes -->
+        
+  
+           <a href="home" mat-button class="c">
+            <mat-icon></mat-icon> 
+            <b>Home</b>
+          </a>
+          <a href="skills" mat-button class="d">       
+            <mat-icon></mat-icon>
+            <b>Skills</b>
+          </a>
+          <a href="projects" mat-button class="d">       
+            <mat-icon></mat-icon>
+            <b>My Projects</b>
+          </a>
+
+     
+          <a href="contact" mat-button class="b">
+            <mat-icon></mat-icon>
+            <b>Contacts</b>
+          </a>  
+          
+        
+        </div>
+      </mat-toolbar-row>
+    </mat-toolbar>
+    <div >
+    <mat-sidenav-container  class="custom-sidenav-container" fxFlexFill style="height: 100vh;"  >
+      <mat-sidenav #sidenav  >
+        
+       
+        <mat-nav-list  >
+          <a href="home" mat-list-item >
+            <mat-icon></mat-icon> 
+            Home
+          </a> 
+          <a href="skills" mat-list-item>
+            <mat-icon></mat-icon>
+            Skills</a>
+            <a href="projects" mat-list-item>
+              <mat-icon></mat-icon>
+              Projects</a>
+
+            <!-- <a href="joinus" mat-list-item>
+              <mat-icon></mat-icon> 
+              Join Us</a> -->
+          
+          <a href="contact" mat-list-item>
+            <mat-icon></mat-icon>
+            Contact
+          </a>
+       
+      
+
+          <!-- <a href="login" mat-list-item>
+            <mat-icon></mat-icon>
+            Login
+          </a> -->
+
+          <a (click)="sidenav.toggle()" mat-list-item>
+            <mat-icon></mat-icon> Close
+          </a>
+        </mat-nav-list>
+      </mat-sidenav>
+      <mat-sidenav-content fxFlexFill>
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+    </mat-sidenav-container>
+  </div>
+  </div>         
+   
+</div>
