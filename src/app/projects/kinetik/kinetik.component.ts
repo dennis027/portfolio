@@ -12,11 +12,8 @@ export class KinetikComponent implements OnInit {
   [x: string]: any;
  
 
-  constructor(private _bottomSheetRef: MatBottomSheetRef<ProjectsComponent>) { }
-  openLink(event: MouseEvent): void {
-    this._bottomSheetRef.dismiss();
-    event.preventDefault();
-  }
+  constructor() { }
+ 
   ngOnInit(): void {
   }
 

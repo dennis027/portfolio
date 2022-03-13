@@ -60,7 +60,7 @@ export class ProjectsComponent implements OnInit {
   openDialog3(): void {
     const dialogRef = this.dialog.open(KinetikComponent, {
       width: '80%',
-    
+      height: '100%'
     
     });
     
