@@ -61,6 +61,11 @@ import { LandingComponent } from './landing/landing.component';
 import { ProjectsComponent } from './projects/projects.component';
 import { ContactComponent } from './contact/contact.component';
 import { SkillsComponent } from './skills/skills.component';
+import { MwangazaComponent } from './projects/mwangaza/mwangaza.component';
+import { KinetikComponent } from './projects/kinetik/kinetik.component';
+import { DelaniComponent } from './projects/delani/delani.component';
+import { QuotesComponent } from './projects/quotes/quotes.component';
+import { PizzaComponent } from './projects/pizza/pizza.component';
 
 
 @NgModule({
@@ -71,6 +76,11 @@ import { SkillsComponent } from './skills/skills.component';
     ProjectsComponent,
     ContactComponent,
     SkillsComponent,
+    MwangazaComponent,
+    KinetikComponent,
+    DelaniComponent,
+    QuotesComponent,
+    PizzaComponent,
 
 
   ],           

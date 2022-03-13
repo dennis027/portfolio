@@ -3,7 +3,12 @@ import { RouterModule, Routes } from '@angular/router';
 import { ContactComponent } from './contact/contact.component';
 import { LandingComponent } from './landing/landing.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { DelaniComponent } from './projects/delani/delani.component';
+import { KinetikComponent } from './projects/kinetik/kinetik.component';
+import { MwangazaComponent } from './projects/mwangaza/mwangaza.component';
+import { PizzaComponent } from './projects/pizza/pizza.component';
 import { ProjectsComponent } from './projects/projects.component';
+import { QuotesComponent } from './projects/quotes/quotes.component';
 import { SkillsComponent } from './skills/skills.component';
 
 const routes: Routes = [
@@ -13,7 +18,11 @@ const routes: Routes = [
   {path: 'skills',component:SkillsComponent},
   {path:'projects',component:ProjectsComponent},
   {path:'contact',component:ContactComponent},
-  
+  {path:'delani', component:DelaniComponent},
+  {path:'kinetik',component:KinetikComponent},
+  {path:'mwangaza',component:MwangazaComponent},
+  {path:'pizza',component:PizzaComponent},
+  {path:'quotes',component:QuotesComponent}
 
 ];
 
