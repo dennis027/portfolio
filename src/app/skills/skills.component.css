@@ -1,1 +1,33 @@
-.yes{background-color: brown;}
+
+
+.card-img{
+    width: 40%;
+}
+
+
+.centered {
+    position: absolute;
+    top: 80%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .ove{
+      background-color: rgba(244, 246, 216, 0.8);
+      font-size: xx-large;
+      color: rgb(17, 16, 16);
+  }
+
+  .overr{
+    background-color: rgba(244, 246, 216, 0.8);
+    font-size: xx-large;
+    color: rgb(17, 16, 16);
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+ 
+ 
+  }
