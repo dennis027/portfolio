@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ContactComponent } from './contact/contact.component';
 import { LandingComponent } from './landing/landing.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { AkanComponent } from './projects/akan/akan.component';
 import { DelaniComponent } from './projects/delani/delani.component';
 import { KinetikComponent } from './projects/kinetik/kinetik.component';
 import { MwangazaComponent } from './projects/mwangaza/mwangaza.component';
@@ -22,7 +23,8 @@ const routes: Routes = [
   {path:'kinetik',component:KinetikComponent},
   {path:'mwangaza',component:MwangazaComponent},
   {path:'pizza',component:PizzaComponent},
-  {path:'quotes',component:QuotesComponent}
+  {path:'quotes',component:QuotesComponent},
+  {path:'akan',component:AkanComponent},
 
 ];
 

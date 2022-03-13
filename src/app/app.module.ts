@@ -66,6 +66,7 @@ import { KinetikComponent } from './projects/kinetik/kinetik.component';
 import { DelaniComponent } from './projects/delani/delani.component';
 import { QuotesComponent } from './projects/quotes/quotes.component';
 import { PizzaComponent } from './projects/pizza/pizza.component';
+import { AkanComponent } from './projects/akan/akan.component';
 
 
 @NgModule({
@@ -81,6 +82,7 @@ import { PizzaComponent } from './projects/pizza/pizza.component';
     DelaniComponent,
     QuotesComponent,
     PizzaComponent,
+    AkanComponent,
 
 
   ],           
