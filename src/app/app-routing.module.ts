@@ -13,8 +13,8 @@ import { QuotesComponent } from './projects/quotes/quotes.component';
 import { SkillsComponent } from './skills/skills.component';
 
 const routes: Routes = [
-  {path:'',component:LandingComponent},
-  {path:'home',component:LandingComponent},
+  // {path:'',component:LandingComponent},
+  // {path:'home',component:LandingComponent},
   {path: 'navbar', component:NavbarComponent},
   {path: 'skills',component:SkillsComponent},
   {path:'projects',component:ProjectsComponent},
