@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,Inject } from '@angular/core';
+
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { DialogData, ProjectsComponent } from '../projects.component';
 
 @Component({
   selector: 'app-quotes',
@@ -7,9 +10,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class QuotesComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    public dialogRef: MatDialogRef<ProjectsComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    ) {}
+
 
   ngOnInit(): void {
+    
   }
-
+  
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
 }
