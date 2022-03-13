@@ -1,1 +1,55 @@
 <app-navbar></app-navbar>
+
+<div class = "container-fluid">
+    <div class="row">
+      <div class="col-md-3"></div>
+      <div class="col-md-6">
+        <br><br><br>
+        <div class="container-fluid" style="background-color: rgb(63, 125, 240); width: 100%;">
+    
+        <br><br>
+          <form class="example-form"  name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" class="text-center" >
+          
+         
+              <mat-form-field class="example-full-width" style="width:100% !important; background-color: white;"  >
+                <input matInput placeholder="Your Name" name="name" [(ngModel)]="form.name" #name="ngModel" matInput type="text" >
+              </mat-form-field>
+         <br> <br>
+         <mat-form-field class="example-full-width" appearance="fill" style="width:100% !important; background-color: white;" >
+          <mat-label>Email</mat-label>
+          <input type="email" matInput [errorStateMatcher]="matcher"
+                 placeholder="Ex. mwangaza@example.com"  name="email" [(ngModel)]="form.email" required
+                 email #email="ngModel" >
+       
+          <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+            Please enter a valid email address
+          </mat-error>
+          <mat-error *ngIf="emailFormControl.hasError('required')">
+            Email is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+        <br> <br>
+        <mat-form-field class="example-full-width" style="width:100% !important; background-color: white;" >
+          <input matInput placeholder="Subject" name="subject" [(ngModel)]="form.subject" #subject="ngModel" matInput type="text" >
+        </mat-form-field>
+        <br> <br>
+        <mat-form-field class="example-full-width" style="width:100% !important; background-color: white;"  id="box">
+          <textarea matInput placeholder="Message to Mwangaza" name="message" [(ngModel)]="form.message" #message="ngModel" matInput type="textarea" style="height:200px !important;"></textarea>
+        </mat-form-field>
+        
+             
+        
+            <br> <br><br>
+        
+            <button mat-stroked-button color="primary" style="color: bisque !important;" matInput type="submit">Send Message</button>
+           <br><br>
+          </form>
+        
+        </div>
+      </div>
+      <div class="col-md-3"></div>
+    </div> 
+  </div>
+
+
+

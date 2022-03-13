@@ -1,6 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+
 import {MatBottomSheet, MatBottomSheetRef} from '@angular/material/bottom-sheet';
-import { ProjectsComponent } from '../projects.component';
+import { DialogData, ProjectsComponent } from '../projects.component';
+import { Component, Inject, OnInit } from '@angular/core';
+import { ScrollStrategy, ScrollStrategyOptions } from '@angular/cdk/overlay';
+
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 
 @Component({
@@ -9,12 +13,18 @@ import { ProjectsComponent } from '../projects.component';
   styleUrls: ['./kinetik.component.css']
 })
 export class KinetikComponent implements OnInit {
-  [x: string]: any;
- 
 
-  constructor() { }
- 
+  constructor(
+    public dialogRef: MatDialogRef<ProjectsComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    ) {}
+
+
   ngOnInit(): void {
+    
   }
-
+  
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
 }
