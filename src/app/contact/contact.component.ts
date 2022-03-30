@@ -8,6 +8,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {FormControl, FormGroupDirective, NgForm, Validators} from '@angular/forms';
 import {FormBuilder,FormGroup,} from '@angular/forms';
 import {ErrorStateMatcher} from '@angular/material/core';
+import { ContactService } from '../service/contact.service';
 // import { TesterComponent } from '../tester/tester.component';
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -32,23 +33,23 @@ export class ContactComponent implements OnInit {
    subject:null,
    message:null
  }
-  constructor(/*private contactService:ContactService,*/private router:Router,private toastr: ToastrService, public dialog: MatDialog) { }
+  constructor(private contactService:ContactService,private router:Router,private toastr: ToastrService, public dialog: MatDialog) { }
 
   ngOnInit(): void {
   }
   onSubmit(): void{
     let {name,email,subject,message}= this.form;
-    // this.contactService.post(name,email,subject,message).subscribe(
-    //   (data) => {
-    //     console.log(data)
-    //     this.toastr.success('Mwangaza Little Readers Received Your Message');
-    //   this.router.navigate (['contact'])
+    this.contactService.post(name,email,subject,message).subscribe(
+      (data) => {
+        console.log(data)
+        this.toastr.success('Mwangaza Little Readers Received Your Message');
+        
        
-    //   },
-    //   (err) => {
-    //    console.log(err)
-    //    this.toastr.error('Check Your Details ');
-    //   });
+      },
+      (err) => {
+       console.log(err)
+       this.toastr.error('Check Your Details ');
+      });
       // );
       // this.dialogRef.close();
   }

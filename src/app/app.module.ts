@@ -50,7 +50,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTooltipModule } from '@angular/material/tooltip';
-
+import {NgxLoaderModule} from '@binssoft/ngx-loader';
 // import { MatCarouselModule } from '@ngmodule/material-carousel';
 // import { NgImageSliderModule } from 'ng-image-slider';
 
@@ -139,6 +139,7 @@ import { AkanComponent } from './projects/akan/akan.component';
     // MatCarouselModule.forRoot(),
     BrowserAnimationsModule, 
     NgbModule,
+    NgxLoaderModule
     // NgImageSliderModule,
     // NgxLoaderModule,
 
