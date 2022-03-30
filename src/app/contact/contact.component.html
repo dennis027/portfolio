@@ -13,13 +13,13 @@
           
          
               <mat-form-field class="example-full-width" style="width:100% !important; background-color: white;"  >
-                <input matInput placeholder="Your Name" name="name" [(ngModel)]="form.name" #name="ngModel" matInput type="text" >
+                <input matInput placeholder="Your Name" name="name" [(ngModel)]="form.name" required #name="ngModel" matInput type="text" >
               </mat-form-field>
          <br> <br>
          <mat-form-field class="example-full-width" appearance="fill" style="width:100% !important; background-color: white;" >
           <mat-label>Email</mat-label>
           <input type="email" matInput [errorStateMatcher]="matcher"
-                 placeholder="Ex. mwangaza@example.com"  name="email" [(ngModel)]="form.email" required
+                 placeholder="Ex. email@example.com"  name="email" [(ngModel)]="form.email" required
                  email #email="ngModel" >
        
           <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
@@ -31,11 +31,11 @@
         </mat-form-field>
         <br> <br>
         <mat-form-field class="example-full-width" style="width:100% !important; background-color: white;" >
-          <input matInput placeholder="Subject" name="subject" [(ngModel)]="form.subject" #subject="ngModel" matInput type="text" >
+          <input matInput placeholder="Subject" name="subject" [(ngModel)]="form.subject" #subject="ngModel" required matInput type="text" >
         </mat-form-field>
         <br> <br>
         <mat-form-field class="example-full-width" style="width:100% !important; background-color: white;"  id="box">
-          <textarea matInput placeholder="Message to Mwangaza" name="message" [(ngModel)]="form.message" #message="ngModel" matInput type="textarea" style="height:200px !important;"></textarea>
+          <textarea matInput placeholder="Message to Dennis" name="message" [(ngModel)]="form.message" required #message="ngModel" matInput type="textarea" style="height:200px !important;"></textarea>
         </mat-form-field>
         
              
@@ -64,6 +64,11 @@
         </div>
     </div>
 </div> -->
+<br><br>
+<p class="text-center" style="font-size: medium;"> Email Address:
+<textarea id="clipboard-example-textarea" cols="20" rows="2" [(ngModel)]="copyClipText" readonly></textarea>
+<button mat-raised-button [cdkCopyToClipboard]="copyClipText" [cdkCopyToClipboardAttempts]="7">Copy Email</button>
+</p>
 <br><br>
 <p class="text-center" style="font-size: medium;"> Lets Get Social</p>
 <br>

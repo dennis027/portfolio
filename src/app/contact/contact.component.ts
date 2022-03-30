@@ -23,7 +23,10 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.css']
 })
+  
+  
 export class ContactComponent implements OnInit {
+  copyClipText: any = 'machariad196@gmail.com';
   emailFormControl = new FormControl('', [Validators.required, Validators.email]);
 
   matcher = new MyErrorStateMatcher();
@@ -33,6 +36,7 @@ export class ContactComponent implements OnInit {
    subject:null,
    message:null
  }
+ 
   constructor(private contactService:ContactService,private router:Router,private toastr: ToastrService, public dialog: MatDialog) { }
 
   ngOnInit(): void {

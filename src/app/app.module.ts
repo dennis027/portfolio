@@ -68,7 +68,7 @@ import { QuotesComponent } from './projects/quotes/quotes.component';
 import { PizzaComponent } from './projects/pizza/pizza.component';
 import { AkanComponent } from './projects/akan/akan.component';
 import { AdminComponent } from './admin/admin.component';
-
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 @NgModule({
   declarations: [
@@ -141,7 +141,8 @@ import { AdminComponent } from './admin/admin.component';
     // MatCarouselModule.forRoot(),
     BrowserAnimationsModule, 
     NgbModule,
-    NgxLoaderModule
+    NgxLoaderModule,
+    ClipboardModule,
     // NgImageSliderModule,
     // NgxLoaderModule,
 
