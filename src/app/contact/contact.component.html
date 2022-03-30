@@ -1,4 +1,6 @@
 <!-- <app-navbar></app-navbar> -->
+<br><br><br>
+<p class="text-center" style=" font-weight: bolder;" id="one">Send Me a Message</p>
 <div class = "container-fluid">
     <div class="row">
       <div class="col-md-3"></div>
@@ -17,7 +19,7 @@
          <mat-form-field class="example-full-width" appearance="fill" style="width:100% !important; background-color: white;" >
           <mat-label>Email</mat-label>
           <input type="email" matInput [errorStateMatcher]="matcher"
-                 placeholder="Ex. mwangaza@example.com"  name="email" [(ngModel)]="form.email" required
+                 placeholder="Ex. send@example.com"  name="email" [(ngModel)]="form.email" required
                  email #email="ngModel" >
        
           <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
@@ -33,7 +35,7 @@
         </mat-form-field>
         <br> <br>
         <mat-form-field class="example-full-width" style="width:100% !important; background-color: white;"  id="box">
-          <textarea matInput placeholder="Message to Mwangaza" name="message" [(ngModel)]="form.message" #message="ngModel" matInput type="textarea" style="height:200px !important;"></textarea>
+          <textarea matInput placeholder="Message to Dennis" name="message" [(ngModel)]="form.message" #message="ngModel" matInput type="textarea" style="height:200px !important;"></textarea>
         </mat-form-field>
         
              
@@ -63,6 +65,8 @@
     </div>
 </div> -->
 <br><br>
+<p class="text-center" style="font-size: medium;"> Lets Get Social</p>
+<br>
 <div class="container" style="text-align: center;">
   <a href="https://linkedin.com/in/dennis-kimani-06a957201">   <i class="fa fa-linkedin" id="one" aria-hidden="true"  style="font-size: 30px;"></i> </a>
 
