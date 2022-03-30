@@ -67,6 +67,7 @@ import { DelaniComponent } from './projects/delani/delani.component';
 import { QuotesComponent } from './projects/quotes/quotes.component';
 import { PizzaComponent } from './projects/pizza/pizza.component';
 import { AkanComponent } from './projects/akan/akan.component';
+import { AdminComponent } from './admin/admin.component';
 
 
 @NgModule({
@@ -83,6 +84,7 @@ import { AkanComponent } from './projects/akan/akan.component';
     QuotesComponent,
     PizzaComponent,
     AkanComponent,
+    AdminComponent,
 
 
   ],           

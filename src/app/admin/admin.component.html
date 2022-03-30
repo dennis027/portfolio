@@ -1,0 +1,21 @@
+   
+          <table>
+            <thead>
+            <tr>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Subject</th>
+              <th>Message</th>
+            </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let user of allUsers' >
+
+                <td>{{user.name}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.subject}}</td>
+                <td>{{user.message}}</td>
+              </tr>
+
+            </tbody>
+          </table>
