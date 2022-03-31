@@ -27,6 +27,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   
 export class ContactComponent implements OnInit {
   copyClipText: any = 'machariad196@gmail.com';
+  copyClipText1: any = '+254799157137';
   emailFormControl = new FormControl('', [Validators.required, Validators.email]);
 
   matcher = new MyErrorStateMatcher();

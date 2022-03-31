@@ -69,7 +69,15 @@
 <textarea id="clipboard-example-textarea" cols="20" rows="2" [(ngModel)]="copyClipText" readonly></textarea>
 <button mat-raised-button [cdkCopyToClipboard]="copyClipText" [cdkCopyToClipboardAttempts]="7">Copy Email</button>
 </p>
-<br><br>
+<br>
+<p class="text-center" style="font-size: medium;"> Phone Number:
+  <textarea id="clipboard-example-textarea" cols="20" rows="2" [(ngModel)]="copyClipText1" readonly></textarea>
+  <button mat-raised-button [cdkCopyToClipboard]="copyClipText1" [cdkCopyToClipboardAttempts]="7">Copy Contact</button>
+  </p>
+<br>
+<p class="text-center"><b>Location: Nairobi Kenya</b></p>
+<br>
+
 <p class="text-center" style="font-size: medium;"> Lets Get Social</p>
 <br>
 <div class="container" style="text-align: center;">
