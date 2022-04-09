@@ -1,5 +1,4 @@
 
-
   
 import { Component, OnInit,Inject } from '@angular/core';
 // import { ContactService } from '../service/contact.service';
@@ -10,7 +9,7 @@ import {FormControl, FormGroupDirective, NgForm, Validators} from '@angular/form
 import {FormBuilder,FormGroup,} from '@angular/forms';
 import {ErrorStateMatcher} from '@angular/material/core';
 import { ContactService } from '../service/contact.service';
-import { ContactFormComponent } from '../contact-form/contact-form.component';
+import { ContactComponent } from '../contact/contact.component';
 // import { TesterComponent } from '../tester/tester.component';
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -19,19 +18,13 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
 }
-export interface DialogData {
-  animal: string;
-  name: string;
-}
 @Component({
-  selector: 'app-contact',
-  templateUrl: './contact.component.html',
-  styleUrls: ['./contact.component.css']
+  selector: 'app-contact-form',
+  templateUrl: './contact-form.component.html',
+  styleUrls: ['./contact-form.component.css']
 })
-  
-  
-export class ContactComponent implements OnInit {
-  
+export class ContactFormComponent implements OnInit {
+
   copyClipText: any = 'machariad196@gmail.com';
   copyClipText1: any = '+254799157137';
   emailFormControl = new FormControl('', [Validators.required, Validators.email]);
@@ -43,21 +36,9 @@ export class ContactComponent implements OnInit {
    subject:null,
    message:null
  }
- animal!: string;
- name!: string;
-  constructor(private contactService:ContactService,private router:Router,private toastr: ToastrService, public dialog: MatDialog) { }
-
-  openDialog(): void {
-    const dialogRef = this.dialog.open(ContactFormComponent, {
-      width: '350px',
-      data: {name: this.name, animal: this.animal},
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      this.animal = result;
-    });
-  }
+ 
+  constructor(private contactService:ContactService,private router:Router,private toastr: ToastrService, public dialog: MatDialog, public dialogRef: MatDialogRef<ContactComponent>,
+   ) { }
 
   ngOnInit(): void {
   }
@@ -76,5 +57,8 @@ export class ContactComponent implements OnInit {
       });
       // );
       // this.dialogRef.close();
+  }
+  onNoClick(): void {
+    this.dialogRef.close();
   }
 }

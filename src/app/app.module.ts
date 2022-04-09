@@ -69,6 +69,7 @@ import { PizzaComponent } from './projects/pizza/pizza.component';
 import { AkanComponent } from './projects/akan/akan.component';
 import { AdminComponent } from './admin/admin.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
+import { ContactFormComponent } from './contact-form/contact-form.component';
 
 @NgModule({
   declarations: [
@@ -85,6 +86,7 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
     PizzaComponent,
     AkanComponent,
     AdminComponent,
+    ContactFormComponent,
 
 
   ],           

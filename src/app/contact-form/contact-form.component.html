@@ -1,0 +1,30 @@
+
+ 
+         <p class="text-center" style=" font-weight: bolder;">Send Me a Message</p>
+
+          <form class="example-form"  name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" class="text-center">
+  
+ 
+        <mat-form-field class="example-full-width">
+            <input matInput placeholder="Your Name" name="name" [(ngModel)]="form.name" #name="ngModel" matInput type="text" >
+        </mat-form-field>
+        <br>
+        <mat-form-field class="example-full-width">
+            <input matInput placeholder="Your Email" name="email" [(ngModel)]="form.email" #location="ngModel" matInput type="text" >
+            </mat-form-field>
+         <br>
+        <br>
+        <mat-form-field class="example-full-width">
+        <input matInput placeholder="Subject" name="subject" [(ngModel)]="form.subject" #subject="ngModel" matInput type="text" >
+        </mat-form-field>
+        <br>
+        <mat-form-field class="example-full-width">
+        <input matInput placeholder="Message to Dennis" name="message" [(ngModel)]="form.message" #message="ngModel" matInput type="text" >
+        </mat-form-field>
+        <br>
+          <br>
+        
+          <button mat-stroked-button color="accent" class="btn-block" matInput type="submit">Send Message</button>
+        
+          <button mat-button (click)="onNoClick()">No Thanks</button>
+        </form>

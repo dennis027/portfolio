@@ -1,6 +1,7 @@
 import { Component, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AdminComponent } from './admin/admin.component';
+import { ContactFormComponent } from './contact-form/contact-form.component';
 import { ContactComponent } from './contact/contact.component';
 import { LandingComponent } from './landing/landing.component';
 import { NavbarComponent } from './navbar/navbar.component';
@@ -26,7 +27,8 @@ const routes: Routes = [
   {path:'pizza',component:PizzaComponent},
   {path:'quotes',component:QuotesComponent},
   {path:'akan',component:AkanComponent},
-  {path:'dennis',component:AdminComponent}
+  {path:'dennis',component:AdminComponent},
+  {path:'contact-form',component:ContactFormComponent}
 
 ];
 
