@@ -6,20 +6,20 @@
   
  
         <mat-form-field class="example-full-width">
-            <input matInput placeholder="Your Name" name="name" [(ngModel)]="form.name" #name="ngModel" matInput type="text" >
+            <input matInput placeholder="Your Name" name="name" [(ngModel)]="form.name" #name="ngModel" matInput type="text" required>
         </mat-form-field>
         <br>
         <mat-form-field class="example-full-width">
-            <input matInput placeholder="Your Email" name="email" [(ngModel)]="form.email" #location="ngModel" matInput type="text" >
+            <input matInput placeholder="Your Email" name="email" [(ngModel)]="form.email" #location="ngModel" matInput type="text" required>
             </mat-form-field>
          <br>
-        <br>
+      
         <mat-form-field class="example-full-width">
-        <input matInput placeholder="Subject" name="subject" [(ngModel)]="form.subject" #subject="ngModel" matInput type="text" >
+        <input matInput placeholder="Subject" name="subject" [(ngModel)]="form.subject" #subject="ngModel" matInput type="text" required>
         </mat-form-field>
         <br>
         <mat-form-field class="example-full-width">
-        <input matInput placeholder="Message to Dennis" name="message" [(ngModel)]="form.message" #message="ngModel" matInput type="text" >
+        <input matInput placeholder="Message to Dennis" name="message" [(ngModel)]="form.message" #message="ngModel" matInput type="text" required>
         </mat-form-field>
         <br>
           <br>
