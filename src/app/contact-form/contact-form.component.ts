@@ -55,6 +55,7 @@ export class ContactFormComponent implements OnInit {
        console.log(err)
        this.toastr.error('Check Your Details ');
       });
+      this.dialogRef.close();
       // );
       // this.dialogRef.close();
   }
