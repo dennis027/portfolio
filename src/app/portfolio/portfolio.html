@@ -1,0 +1,379 @@
+<!-- ═══════════════════════════════════ NAV ═══════════════════════════════════ -->
+<nav class="nav" [class.nav--scrolled]="scrolled()">
+  <div class="nav-inner">
+
+    <button class="nav-logo" (click)="scrollTo('hero')">DK</button>
+
+    <ul class="nav-links" role="list">
+      @for (link of navLinks; track link.anchor) {
+        <li>
+          <button
+            class="nav-link"
+            [class.nav-link--active]="isActive(link.anchor)"
+            (click)="scrollTo(link.anchor)"
+          >{{ link.label }}</button>
+        </li>
+      }
+    </ul>
+
+    <a class="btn btn-primary btn-sm" href="/assets/dennis-kimani-cv.pdf" download>
+      <i class="fa-solid fa-download" aria-hidden="true"></i> Download CV
+    </a>
+
+    <button class="burger" (click)="toggleMenu()" [attr.aria-expanded]="menuOpen()" aria-label="Toggle menu">
+      @if (menuOpen()) {
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      } @else {
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+      }
+    </button>
+  </div>
+
+  @if (menuOpen()) {
+    <div class="nav-mobile" role="navigation" aria-label="Mobile navigation">
+      @for (link of navLinks; track link.anchor) {
+        <button class="nav-mobile-link" (click)="scrollTo(link.anchor)">{{ link.label }}</button>
+      }
+      <a class="btn btn-primary" href="/assets/dennis-kimani-cv.pdf" download>
+        <i class="fa-solid fa-download" aria-hidden="true"></i> Download CV
+      </a>
+    </div>
+  }
+</nav>
+
+<!-- ═══════════════════════════ CINEMATIC LAYOUT ══════════════════════════════
+     Sticky portrait column (left) + scrollable content (right)
+═══════════════════════════════════════════════════════════════════════════════ -->
+<div class="cinematic-layout">
+
+  <!-- ─── STICKY PORTRAIT PANEL ─── -->
+  <aside class="portrait-panel" aria-hidden="true">
+    <div class="portrait-panel__inner">
+      <app-portrait-scene [section]="activeSection()"></app-portrait-scene>
+    </div>
+  </aside>
+
+  <!-- ─── SCROLLABLE CONTENT ─── -->
+  <main class="content-panel">
+
+    <!-- ══════════════════ HERO ══════════════════ -->
+    <section id="hero" class="c-section c-section--hero">
+      <div class="c-section__inner">
+        <span class="eyebrow">
+          <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+          Based in Nairobi, Kenya
+        </span>
+
+        <h1 class="hero-name">Dennis<br>Kimani</h1>
+        <p class="hero-role">Full-Stack Developer</p>
+
+        <p class="hero-tagline">
+          I build secure web applications, REST APIs, and modern user interfaces —
+          with a focus on performance and reliability.
+        </p>
+
+        <div class="hero-tags">
+          <span class="tag">Django REST Framework</span>
+          <span class="tag">Angular</span>
+          <span class="tag">Flutter</span>
+          <span class="tag tag--available">
+            <span class="available-dot" aria-hidden="true"></span>
+            Available for work
+          </span>
+        </div>
+
+        <div class="hero-cta">
+          <button class="btn btn-primary btn-lg" (click)="scrollTo('projects')">
+            View my work
+          </button>
+          <button class="btn btn-ghost btn-lg" (click)="scrollTo('contact')">
+            Get in touch
+          </button>
+        </div>
+
+        <!-- Stats bar -->
+        <div class="stats-bar">
+          @for (stat of stats; track stat.label) {
+            <div class="stat">
+              <span class="stat-value">{{ stat.value }}</span>
+              <span class="stat-label">{{ stat.label }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════ ABOUT ══════════════════ -->
+    <section id="about" class="c-section">
+      <div class="c-section__inner">
+        <span class="section-label">About</span>
+        <h2 class="section-heading">
+          Building things that work —<br>even when connectivity doesn't
+        </h2>
+
+        <p class="reveal">
+          I'm a full-stack developer based in Nairobi with hands-on experience building
+          Django APIs, Angular applications, and Flutter mobile apps. I enjoy creating
+          secure, scalable systems and solving real-world problems through technology.
+        </p>
+        <p class="reveal reveal-delay-1">
+          My recent focus has been on offline-first architecture, election monitoring
+          tools, and production-grade deployments — work that needs to be reliable in
+          low-connectivity environments.
+        </p>
+
+        <div class="about-links reveal reveal-delay-2">
+          <a class="icon-link" href="mailto:machaariad196&#64;gmail.com">
+            <i class="fa-solid fa-envelope" aria-hidden="true"></i> machaariad196&#64;gmail.com
+          </a>
+          <a class="icon-link" href="https://github.com" target="_blank" rel="noopener noreferrer">
+            <i class="fa-brands fa-github" aria-hidden="true"></i> github.com/dennis-kimani
+          </a>
+        </div>
+
+        <div class="security-card reveal reveal-delay-3">
+          <i class="fa-solid fa-shield-halved security-icon" aria-hidden="true"></i>
+          <h3>Cybersecurity focus</h3>
+          <p>Implementing authentication layers, secure API design, and CTF-sharpened thinking into every project I build.</p>
+          <ul class="check-list">
+            <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> JWT authentication</li>
+            <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Role-based access control</li>
+            <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Input validation and sanitisation</li>
+            <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> CTF labs and practical exercises</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════ SKILLS ══════════════════ -->
+    <section id="skills" class="c-section c-section--tinted">
+      <div class="c-section__inner">
+        <span class="section-label">Skills</span>
+        <h2 class="section-heading">Technical toolkit</h2>
+
+        <div class="skills-grid">
+          @for (skill of skills; track skill.name; let i = $index) {
+            <div class="skill-card reveal" [class]="'skill-card reveal reveal-delay-' + (i % 4 + 1)">
+              <i [class]="skill.icon + ' skill-icon'" aria-hidden="true"></i>
+              <span class="skill-name">{{ skill.name }}</span>
+              <span class="skill-desc">{{ skill.description }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════ FEATURED PROJECT ══════════════════ -->
+    @if (featuredProject(); as project) {
+      <section class="c-section">
+        <div class="c-section__inner">
+          <span class="section-label">Featured project</span>
+
+          <div class="featured-meta reveal">
+            <span class="featured-badge">Case study</span>
+            <h2 class="featured-title">{{ project.title }}</h2>
+            <p class="featured-desc">{{ project.description }}</p>
+
+            <div class="tag-row">
+              @for (tag of project.tags; track tag) {
+                <span class="tag">{{ tag }}</span>
+              }
+            </div>
+
+            <div class="project-details">
+              <div class="project-detail">
+                <span class="detail-label">Role</span>
+                <span class="detail-value">{{ project.role }}</span>
+              </div>
+              <div class="project-detail">
+                <span class="detail-label">Duration</span>
+                <span class="detail-value">{{ project.duration }}</span>
+              </div>
+              <div class="project-detail">
+                <span class="detail-label">Users</span>
+                <span class="detail-value">{{ project.users }}</span>
+              </div>
+            </div>
+
+            <ul class="achievement-list">
+              @for (item of project.achievements; track item) {
+                <li><i class="fa-solid fa-arrow-right" aria-hidden="true"></i> {{ item }}</li>
+              }
+            </ul>
+
+            <div class="featured-actions">
+              @if (project.liveUrl) {
+                <a class="btn btn-primary" [href]="project.liveUrl" target="_blank" rel="noopener noreferrer">
+                  <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Live demo
+                </a>
+              }
+              @if (project.githubUrl) {
+                <a class="btn btn-ghost" [href]="project.githubUrl" target="_blank" rel="noopener noreferrer">
+                  <i class="fa-brands fa-github" aria-hidden="true"></i> GitHub
+                </a>
+              }
+            </div>
+          </div>
+        </div>
+      </section>
+    }
+
+    <!-- ══════════════════ PROJECTS ══════════════════ -->
+    <section id="projects" class="c-section c-section--tinted">
+      <div class="c-section__inner">
+        <span class="section-label">Projects</span>
+        <h2 class="section-heading">More work</h2>
+
+        <div class="projects-grid">
+          @for (project of otherProjects(); track project.id; let i = $index) {
+            <article class="project-card reveal" [class]="'project-card reveal reveal-delay-' + (i % 4 + 1)">
+              <div class="project-card-header">
+                <h3 class="project-card-title">{{ project.title }}</h3>
+                <div class="project-card-icons">
+                  @if (project.githubUrl) {
+                    <a [href]="project.githubUrl" target="_blank" rel="noopener noreferrer" [attr.aria-label]="project.title + ' on GitHub'">
+                      <i class="fa-brands fa-github" aria-hidden="true"></i>
+                    </a>
+                  }
+                  @if (project.liveUrl) {
+                    <a [href]="project.liveUrl" target="_blank" rel="noopener noreferrer" [attr.aria-label]="'Live demo of ' + project.title">
+                      <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                    </a>
+                  }
+                </div>
+              </div>
+              <p class="project-card-desc">{{ project.description }}</p>
+              <ul class="project-achievements">
+                @for (item of project.achievements; track item) {
+                  <li>{{ item }}</li>
+                }
+              </ul>
+              <div class="project-card-footer">
+                <div class="project-meta">
+                  <span class="detail-label">{{ project.role }}</span>
+                  <span class="detail-label">{{ project.duration }}</span>
+                </div>
+                <div class="tag-row">
+                  @for (tag of project.tags; track tag) {
+                    <span class="tag tag-sm">{{ tag }}</span>
+                  }
+                </div>
+              </div>
+            </article>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════ EXPERIENCE ══════════════════ -->
+    <section id="experience" class="c-section">
+      <div class="c-section__inner">
+        <span class="section-label">Experience & education</span>
+
+        <div class="exp-grid">
+          <div>
+            <h2 class="section-heading">Experience</h2>
+            @for (exp of experiences; track exp.role) {
+              <div class="exp-item reveal">
+                <div class="exp-header">
+                  <div>
+                    <p class="exp-role">{{ exp.role }}</p>
+                    <p class="exp-company">{{ exp.company }}</p>
+                  </div>
+                  <span class="exp-period">{{ exp.period }}</span>
+                </div>
+                <p class="exp-desc">{{ exp.description }}</p>
+                <div class="tag-row">
+                  @for (tag of exp.tags; track tag) {
+                    <span class="tag tag-sm">{{ tag }}</span>
+                  }
+                </div>
+              </div>
+            }
+            <div class="exp-item reveal reveal-delay-2">
+              <div class="exp-header">
+                <div>
+                  <p class="exp-role">Computer Science</p>
+                  <p class="exp-company">University — Nairobi</p>
+                </div>
+                <span class="exp-period">2022 — Present</span>
+              </div>
+              <p class="exp-desc">Studying computer science with a focus on software engineering and information security.</p>
+            </div>
+          </div>
+
+          <div>
+            <h2 class="section-heading">Certifications & labs</h2>
+            @for (cert of certifications; track cert.name; let i = $index) {
+              <div class="cert-card reveal" [class]="'cert-card reveal reveal-delay-' + (i % 3 + 1)">
+                <i [class]="cert.iconClass + ' cert-icon'" aria-hidden="true"></i>
+                <div>
+                  <p class="cert-name">{{ cert.name }}</p>
+                  <p class="cert-meta">{{ cert.issuer }} · {{ cert.year }}</p>
+                </div>
+              </div>
+            }
+            <div class="cert-card reveal reveal-delay-4">
+              <i class="fa-solid fa-flag cert-icon" aria-hidden="true"></i>
+              <div>
+                <p class="cert-name">CTF competitions</p>
+                <p class="cert-meta">Ongoing participation · Cybersecurity labs</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════ CONTACT ══════════════════ -->
+    <section id="contact" class="c-section c-section--tinted">
+      <div class="c-section__inner contact-wrap">
+        <span class="section-label">Contact</span>
+        <h2 class="section-heading">Let's build something</h2>
+        <p class="contact-sub">
+          I'm currently available for freelance and contract work. Whether it's a new project
+          or something you need to fix — let's talk.
+        </p>
+
+        <div class="contact-cards">
+          <div class="contact-card reveal">
+            <i class="fa-solid fa-envelope contact-card-icon" aria-hidden="true"></i>
+            <span class="contact-card-label">Email</span>
+            <a class="contact-card-value" href="mailto:machaariad196&#64;gmail.com">machaariad196&#64;gmail.com</a>
+          </div>
+          <div class="contact-card reveal reveal-delay-1">
+            <i class="fa-solid fa-phone contact-card-icon" aria-hidden="true"></i>
+            <span class="contact-card-label">Phone</span>
+            <a class="contact-card-value" href="tel:+254799157137">+254 799 157 137</a>
+          </div>
+          <div class="contact-card reveal reveal-delay-2">
+            <i class="fa-solid fa-location-dot contact-card-icon" aria-hidden="true"></i>
+            <span class="contact-card-label">Location</span>
+            <span class="contact-card-value">Nairobi, Kenya</span>
+          </div>
+        </div>
+
+        <div class="social-links reveal reveal-delay-3">
+          <a class="social-link" href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+            <i class="fa-brands fa-github" aria-hidden="true"></i>
+          </a>
+          <a class="social-link" href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+            <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+          </a>
+          <a class="social-link" href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter / X">
+            <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="footer-inner">
+        <span>© {{ currentYear }} Dennis Kimani</span>
+        <span>Built with Angular</span>
+      </div>
+    </footer>
+
+  </main><!-- end content-panel -->
+</div><!-- end cinematic-layout -->
