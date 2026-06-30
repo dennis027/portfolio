@@ -1,49 +1,42 @@
 <!-- ═══════════════════════════════════ NAV ═══════════════════════════════════ -->
 <nav class="nav" [class.nav--scrolled]="scrolled()">
   <div class="nav-inner">
-
-    <button class="nav-logo" (click)="scrollTo('hero')">DK</button>
+    <button class="nav-logo" (click)="scrollTo('hero')">
+      <span class="nav-logo__bracket">[</span>DK<span class="nav-logo__bracket">]</span>
+    </button>
 
     <ul class="nav-links" role="list">
       @for (link of navLinks; track link.anchor) {
         <li>
-          <button
-            class="nav-link"
-            [class.nav-link--active]="isActive(link.anchor)"
-            (click)="scrollTo(link.anchor)"
-          >{{ link.label }}</button>
+          <button class="nav-link" [class.nav-link--active]="isActive(link.anchor)" (click)="scrollTo(link.anchor)">
+            <span class="nav-link__num">0{{ $index + 1 }}</span>
+            {{ link.label }}
+          </button>
         </li>
       }
     </ul>
 
-    <a class="btn btn-primary btn-sm" href="/assets/dennis-kimani-cv.pdf" download>
-      <i class="fa-solid fa-download" aria-hidden="true"></i> Download CV
+    <a class="btn-os" href="/assets/dennis-kimani-cv.pdf" download>
+      <i class="fa-solid fa-download"></i> Download CV
     </a>
 
-    <button class="burger" (click)="toggleMenu()" [attr.aria-expanded]="menuOpen()" aria-label="Toggle menu">
-      @if (menuOpen()) {
-        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-      } @else {
-        <i class="fa-solid fa-bars" aria-hidden="true"></i>
-      }
+    <button class="burger" (click)="toggleMenu()" [attr.aria-expanded]="menuOpen()">
+      @if (menuOpen()) { <i class="fa-solid fa-xmark"></i> }
+      @else { <i class="fa-solid fa-bars"></i> }
     </button>
   </div>
 
   @if (menuOpen()) {
-    <div class="nav-mobile" role="navigation" aria-label="Mobile navigation">
+    <div class="nav-mobile">
       @for (link of navLinks; track link.anchor) {
         <button class="nav-mobile-link" (click)="scrollTo(link.anchor)">{{ link.label }}</button>
       }
-      <a class="btn btn-primary" href="/assets/dennis-kimani-cv.pdf" download>
-        <i class="fa-solid fa-download" aria-hidden="true"></i> Download CV
-      </a>
+      <a class="btn-os" href="/assets/dennis-kimani-cv.pdf" download>Download CV</a>
     </div>
   }
 </nav>
 
-<!-- ═══════════════════════════ CINEMATIC LAYOUT ══════════════════════════════
-     Sticky portrait column (left) + scrollable content (right)
-═══════════════════════════════════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════ CINEMATIC LAYOUT ══════════════════════════════ -->
 <div class="cinematic-layout">
 
   <!-- ─── STICKY PORTRAIT PANEL ─── -->
@@ -56,324 +49,388 @@
   <!-- ─── SCROLLABLE CONTENT ─── -->
   <main class="content-panel">
 
-    <!-- ══════════════════ HERO ══════════════════ -->
+    <!-- ══════════════════════════ HERO ══════════════════════════ -->
     <section id="hero" class="c-section c-section--hero">
       <div class="c-section__inner">
-        <span class="eyebrow">
-          <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-          Based in Nairobi, Kenya
-        </span>
 
-        <h1 class="hero-name">Dennis<br>Kimani</h1>
-        <p class="hero-role">Full-Stack Developer</p>
+        <!-- OS window chrome -->
+        <div class="os-window reveal">
+          <div class="os-window__bar">
+            <span class="os-dot os-dot--red"></span>
+            <span class="os-dot os-dot--yellow"></span>
+            <span class="os-dot os-dot--green"></span>
+            <span class="os-window__title">dennis-kimani.sh</span>
+          </div>
+          <div class="os-window__body terminal">
+            @for (cmd of terminalCommands; track cmd.cmd; let i = $index) {
+              @if (i <= activeCmdIndex()) {
+                <div class="terminal__block" [class.terminal__block--active]="i === activeCmdIndex()">
+                  <p class="terminal__prompt">
+                    <span class="terminal__user">dennis</span><span class="terminal__at">&#64;</span><span class="terminal__host">portfolio</span><span class="terminal__sep">:~$</span>
+                    <span class="terminal__cmd">{{ cmd.cmd }}</span>
+                  </p>
+                  <p class="terminal__output">{{ cmd.out }}</p>
+                </div>
+              }
+            }
+          </div>
+        </div>
 
-        <p class="hero-tagline">
-          I build secure web applications, REST APIs, and modern user interfaces —
-          with a focus on performance and reliability.
-        </p>
-
-        <div class="hero-tags">
-          <span class="tag">Django REST Framework</span>
-          <span class="tag">Angular</span>
-          <span class="tag">Flutter</span>
-          <span class="tag tag--available">
-            <span class="available-dot" aria-hidden="true"></span>
-            Available for work
+        <div class="hero-text reveal reveal-delay-1">
+          <span class="eyebrow">
+            <span class="eyebrow__dot"></span>
+            Based in Nairobi, Kenya
           </span>
+          <h1 class="hero-name">Dennis<br><span class="hero-name__accent">Kimani</span></h1>
+          <p class="hero-role">
+            <span class="hero-role__type">Full-Stack Developer</span>
+            <span class="hero-role__sep"> · </span>
+            <span class="hero-role__sub">Cybersecurity Enthusiast</span>
+          </p>
+          <p class="hero-tagline">I build systems that are fast, secure, and work even when nothing else does.</p>
         </div>
 
-        <div class="hero-cta">
-          <button class="btn btn-primary btn-lg" (click)="scrollTo('projects')">
-            View my work
+        <div class="hero-actions reveal reveal-delay-2">
+          <button class="btn-os btn-os--primary btn-os--lg" (click)="scrollTo('projects')">
+            <i class="fa-solid fa-terminal"></i> View projects
           </button>
-          <button class="btn btn-ghost btn-lg" (click)="scrollTo('contact')">
-            Get in touch
+          <button class="btn-os btn-os--ghost btn-os--lg" (click)="scrollTo('contact')">
+            <i class="fa-solid fa-arrow-right"></i> Get in touch
           </button>
         </div>
 
-        <!-- Stats bar -->
-        <div class="stats-bar">
+        <!-- Stats as OS metrics -->
+        <div class="metrics reveal reveal-delay-3">
           @for (stat of stats; track stat.label) {
-            <div class="stat">
-              <span class="stat-value">{{ stat.value }}</span>
-              <span class="stat-label">{{ stat.label }}</span>
+            <div class="metric">
+              <i [class]="stat.icon + ' metric__icon'"></i>
+              <span class="metric__value">{{ stat.value }}</span>
+              <span class="metric__label">{{ stat.label }}</span>
             </div>
           }
         </div>
+
       </div>
     </section>
 
-    <!-- ══════════════════ ABOUT ══════════════════ -->
+    <!-- ══════════════════════════ ABOUT ══════════════════════════ -->
     <section id="about" class="c-section">
       <div class="c-section__inner">
-        <span class="section-label">About</span>
-        <h2 class="section-heading">
-          Building things that work —<br>even when connectivity doesn't
-        </h2>
-
-        <p class="reveal">
-          I'm a full-stack developer based in Nairobi with hands-on experience building
-          Django APIs, Angular applications, and Flutter mobile apps. I enjoy creating
-          secure, scalable systems and solving real-world problems through technology.
-        </p>
-        <p class="reveal reveal-delay-1">
-          My recent focus has been on offline-first architecture, election monitoring
-          tools, and production-grade deployments — work that needs to be reliable in
-          low-connectivity environments.
-        </p>
-
-        <div class="about-links reveal reveal-delay-2">
-          <a class="icon-link" href="mailto:machaariad196&#64;gmail.com">
-            <i class="fa-solid fa-envelope" aria-hidden="true"></i> machaariad196&#64;gmail.com
-          </a>
-          <a class="icon-link" href="https://github.com" target="_blank" rel="noopener noreferrer">
-            <i class="fa-brands fa-github" aria-hidden="true"></i> github.com/dennis-kimani
-          </a>
+        <div class="section-header reveal">
+          <span class="section-eyebrow">// about</span>
+          <h2 class="section-title">Who am I<span class="section-title__cursor">_</span></h2>
         </div>
 
-        <div class="security-card reveal reveal-delay-3">
-          <i class="fa-solid fa-shield-halved security-icon" aria-hidden="true"></i>
-          <h3>Cybersecurity focus</h3>
-          <p>Implementing authentication layers, secure API design, and CTF-sharpened thinking into every project I build.</p>
-          <ul class="check-list">
-            <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> JWT authentication</li>
-            <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Role-based access control</li>
-            <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Input validation and sanitisation</li>
-            <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i> CTF labs and practical exercises</li>
-          </ul>
+        <div class="about-os reveal reveal-delay-1">
+          <!-- Left: bio panel -->
+          <div class="about-bio">
+            <div class="glass-panel">
+              <div class="glass-panel__header">
+                <i class="fa-solid fa-user glass-panel__icon"></i>
+                <span>profile.json</span>
+              </div>
+              <div class="glass-panel__body">
+                <div class="json-view">
+                  <p><span class="json-key">"name"</span>: <span class="json-str">"Dennis Kimani"</span>,</p>
+                  <p><span class="json-key">"role"</span>: <span class="json-str">"Full-Stack Developer"</span>,</p>
+                  <p><span class="json-key">"location"</span>: <span class="json-str">"Nairobi, Kenya"</span>,</p>
+                  <p><span class="json-key">"focus"</span>: [</p>
+                  <p class="json-indent"><span class="json-str">"Offline-first systems"</span>,</p>
+                  <p class="json-indent"><span class="json-str">"Secure API design"</span>,</p>
+                  <p class="json-indent"><span class="json-str">"Civic tech"</span></p>
+                  <p>],</p>
+                  <p><span class="json-key">"available"</span>: <span class="json-bool">true</span></p>
+                </div>
+              </div>
+            </div>
+
+            <p class="about-para">
+              I build full-stack systems from mobile apps to APIs to admin dashboards. My recent work focuses on offline-first architecture and election monitoring tools — systems that must be reliable in low-connectivity environments.
+            </p>
+            <p class="about-para">
+              Outside of shipping software, I'm in CTF competitions and studying how things break so I can build things that don't.
+            </p>
+
+            <div class="about-contacts">
+              <a class="os-link" href="mailto:machaariad196&#64;gmail.com">
+                <i class="fa-solid fa-envelope"></i> machaariad196&#64;gmail.com
+              </a>
+              <a class="os-link" href="https://github.com" target="_blank" rel="noopener">
+                <i class="fa-brands fa-github"></i> github.com/dennis-kimani
+              </a>
+            </div>
+          </div>
+
+          <!-- Right: security card -->
+          <div class="about-security">
+            <div class="glass-panel glass-panel--accent">
+              <div class="glass-panel__header">
+                <i class="fa-solid fa-shield-halved glass-panel__icon glass-panel__icon--red"></i>
+                <span>security.log</span>
+                <span class="glass-panel__badge glass-panel__badge--red">ACTIVE</span>
+              </div>
+              <div class="glass-panel__body">
+                <div class="security-items">
+                  <div class="security-item">
+                    <span class="security-item__status security-item__status--ok"></span>
+                    <span class="security-item__label">JWT Authentication</span>
+                    <span class="security-item__val">✓ Implemented</span>
+                  </div>
+                  <div class="security-item">
+                    <span class="security-item__status security-item__status--ok"></span>
+                    <span class="security-item__label">Role-based Access Control</span>
+                    <span class="security-item__val">✓ Implemented</span>
+                  </div>
+                  <div class="security-item">
+                    <span class="security-item__status security-item__status--ok"></span>
+                    <span class="security-item__label">Input Validation</span>
+                    <span class="security-item__val">✓ Always</span>
+                  </div>
+                  <div class="security-item">
+                    <span class="security-item__status security-item__status--warn"></span>
+                    <span class="security-item__label">CTF Labs</span>
+                    <span class="security-item__val">⟳ Ongoing</span>
+                  </div>
+                </div>
+                <div class="security-bar">
+                  <span class="security-bar__label">Threat awareness</span>
+                  <div class="security-bar__track">
+                    <div class="security-bar__fill" style="width: 78%"></div>
+                  </div>
+                  <span class="security-bar__val">78 / 100</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- ══════════════════ SKILLS ══════════════════ -->
-    <section id="skills" class="c-section c-section--tinted">
+    <!-- ══════════════════════════ SKILLS ══════════════════════════ -->
+    <section id="skills" class="c-section c-section--dark">
       <div class="c-section__inner">
-        <span class="section-label">Skills</span>
-        <h2 class="section-heading">Technical toolkit</h2>
+        <div class="section-header reveal">
+          <span class="section-eyebrow">// skills</span>
+          <h2 class="section-title">Toolkit<span class="section-title__cursor">_</span></h2>
+        </div>
 
-        <div class="skills-grid">
-          @for (skill of skills; track skill.name; let i = $index) {
-            <div class="skill-card reveal" [class]="'skill-card reveal reveal-delay-' + (i % 4 + 1)">
-              <i [class]="skill.icon + ' skill-icon'" aria-hidden="true"></i>
-              <span class="skill-name">{{ skill.name }}</span>
-              <span class="skill-desc">{{ skill.description }}</span>
+        <!-- Category filter pills -->
+        <div class="skill-filter reveal reveal-delay-1">
+          @for (cat of skillCategories; track cat) {
+            <button
+              class="skill-filter__pill"
+              [class.skill-filter__pill--active]="activeSkillCategory() === cat"
+              (click)="setSkillCategory(cat)"
+            >{{ cat }}</button>
+          }
+        </div>
+
+        <!-- Skill nodes -->
+        <div class="skills-os reveal reveal-delay-2">
+          @for (skill of filteredSkills(); track skill.name) {
+            <div class="skill-node">
+              <div class="skill-node__top">
+                <i [class]="skill.icon + ' skill-node__icon'"></i>
+                <span class="skill-node__name">{{ skill.name }}</span>
+                <span class="skill-node__pct">{{ skill.level }}%</span>
+              </div>
+              <div class="skill-node__bar">
+                <div class="skill-node__fill" [style.width]="skill.level + '%'"></div>
+              </div>
+              <span class="skill-node__desc">{{ skill.description }}</span>
             </div>
           }
         </div>
       </div>
     </section>
 
-    <!-- ══════════════════ FEATURED PROJECT ══════════════════ -->
-    @if (featuredProject(); as project) {
-      <section class="c-section">
-        <div class="c-section__inner">
-          <span class="section-label">Featured project</span>
+    <!-- ══════════════════════════ PROJECTS ══════════════════════════ -->
+    <section id="projects" class="c-section">
+      <div class="c-section__inner">
+        <div class="section-header reveal">
+          <span class="section-eyebrow">// projects</span>
+          <h2 class="section-title">Shipped<span class="section-title__cursor">_</span></h2>
+        </div>
 
-          <div class="featured-meta reveal">
-            <span class="featured-badge">Case study</span>
-            <h2 class="featured-title">{{ project.title }}</h2>
-            <p class="featured-desc">{{ project.description }}</p>
+        <div class="projects-os reveal reveal-delay-1">
+          <!-- Project selector sidebar -->
+          <div class="project-sidebar">
+            @for (project of projects; track project.id) {
+              <button
+                class="project-tab"
+                [class.project-tab--active]="activeProject().id === project.id"
+                [style.--proj-color]="project.color"
+                (click)="setActiveProject(project.id)"
+              >
+                <i [class]="project.icon + ' project-tab__icon'"></i>
+                <span>{{ project.title }}</span>
+                <span class="project-tab__status">{{ project.status }}</span>
+              </button>
+            }
+          </div>
 
-            <div class="tag-row">
-              @for (tag of project.tags; track tag) {
-                <span class="tag">{{ tag }}</span>
+          <!-- Project detail pane -->
+          <div class="project-detail" [style.--proj-color]="activeProject().color">
+            <div class="project-detail__header">
+              <div class="project-detail__title-row">
+                <i [class]="activeProject().icon + ' project-detail__icon'"></i>
+                <h3 class="project-detail__title">{{ activeProject().title }}</h3>
+                <span class="project-detail__badge">{{ activeProject().status }}</span>
+              </div>
+              <p class="project-detail__desc">{{ activeProject().description }}</p>
+              <div class="tag-row">
+                @for (tag of activeProject().tags; track tag) {
+                  <span class="os-tag">{{ tag }}</span>
+                }
+              </div>
+            </div>
+
+            <div class="project-detail__meta">
+              <div class="project-meta-item">
+                <span class="project-meta-item__label">Role</span>
+                <span class="project-meta-item__val">{{ activeProject().role }}</span>
+              </div>
+              <div class="project-meta-item">
+                <span class="project-meta-item__label">Duration</span>
+                <span class="project-meta-item__val">{{ activeProject().duration }}</span>
+              </div>
+              <div class="project-meta-item">
+                <span class="project-meta-item__label">Users</span>
+                <span class="project-meta-item__val">{{ activeProject().users }}</span>
+              </div>
+            </div>
+
+            <div class="project-detail__log">
+              <p class="project-detail__log-title">
+                <i class="fa-solid fa-list-check"></i> Key achievements
+              </p>
+              @for (item of activeProject().achievements; track item) {
+                <div class="log-line">
+                  <span class="log-line__prefix">→</span>
+                  <span>{{ item }}</span>
+                </div>
               }
             </div>
 
-            <div class="project-details">
-              <div class="project-detail">
-                <span class="detail-label">Role</span>
-                <span class="detail-value">{{ project.role }}</span>
-              </div>
-              <div class="project-detail">
-                <span class="detail-label">Duration</span>
-                <span class="detail-value">{{ project.duration }}</span>
-              </div>
-              <div class="project-detail">
-                <span class="detail-label">Users</span>
-                <span class="detail-value">{{ project.users }}</span>
-              </div>
-            </div>
-
-            <ul class="achievement-list">
-              @for (item of project.achievements; track item) {
-                <li><i class="fa-solid fa-arrow-right" aria-hidden="true"></i> {{ item }}</li>
-              }
-            </ul>
-
-            <div class="featured-actions">
-              @if (project.liveUrl) {
-                <a class="btn btn-primary" [href]="project.liveUrl" target="_blank" rel="noopener noreferrer">
-                  <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Live demo
+            <div class="project-detail__actions">
+              @if (activeProject().liveUrl) {
+                <a class="btn-os btn-os--primary" [href]="activeProject().liveUrl" target="_blank" rel="noopener">
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i> Live demo
                 </a>
               }
-              @if (project.githubUrl) {
-                <a class="btn btn-ghost" [href]="project.githubUrl" target="_blank" rel="noopener noreferrer">
-                  <i class="fa-brands fa-github" aria-hidden="true"></i> GitHub
+              @if (activeProject().githubUrl) {
+                <a class="btn-os btn-os--ghost" [href]="activeProject().githubUrl" target="_blank" rel="noopener">
+                  <i class="fa-brands fa-github"></i> Source
                 </a>
               }
             </div>
           </div>
         </div>
-      </section>
-    }
-
-    <!-- ══════════════════ PROJECTS ══════════════════ -->
-    <section id="projects" class="c-section c-section--tinted">
-      <div class="c-section__inner">
-        <span class="section-label">Projects</span>
-        <h2 class="section-heading">More work</h2>
-
-        <div class="projects-grid">
-          @for (project of otherProjects(); track project.id; let i = $index) {
-            <article class="project-card reveal" [class]="'project-card reveal reveal-delay-' + (i % 4 + 1)">
-              <div class="project-card-header">
-                <h3 class="project-card-title">{{ project.title }}</h3>
-                <div class="project-card-icons">
-                  @if (project.githubUrl) {
-                    <a [href]="project.githubUrl" target="_blank" rel="noopener noreferrer" [attr.aria-label]="project.title + ' on GitHub'">
-                      <i class="fa-brands fa-github" aria-hidden="true"></i>
-                    </a>
-                  }
-                  @if (project.liveUrl) {
-                    <a [href]="project.liveUrl" target="_blank" rel="noopener noreferrer" [attr.aria-label]="'Live demo of ' + project.title">
-                      <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
-                    </a>
-                  }
-                </div>
-              </div>
-              <p class="project-card-desc">{{ project.description }}</p>
-              <ul class="project-achievements">
-                @for (item of project.achievements; track item) {
-                  <li>{{ item }}</li>
-                }
-              </ul>
-              <div class="project-card-footer">
-                <div class="project-meta">
-                  <span class="detail-label">{{ project.role }}</span>
-                  <span class="detail-label">{{ project.duration }}</span>
-                </div>
-                <div class="tag-row">
-                  @for (tag of project.tags; track tag) {
-                    <span class="tag tag-sm">{{ tag }}</span>
-                  }
-                </div>
-              </div>
-            </article>
-          }
-        </div>
       </div>
     </section>
 
-    <!-- ══════════════════ EXPERIENCE ══════════════════ -->
-    <section id="experience" class="c-section">
+    <!-- ══════════════════════════ EXPERIENCE ══════════════════════════ -->
+    <section id="experience" class="c-section c-section--dark">
       <div class="c-section__inner">
-        <span class="section-label">Experience & education</span>
+        <div class="section-header reveal">
+          <span class="section-eyebrow">// experience</span>
+          <h2 class="section-title">Timeline<span class="section-title__cursor">_</span></h2>
+        </div>
 
-        <div class="exp-grid">
-          <div>
-            <h2 class="section-heading">Experience</h2>
-            @for (exp of experiences; track exp.role) {
-              <div class="exp-item reveal">
-                <div class="exp-header">
+        <div class="timeline reveal reveal-delay-1">
+          @for (exp of experiences; track exp.role; let last = $last) {
+            <div class="timeline-item">
+              <div class="timeline-dot" [style.--exp-color]="exp.color">
+                <i [class]="exp.icon"></i>
+              </div>
+              @if (!last) { <div class="timeline-line"></div> }
+              <div class="timeline-card glass-panel">
+                <div class="timeline-card__header">
                   <div>
-                    <p class="exp-role">{{ exp.role }}</p>
-                    <p class="exp-company">{{ exp.company }}</p>
+                    <p class="timeline-card__role">{{ exp.role }}</p>
+                    <p class="timeline-card__company">{{ exp.company }}</p>
                   </div>
-                  <span class="exp-period">{{ exp.period }}</span>
+                  <span class="timeline-card__period">{{ exp.period }}</span>
                 </div>
-                <p class="exp-desc">{{ exp.description }}</p>
+                <p class="timeline-card__desc">{{ exp.description }}</p>
                 <div class="tag-row">
                   @for (tag of exp.tags; track tag) {
-                    <span class="tag tag-sm">{{ tag }}</span>
+                    <span class="os-tag">{{ tag }}</span>
                   }
                 </div>
               </div>
-            }
-            <div class="exp-item reveal reveal-delay-2">
-              <div class="exp-header">
-                <div>
-                  <p class="exp-role">Computer Science</p>
-                  <p class="exp-company">University — Nairobi</p>
-                </div>
-                <span class="exp-period">2022 — Present</span>
-              </div>
-              <p class="exp-desc">Studying computer science with a focus on software engineering and information security.</p>
             </div>
-          </div>
+          }
+        </div>
 
-          <div>
-            <h2 class="section-heading">Certifications & labs</h2>
-            @for (cert of certifications; track cert.name; let i = $index) {
-              <div class="cert-card reveal" [class]="'cert-card reveal reveal-delay-' + (i % 3 + 1)">
-                <i [class]="cert.iconClass + ' cert-icon'" aria-hidden="true"></i>
-                <div>
-                  <p class="cert-name">{{ cert.name }}</p>
-                  <p class="cert-meta">{{ cert.issuer }} · {{ cert.year }}</p>
-                </div>
-              </div>
-            }
-            <div class="cert-card reveal reveal-delay-4">
-              <i class="fa-solid fa-flag cert-icon" aria-hidden="true"></i>
+        <!-- Certifications grid -->
+        <div class="section-header reveal" style="margin-top: 56px">
+          <span class="section-eyebrow">// certifications</span>
+          <h2 class="section-title">Credentials<span class="section-title__cursor">_</span></h2>
+        </div>
+        <div class="certs-grid reveal reveal-delay-1">
+          @for (cert of certifications; track cert.name) {
+            <div class="cert-os" [style.--cert-color]="cert.color">
+              <i [class]="cert.iconClass + ' cert-os__icon'"></i>
               <div>
-                <p class="cert-name">CTF competitions</p>
-                <p class="cert-meta">Ongoing participation · Cybersecurity labs</p>
+                <p class="cert-os__name">{{ cert.name }}</p>
+                <p class="cert-os__meta">{{ cert.issuer }} · {{ cert.year }}</p>
               </div>
             </div>
-          </div>
+          }
         </div>
       </div>
     </section>
 
-    <!-- ══════════════════ CONTACT ══════════════════ -->
-    <section id="contact" class="c-section c-section--tinted">
-      <div class="c-section__inner contact-wrap">
-        <span class="section-label">Contact</span>
-        <h2 class="section-heading">Let's build something</h2>
-        <p class="contact-sub">
-          I'm currently available for freelance and contract work. Whether it's a new project
-          or something you need to fix — let's talk.
+    <!-- ══════════════════════════ CONTACT ══════════════════════════ -->
+    <section id="contact" class="c-section">
+      <div class="c-section__inner">
+        <div class="section-header reveal">
+          <span class="section-eyebrow">// contact</span>
+          <h2 class="section-title">Let's build<span class="section-title__cursor">_</span></h2>
+        </div>
+
+        <p class="contact-intro reveal reveal-delay-1">
+          I'm available for freelance, contract, and full-time roles. Whether it's a new system or something broken that needs fixing — reach out.
         </p>
 
-        <div class="contact-cards">
-          <div class="contact-card reveal">
-            <i class="fa-solid fa-envelope contact-card-icon" aria-hidden="true"></i>
-            <span class="contact-card-label">Email</span>
-            <a class="contact-card-value" href="mailto:machaariad196&#64;gmail.com">machaariad196&#64;gmail.com</a>
+        <div class="contact-os reveal reveal-delay-2">
+          <div class="contact-card-os">
+            <i class="fa-solid fa-envelope contact-card-os__icon"></i>
+            <span class="contact-card-os__label">Email</span>
+            <a class="contact-card-os__val" href="mailto:machaariad196&#64;gmail.com">machaariad196&#64;gmail.com</a>
           </div>
-          <div class="contact-card reveal reveal-delay-1">
-            <i class="fa-solid fa-phone contact-card-icon" aria-hidden="true"></i>
-            <span class="contact-card-label">Phone</span>
-            <a class="contact-card-value" href="tel:+254799157137">+254 799 157 137</a>
+          <div class="contact-card-os">
+            <i class="fa-solid fa-phone contact-card-os__icon"></i>
+            <span class="contact-card-os__label">Phone</span>
+            <a class="contact-card-os__val" href="tel:+254799157137">+254 799 157 137</a>
           </div>
-          <div class="contact-card reveal reveal-delay-2">
-            <i class="fa-solid fa-location-dot contact-card-icon" aria-hidden="true"></i>
-            <span class="contact-card-label">Location</span>
-            <span class="contact-card-value">Nairobi, Kenya</span>
+          <div class="contact-card-os">
+            <i class="fa-solid fa-location-dot contact-card-os__icon"></i>
+            <span class="contact-card-os__label">Location</span>
+            <span class="contact-card-os__val">Nairobi, Kenya</span>
           </div>
         </div>
 
-        <div class="social-links reveal reveal-delay-3">
-          <a class="social-link" href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-            <i class="fa-brands fa-github" aria-hidden="true"></i>
+        <div class="contact-socials reveal reveal-delay-3">
+          <a class="social-os" href="https://github.com" target="_blank" rel="noopener" aria-label="GitHub">
+            <i class="fa-brands fa-github"></i>
           </a>
-          <a class="social-link" href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-            <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+          <a class="social-os" href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <i class="fa-brands fa-linkedin-in"></i>
           </a>
-          <a class="social-link" href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter / X">
-            <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+          <a class="social-os" href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter">
+            <i class="fa-brands fa-x-twitter"></i>
           </a>
         </div>
       </div>
     </section>
 
-    <!-- FOOTER -->
-    <footer class="footer">
-      <div class="footer-inner">
-        <span>© {{ currentYear }} Dennis Kimani</span>
-        <span>Built with Angular</span>
-      </div>
+    <footer class="footer-os">
+      <span>© {{ currentYear }} Dennis Kimani</span>
+      <span class="footer-os__sep">·</span>
+      <span>Built with Angular 21</span>
     </footer>
 
-  </main><!-- end content-panel -->
-</div><!-- end cinematic-layout -->
+  </main>
+</div>
