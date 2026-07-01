@@ -225,19 +225,48 @@
           }
         </div>
 
-        <!-- Skill nodes -->
-        <div class="skills-os reveal reveal-delay-2">
+        <!-- Skill cards grid -->
+        <div class="skills-grid reveal reveal-delay-2">
           @for (skill of filteredSkills(); track skill.name) {
-            <div class="skill-node">
-              <div class="skill-node__top">
-                <i [class]="skill.icon + ' skill-node__icon'"></i>
-                <span class="skill-node__name">{{ skill.name }}</span>
-                <span class="skill-node__pct">{{ skill.level }}%</span>
+            <div
+              class="skill-card"
+              [style.--skill-color]="skill.color"
+            >
+              <!-- Giant background logo -->
+              <div class="skill-card__bg-icon" aria-hidden="true">
+                <i [class]="skill.bgIcon"></i>
               </div>
-              <div class="skill-node__bar">
-                <div class="skill-node__fill" [style.width]="skill.level + '%'"></div>
+
+              <!-- Glow blob -->
+              <div class="skill-card__glow" aria-hidden="true"></div>
+
+              <!-- Content -->
+              <div class="skill-card__content">
+                <div class="skill-card__header">
+                  <div class="skill-card__icon-wrap">
+                    <i [class]="skill.icon + ' skill-card__icon'"></i>
+                  </div>
+                  <span class="skill-card__pct">{{ skill.level }}<span class="skill-card__pct-sym">%</span></span>
+                </div>
+
+                <h3 class="skill-card__name">{{ skill.name }}</h3>
+                <p class="skill-card__desc">{{ skill.description }}</p>
+
+                <!-- Progress bar -->
+                <div class="skill-card__bar">
+                  <div class="skill-card__bar-fill" [style.width]="skill.level + '%'"></div>
+                </div>
               </div>
-              <span class="skill-node__desc">{{ skill.description }}</span>
+
+              <!-- Hover reveal panel -->
+              <div class="skill-card__reveal">
+                <i [class]="skill.bgIcon + ' skill-card__reveal-icon'" aria-hidden="true"></i>
+                <p class="skill-card__detail">{{ skill.detail }}</p>
+                <div class="skill-card__reveal-bar">
+                  <div class="skill-card__reveal-fill" [style.width]="skill.level + '%'"></div>
+                </div>
+                <span class="skill-card__reveal-label">Proficiency · {{ skill.level }}%</span>
+              </div>
             </div>
           }
         </div>
@@ -252,80 +281,179 @@
           <h2 class="section-title">Shipped<span class="section-title__cursor">_</span></h2>
         </div>
 
-        <div class="projects-os reveal reveal-delay-1">
-          <!-- Project selector sidebar -->
-          <div class="project-sidebar">
+        <!-- Interactive project shell -->
+        <div class="proj-shell reveal reveal-delay-1">
+
+          <!-- Shell top bar -->
+          <div class="proj-shell__bar">
+            <span class="os-dot os-dot--red"></span>
+            <span class="os-dot os-dot--yellow"></span>
+            <span class="os-dot os-dot--green"></span>
+            <span class="proj-shell__title">projects.sh — interactive</span>
+            <button class="proj-shell__clear" (click)="shellClear()">clear</button>
+          </div>
+
+          <!-- Hint chips -->
+          <div class="proj-shell__hints">
+            <span class="proj-hint__label">Try:</span>
             @for (project of projects; track project.id) {
               <button
-                class="project-tab"
-                [class.project-tab--active]="activeProject().id === project.id"
+                class="proj-hint"
                 [style.--proj-color]="project.color"
-                (click)="setActiveProject(project.id)"
+                (click)="shellRun('open ' + project.id)"
               >
-                <i [class]="project.icon + ' project-tab__icon'"></i>
-                <span>{{ project.title }}</span>
-                <span class="project-tab__status">{{ project.status }}</span>
+                <i [class]="project.icon"></i> open {{ project.id }}
               </button>
+            }
+            <button class="proj-hint" (click)="shellRun('ls projects')">
+              <i class="fa-solid fa-list"></i> ls projects
+            </button>
+            <button class="proj-hint" (click)="shellRun('help')">
+              <i class="fa-solid fa-circle-question"></i> help
+            </button>
+          </div>
+
+          <!-- Shell output -->
+          <div class="proj-shell__output" #shellOutput>
+            @for (entry of shellHistory(); track entry.id) {
+              <div class="shell-entry" [class.shell-entry--new]="entry.fresh">
+
+                <!-- Command line -->
+                <div class="shell-entry__cmd">
+                  <span class="shell-entry__ps1">
+                    <span class="t-green">dennis</span><span class="t-dim">&#64;portfolio</span><span class="t-dim">:~/projects$</span>
+                  </span>
+                  <span class="shell-entry__text">{{ entry.cmd }}</span>
+                </div>
+
+                <!-- Output block -->
+                <div class="shell-entry__out">
+                  @switch (entry.type) {
+
+                    @case ('project') {
+                      <div class="shell-proj" [style.--proj-color]="entry.project!.color">
+                        <div class="shell-proj__header">
+                          <i [class]="entry.project!.icon + ' shell-proj__icon'"></i>
+                          <span class="shell-proj__name">{{ entry.project!.title }}</span>
+                          <span class="shell-proj__badge">{{ entry.project!.status }}</span>
+                        </div>
+                        <p class="shell-proj__desc">{{ entry.project!.description }}</p>
+
+                        <div class="shell-proj__section">
+                          <span class="shell-proj__label">STACK</span>
+                          <div class="tag-row">
+                            @for (tag of entry.project!.tags; track tag) {
+                              <span class="os-tag">{{ tag }}</span>
+                            }
+                          </div>
+                        </div>
+
+                        <div class="shell-proj__section">
+                          <span class="shell-proj__label">DETAILS</span>
+                          <div class="shell-proj__meta">
+                            <span><span class="t-dim">role</span> {{ entry.project!.role }}</span>
+                            <span><span class="t-dim">duration</span> {{ entry.project!.duration }}</span>
+                            <span><span class="t-dim">users</span> {{ entry.project!.users }}</span>
+                          </div>
+                        </div>
+
+                        <div class="shell-proj__section">
+                          <span class="shell-proj__label">ACHIEVEMENTS</span>
+                          @for (a of entry.project!.achievements; track a) {
+                            <div class="shell-proj__ach">
+                              <span class="shell-proj__ach-arrow">→</span> {{ a }}
+                            </div>
+                          }
+                        </div>
+
+                        <div class="shell-proj__links">
+                          @if (entry.project!.liveUrl) {
+                            <a class="btn-os btn-os--primary"
+                               [href]="entry.project!.liveUrl"
+                               target="_blank" rel="noopener">
+                              <i class="fa-solid fa-arrow-up-right-from-square"></i> Live demo
+                            </a>
+                          }
+                          @if (entry.project!.githubUrl) {
+                            <a class="btn-os btn-os--ghost"
+                               [href]="entry.project!.githubUrl"
+                               target="_blank" rel="noopener">
+                              <i class="fa-brands fa-github"></i> GitHub
+                            </a>
+                          }
+                          <button class="btn-os btn-os--ghost"
+                                  (click)="shellRun('ls projects')">
+                            <i class="fa-solid fa-arrow-left"></i> Back
+                          </button>
+                        </div>
+                      </div>
+                    }
+
+                    @case ('ls') {
+                      <div class="shell-ls">
+                        @for (project of projects; track project.id) {
+                          <button
+                            class="shell-ls__item"
+                            [style.--proj-color]="project.color"
+                            (click)="shellRun('open ' + project.id)"
+                          >
+                            <i [class]="project.icon + ' shell-ls__icon'"></i>
+                            <span class="shell-ls__name">{{ project.id }}/</span>
+                            <span class="shell-ls__desc">{{ project.title }}</span>
+                            <span class="shell-ls__status">{{ project.status }}</span>
+                          </button>
+                        }
+                        <p class="shell-ls__hint">
+                          <span class="t-dim">Tip:</span> type <span class="t-accent">open &lt;name&gt;</span> or click any project above
+                        </p>
+                      </div>
+                    }
+
+                    @case ('help') {
+                      <div class="shell-help">
+                        <p class="shell-help__title">Available commands</p>
+                        <div class="shell-help__row"><span class="t-accent">ls projects</span><span class="t-dim">List all projects</span></div>
+                        <div class="shell-help__row"><span class="t-accent">open &lt;id&gt;</span><span class="t-dim">Show project details (e.g. open votegrip)</span></div>
+                        <div class="shell-help__row"><span class="t-accent">clear</span><span class="t-dim">Clear terminal</span></div>
+                        <div class="shell-help__row"><span class="t-accent">help</span><span class="t-dim">Show this message</span></div>
+                      </div>
+                    }
+
+                    @case ('error') {
+                      <p class="shell-error">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                        {{ entry.message }}
+                      </p>
+                    }
+
+                    @case ('text') {
+                      <p class="shell-text">{{ entry.message }}</p>
+                    }
+                  }
+                </div>
+              </div>
             }
           </div>
 
-          <!-- Project detail pane -->
-          <div class="project-detail" [style.--proj-color]="activeProject().color">
-            <div class="project-detail__header">
-              <div class="project-detail__title-row">
-                <i [class]="activeProject().icon + ' project-detail__icon'"></i>
-                <h3 class="project-detail__title">{{ activeProject().title }}</h3>
-                <span class="project-detail__badge">{{ activeProject().status }}</span>
-              </div>
-              <p class="project-detail__desc">{{ activeProject().description }}</p>
-              <div class="tag-row">
-                @for (tag of activeProject().tags; track tag) {
-                  <span class="os-tag">{{ tag }}</span>
-                }
-              </div>
-            </div>
-
-            <div class="project-detail__meta">
-              <div class="project-meta-item">
-                <span class="project-meta-item__label">Role</span>
-                <span class="project-meta-item__val">{{ activeProject().role }}</span>
-              </div>
-              <div class="project-meta-item">
-                <span class="project-meta-item__label">Duration</span>
-                <span class="project-meta-item__val">{{ activeProject().duration }}</span>
-              </div>
-              <div class="project-meta-item">
-                <span class="project-meta-item__label">Users</span>
-                <span class="project-meta-item__val">{{ activeProject().users }}</span>
-              </div>
-            </div>
-
-            <div class="project-detail__log">
-              <p class="project-detail__log-title">
-                <i class="fa-solid fa-list-check"></i> Key achievements
-              </p>
-              @for (item of activeProject().achievements; track item) {
-                <div class="log-line">
-                  <span class="log-line__prefix">→</span>
-                  <span>{{ item }}</span>
-                </div>
-              }
-            </div>
-
-            <div class="project-detail__actions">
-              @if (activeProject().liveUrl) {
-                <a class="btn-os btn-os--primary" [href]="activeProject().liveUrl" target="_blank" rel="noopener">
-                  <i class="fa-solid fa-arrow-up-right-from-square"></i> Live demo
-                </a>
-              }
-              @if (activeProject().githubUrl) {
-                <a class="btn-os btn-os--ghost" [href]="activeProject().githubUrl" target="_blank" rel="noopener">
-                  <i class="fa-brands fa-github"></i> Source
-                </a>
-              }
-            </div>
+          <!-- Input row -->
+          <div class="proj-shell__input-row">
+            <span class="proj-shell__ps1">
+              <span class="t-green">dennis</span><span class="t-dim">&#64;portfolio</span><span class="t-dim">:~/projects$</span>
+            </span>
+            <input
+              #shellInput
+              class="proj-shell__input"
+              type="text"
+              [value]="shellInputValue()"
+              (input)="onShellInput($event)"
+              (keydown)="onShellKey($event)"
+              placeholder="type a command or click a hint above..."
+              autocomplete="off"
+              spellcheck="false"
+            />
           </div>
         </div>
+
       </div>
     </section>
 
@@ -413,13 +541,13 @@
         </div>
 
         <div class="contact-socials reveal reveal-delay-3">
-          <a class="social-os" href="https://github.com" target="_blank" rel="noopener" aria-label="GitHub">
+          <a class="social-os" href="https://github.com/dennis027" target="_blank" rel="noopener" aria-label="GitHub">
             <i class="fa-brands fa-github"></i>
           </a>
-          <a class="social-os" href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <a class="social-os" href="https://www.linkedin.com/in/dennis-kimani-6a965939b/" target="_blank" rel="noopener" aria-label="LinkedIn">
             <i class="fa-brands fa-linkedin-in"></i>
           </a>
-          <a class="social-os" href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter">
+          <a class="social-os" href="https://x.com/deman_254" target="_blank" rel="noopener" aria-label="Twitter">
             <i class="fa-brands fa-x-twitter"></i>
           </a>
         </div>
