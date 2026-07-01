@@ -234,9 +234,9 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
    CINEMATIC LAYOUT
 ═══════════════════════════════════════════════════════════ */
 .cinematic-layout { display: grid; grid-template-columns: 420px 1fr; align-items: start; min-height: 100vh; width: 100%; }
-.portrait-panel { position: sticky; top: 60px; height: calc(100vh - 60px); padding: 12px; width: 100%; background: var(--os-bg); }
+.portrait-panel { position: sticky; top: 60px; height: calc(100vh - 60px); padding: 12px; width: 100%; background: radial-gradient(circle at top left, rgba(99,102,241,.12), transparent 30%), var(--os-bg); }
 .portrait-panel__inner { width: 100%; height: 100%; border-radius: 18px; overflow: hidden; }
-.content-panel { min-width: 0; padding-top: 60px; background: var(--os-bg); }
+.content-panel { min-width: 0; padding-top: 60px; background: radial-gradient(circle at top right, rgba(56,189,248,.08), transparent 18%), radial-gradient(circle at 20% 20%, rgba(99,102,241,.1), transparent 16%), var(--os-bg); }
 
 /* ═══════════════════════════════════════════════════════════
    SECTION BASE
@@ -295,7 +295,31 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .hero-role__type { color: var(--os-text); font-weight: 600; }
 .hero-role__sep { color: var(--os-text-dim); }
 .hero-role__sub { color: var(--os-accent); }
-.hero-tagline { font-size: 1rem; color: var(--os-text-muted); max-width: 52ch; margin-bottom: var(--s8); }
+.hero-tagline { font-size: 1rem; color: var(--os-text-muted); max-width: 52ch; margin-bottom: var(--s6); }
+.hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+  margin-bottom: var(--s6);
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: .65rem 1rem;
+  border-radius: var(--r-full);
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.09);
+  color: var(--os-text);
+  font-size: .82rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+  transition: background .2s ease, border-color .2s ease, transform .2s ease;
+}
+.hero-badge:hover {
+  background: rgba(99,102,241,.14);
+  border-color: rgba(99,102,241,.35);
+  transform: translateY(-1px);
+}
 .hero-actions { display: flex; gap: var(--s3); flex-wrap: wrap; margin-bottom: var(--s8); }
 
 /* OS Window / Terminal */

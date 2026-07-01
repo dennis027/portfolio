@@ -78,16 +78,16 @@ export class Portfolio{
  
   readonly skills: Skill[] = [
     { name:'Angular',    description:'Web applications', icon:'fa-brands fa-angular',     level:90, category:'frontend', color:'#dd1b16', bgIcon:'fa-brands fa-angular',     detail:'Signals, standalone components, SSR, reactive forms' },
-    { name:'TypeScript', description:'Type-safe code',   icon:'fa-solid fa-code',          level:85, category:'frontend', color:'#3178c6', bgIcon:'fa-solid fa-code',          detail:'Strict types, generics, decorators, utility types' },
-    { name:'HTML / CSS', description:'Semantic markup',  icon:'fa-brands fa-html5',        level:95, category:'frontend', color:'#e34f26', bgIcon:'fa-brands fa-html5',        detail:'Semantic HTML5, CSS Grid, Flexbox, animations' },
-    { name:'Django',     description:'Backend APIs',     icon:'fa-solid fa-server',        level:88, category:'backend',  color:'#092e20', bgIcon:'fa-solid fa-server',        detail:'DRF, ORM, signals, celery, JWT auth' },
-    { name:'Laravel',    description:'PHP framework',    icon:'fa-brands fa-php',          level:80, category:'backend',  color:'#ff2d20', bgIcon:'fa-brands fa-laravel',      detail:'Eloquent ORM, queues, events, Docker' },
-    { name:'PostgreSQL', description:'Databases',        icon:'fa-solid fa-database',      level:82, category:'backend',  color:'#336791', bgIcon:'fa-solid fa-database',      detail:'Indexing, transactions, row locking, migrations' },
-    { name:'Flutter',    description:'Mobile apps',      icon:'fa-solid fa-mobile-screen', level:85, category:'mobile',   color:'#54c5f8', bgIcon:'fa-solid fa-mobile-screen', detail:'Hive, offline sync, BLoC/Provider, animations' },
-    { name:'Dart',       description:'Mobile language',  icon:'fa-solid fa-d',             level:80, category:'mobile',   color:'#0175c2', bgIcon:'fa-solid fa-d',             detail:'Async/await, streams, null safety' },
-    { name:'Docker',     description:'Containers',       icon:'fa-brands fa-docker',       level:78, category:'devops',   color:'#2496ed', bgIcon:'fa-brands fa-docker',       detail:'Compose, multi-stage builds, nginx, volumes' },
-    { name:'Git',        description:'Version control',  icon:'fa-brands fa-git-alt',      level:92, category:'devops',   color:'#f05032', bgIcon:'fa-brands fa-git-alt',      detail:'Branching, rebasing, hooks, CI pipelines' },
-    { name:'Linux',      description:'Server admin',     icon:'fa-brands fa-linux',        level:80, category:'devops',   color:'#fcc624', bgIcon:'fa-brands fa-linux',        detail:'Bash scripting, cron, systemd, SSH' },
+    { name:'TypeScript', description:'Type-safe code',   icon:'fa-solid fa-code',          level:65, category:'frontend', color:'#3178c6', bgIcon:'fa-solid fa-code',          detail:'Strict types, generics, decorators, utility types' },
+    { name:'HTML / CSS', description:'Semantic markup',  icon:'fa-brands fa-html5',        level:75, category:'frontend', color:'#e34f26', bgIcon:'fa-brands fa-html5',        detail:'Semantic HTML5, CSS Grid, Flexbox, animations' },
+    { name:'Django',     description:'Backend APIs',     icon:'fa-solid fa-server',        level:65, category:'backend',  color:'#092e20', bgIcon:'fa-solid fa-server',        detail:'DRF, ORM, signals, celery, JWT auth' },
+    { name:'Laravel',    description:'PHP framework',    icon:'fa-brands fa-php',          level:50, category:'backend',  color:'#ff2d20', bgIcon:'fa-brands fa-laravel',      detail:'Eloquent ORM, queues, events, Docker' },
+    { name:'PostgreSQL', description:'Databases',        icon:'fa-solid fa-database',      level:60, category:'backend',  color:'#336791', bgIcon:'fa-solid fa-database',      detail:'Indexing, transactions, row locking, migrations' },
+    { name:'Flutter',    description:'Mobile apps',      icon:'fa-solid fa-mobile-screen', level:60, category:'mobile',   color:'#54c5f8', bgIcon:'fa-solid fa-mobile-screen', detail:'Hive, offline sync, BLoC/Provider, animations' },
+    { name:'Dart',       description:'Mobile language',  icon:'fa-solid fa-d',             level:60, category:'mobile',   color:'#0175c2', bgIcon:'fa-solid fa-d',             detail:'Async/await, streams, null safety' },
+    { name:'Docker',     description:'Containers',       icon:'fa-brands fa-docker',       level:55, category:'devops',   color:'#2496ed', bgIcon:'fa-brands fa-docker',       detail:'Compose, multi-stage builds, nginx, volumes' },
+    { name:'Git',        description:'Version control',  icon:'fa-brands fa-git-alt',      level:80, category:'devops',   color:'#f05032', bgIcon:'fa-brands fa-git-alt',      detail:'Branching, rebasing, hooks, CI pipelines' },
+    { name:'Linux',      description:'Server admin',     icon:'fa-brands fa-linux',        level:65, category:'devops',   color:'#fcc624', bgIcon:'fa-brands fa-linux',        detail:'Bash scripting, cron, systemd, SSH' },
     { name:'Security',   description:'CTF & pentesting', icon:'fa-solid fa-shield-halved', level:75, category:'security', color:'#ef4444', bgIcon:'fa-solid fa-shield-halved', detail:'OWASP, SQL injection, XSS, CTF labs' },
   ];
  
@@ -101,7 +101,7 @@ export class Portfolio{
     {
       id: 'votegrip', title: 'VoteGrip',
       description: 'Offline-first election monitoring platform for field agents. Resilient by design — works without connectivity, syncs when restored.',
-      tags: ['Flutter', 'Django', 'Hive', 'SQLite', 'REST API'],
+      tags: ['Flutter', 'Django', 'Angular', 'PostgreSQL', 'Swagger API'],
       role: 'Full-stack & Mobile', duration: 'Ongoing', users: 'Field agents',
       achievements: [
         'SHA-256 offline credential caching with Hive',
@@ -109,19 +109,19 @@ export class Portfolio{
         'Connectivity-aware UI with graceful degradation',
         'Android manifest for split media permissions',
       ],
-      githubUrl: '#', color: '#6366f1', icon: 'fa-solid fa-shield-halved', status: 'Active',
+      githubUrl: 'https://github.com/dennis027/test-votegrip', color: '#6366f1', icon: 'fa-solid fa-shield-halved', status: 'Active',
     },
     {
-      id: 'mwangaza', title: 'Mwangaza Little Readers',
-      description: 'Full-stack NGO management platform — admin dashboard, secure auth, content publishing, and stakeholder communication.',
-      tags: ['Django', 'Angular', 'PostgreSQL', 'REST API'],
-      role: 'Full-stack Developer', duration: '3 months', users: 'NGO staff',
+      id: 'fundi-jenga-pro', title: 'Fundi & Jenga Pro',
+      description: 'A digital marketplace that helps customers find, hire, and pay verified fundis (artisans and tradespeople) for home, construction, and maintenance services.',
+      tags: ['Django', 'Angular', 'PostgreSQL', 'REST API','Flutter'],
+      role: 'Full-stack Developer', duration: '5 months', users: 'Homeowners, fundis, and contractors',
       achievements: [
         'Role-based access control across all modules',
         'JWT authentication with permission layers',
         'Production deployment, zero-downtime release',
       ],
-      liveUrl: '#', githubUrl: '#', color: '#10b981', icon: 'fa-solid fa-book-open', status: 'Live',
+      liveUrl: 'https://github.com/dennis027/new-fundi-pro', githubUrl: '#', color: '#10b981', icon: 'fa-solid fa-book-open', status: 'Live',
     },
     {
       id: 'bulk-sms', title: 'Bulk SMS Platform',
@@ -145,16 +145,22 @@ export class Portfolio{
         'Angular Signals reactive state architecture',
         'Custom typography and responsive sidebar',
       ],
-      githubUrl: '#', color: '#8b5cf6', icon: 'fa-solid fa-building', status: 'Deployed',
+      githubUrl: 'https://github.com/dennis027/rental-management', color: '#8b5cf6', icon: 'fa-solid fa-building', status: 'Deployed',
     },
   ];
  
   // ── Experience ───────────────────────────────────────
   readonly experiences: Experience[] = [
     {
-      role: 'Full-Stack Developer', company: 'Freelance / Contract', period: '2023 — Present',
+      role: 'Full-Stack Developer', company: 'Freelance / Contract', period: '2024 — Present',
       description: 'Building and deploying full-stack web and mobile applications for clients in NGO, property, and civic-tech sectors.',
       tags: ['Django', 'Angular', 'Flutter', 'Laravel'],
+      icon: 'fa-solid fa-laptop-code', color: '#6366f1',
+    },
+  {
+      role: 'Full-Stack Engineer', company: ' Contract', period: '2022 — 2024',
+      description: 'Building and deploying full-stack web and mobile banking systems.',
+      tags: ['Django', 'Angular', 'Flutter', 'SQL', 'MySQL', 'Docker','Apache'],
       icon: 'fa-solid fa-laptop-code', color: '#6366f1',
     },
     {

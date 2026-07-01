@@ -88,9 +88,15 @@
             <span class="hero-role__sub">Cybersecurity Enthusiast</span>
           </p>
           <p class="hero-tagline">I build systems that are fast, secure, and work even when nothing else does.</p>
+
+          <div class="hero-badges reveal reveal-delay-2">
+            <span class="hero-badge">Offline-first</span>
+            <span class="hero-badge">Secure APIs</span>
+            <span class="hero-badge">Production-ready</span>
+          </div>
         </div>
 
-        <div class="hero-actions reveal reveal-delay-2">
+        <div class="hero-actions reveal reveal-delay-3">
           <button class="btn-os btn-os--primary btn-os--lg" (click)="scrollTo('projects')">
             <i class="fa-solid fa-terminal"></i> View projects
           </button>
@@ -100,7 +106,7 @@
         </div>
 
         <!-- Stats as OS metrics -->
-        <div class="metrics reveal reveal-delay-3">
+        <div class="metrics reveal reveal-delay-4">
           @for (stat of stats; track stat.label) {
             <div class="metric">
               <i [class]="stat.icon + ' metric__icon'"></i>
