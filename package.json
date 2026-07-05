@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:portfolio": "node dist/portfolio/server/server.mjs",
-    "build:gh": "ng build --configuration production --base-href /portfolio/",
+    "build:gh": "ng build --configuration production --aot --base-href /portfolio/",
     "deploy": "npm run build:gh && npx angular-cli-ghpages --dir=dist/portfolio/browser"
   },
   "prettier": {
