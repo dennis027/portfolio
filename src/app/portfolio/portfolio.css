@@ -809,6 +809,103 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .contact-card-os__val { font-size: .875rem; font-weight: 500; color: var(--os-text); transition: color .2s; }
 a.contact-card-os__val:hover { color: var(--os-accent); }
 
+.contact-form-container {
+  margin-bottom: var(--s8);
+}
+
+.contact-form-os {
+  display: flex; flex-direction: column;
+  gap: var(--s4);
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+}
+
+.contact-form__intro {
+  font-size: .92rem;
+  color: var(--os-text-muted);
+  margin-bottom: var(--s5);
+}
+
+.contact-form__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s4);
+}
+
+.contact-field {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  font-size: .85rem;
+  color: var(--os-text-muted);
+}
+
+.contact-field span {
+  font-family: var(--font-mono);
+  font-size: .75rem;
+  color: var(--os-text-muted);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.contact-field input,
+.contact-field textarea {
+  width: 100%;
+  padding: .85rem 1rem;
+  border-radius: var(--r-lg);
+  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.03);
+  color: var(--os-text);
+  font-family: inherit;
+  font-size: .95rem;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.contact-field__error {
+  font-size: .78rem;
+  color: var(--os-red);
+  margin-top: .4rem;
+  font-family: var(--font-mono);
+}
+
+.contact-field input[aria-invalid='true'],
+.contact-field textarea[aria-invalid='true'] {
+  border-color: rgba(239,68,68,.75);
+}
+
+.contact-field input:focus,
+.contact-field textarea:focus {
+  border-color: var(--os-accent);
+  box-shadow: 0 0 0 3px rgba(99,102,241,.12);
+}
+
+.contact-field--full {
+  grid-column: span 2;
+}
+
+.contact-form__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s4);
+  flex-wrap: wrap;
+}
+
+.contact-form__status {
+  font-family: var(--font-mono);
+  font-size: .85rem;
+  color: var(--os-text-muted);
+}
+
+.contact-form__status--success {
+  color: var(--os-green);
+}
+
+.contact-form__status--error {
+  color: var(--os-red);
+}
+
 .contact-socials { display: flex; gap: var(--s4); }
 .social-os {
   width: 44px; height: 44px;

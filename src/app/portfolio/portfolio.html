@@ -546,7 +546,91 @@
           </div>
         </div>
 
-        <div class="contact-socials reveal reveal-delay-3">
+        <div class="contact-form-container reveal reveal-delay-3">
+          <form class="contact-form-os glass-panel" (submit)="sendContact($event)">
+            <div class="glass-panel__header">
+              <i class="fa-solid fa-paper-plane glass-panel__icon"></i>
+              <span>contact.json</span>
+            </div>
+            <div class="glass-panel__body">
+              <p class="contact-form__intro">Reach out with your project, question, or collaboration idea. The form posts directly to the API.</p>
+              <div class="contact-form__grid">
+                <label class="contact-field">
+                  <span>Full name</span>
+                  <input
+                    type="text"
+                    [value]="contact().full_name"
+                    (input)="updateContact('full_name', $any($event.target).value)"
+                    [attr.aria-invalid]="contactErrors().full_name && (contactTouched().full_name || contactAttempted()) ? 'true' : 'false'"
+                    placeholder="Your full name"
+                  />
+                  <span class="contact-field__error" *ngIf="(contactTouched().full_name || contactAttempted()) && contactErrors().full_name">
+                    {{ contactErrors().full_name }}
+                  </span>
+                </label>
+                <label class="contact-field">
+                  <span>Email</span>
+                  <input
+                    type="email"
+                    [value]="contact().email"
+                    (input)="updateContact('email', $any($event.target).value)"
+                    [attr.aria-invalid]="contactErrors().email && (contactTouched().email || contactAttempted()) ? 'true' : 'false'"
+                    placeholder="you@example.com"
+                  />
+                  <span class="contact-field__error" *ngIf="(contactTouched().email || contactAttempted()) && contactErrors().email">
+                    {{ contactErrors().email }}
+                  </span>
+                </label>
+                <label class="contact-field contact-field--full">
+                  <span>Subject</span>
+                  <input
+                    type="text"
+                    [value]="contact().subject"
+                    (input)="updateContact('subject', $any($event.target).value)"
+                    [attr.aria-invalid]="contactErrors().subject && (contactTouched().subject || contactAttempted()) ? 'true' : 'false'"
+                    placeholder="Project, collaboration, question..."
+                  />
+                  <span class="contact-field__error" *ngIf="(contactTouched().subject || contactAttempted()) && contactErrors().subject">
+                    {{ contactErrors().subject }}
+                  </span>
+                </label>
+                <label class="contact-field contact-field--full">
+                  <span>Message</span>
+                  <textarea
+                    rows="5"
+                    [value]="contact().message"
+                    (input)="updateContact('message', $any($event.target).value)"
+                    [attr.aria-invalid]="contactErrors().message && (contactTouched().message || contactAttempted()) ? 'true' : 'false'"
+                    placeholder="Write your message here..."
+                  ></textarea>
+                  <span class="contact-field__error" *ngIf="(contactTouched().message || contactAttempted()) && contactErrors().message">
+                    {{ contactErrors().message }}
+                  </span>
+                </label>
+              </div>
+              <br>
+              <div class="contact-form__actions">
+                <button
+                  class="btn-os btn-os--primary btn-os--lg"
+                  type="submit"
+                  [disabled]="contactStatus() === 'sending' || !contactValid()"
+                >
+                  <i class="fa-solid fa-paper-plane"></i>
+                  {{ contactStatus() === 'sending' ? 'Sending...' : 'Send message' }}
+                </button>
+                <span
+                  class="contact-form__status"
+                  [class.contact-form__status--success]="contactStatus() === 'success'"
+                  [class.contact-form__status--error]="contactStatus() === 'error'"
+                >
+                  {{ contactMessage() }}
+                </span>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="contact-socials reveal reveal-delay-4">
           <a class="social-os" href="https://github.com/dennis027" target="_blank" rel="noopener" aria-label="GitHub">
             <i class="fa-brands fa-github"></i>
           </a>

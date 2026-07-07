@@ -1,6 +1,8 @@
 import { Component, signal, computed, HostListener, inject, OnDestroy, afterNextRender, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule, DOCUMENT } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { PortraitSection, PortraitScene } from '../portrait-scene/portrait-scene';
+import { ContactForm, ContactService } from '../../app/services/contact-service';
 export interface Project {
   id: string; title: string; description: string;
   tags: string[]; role: string; duration: string; users: string;
@@ -29,7 +31,7 @@ export interface ShellEntry {
 }
 @Component({
   selector: 'app-portfolio',
-  imports: [CommonModule, PortraitScene],
+  imports: [CommonModule, HttpClientModule, PortraitScene],
   templateUrl: './portfolio.html',
   styleUrl: './portfolio.css',
 })
@@ -49,9 +51,32 @@ export class Portfolio{
   readonly activeSkillCategory = signal('all');
   readonly shellHistory        = signal<ShellEntry[]>([]);
   readonly shellInputValue     = signal('');
+  readonly contact            = signal<ContactForm>({ full_name: '', email: '', subject: '', message: '' });
+  readonly contactTouched     = signal<Record<keyof ContactForm, boolean>>({ full_name: false, email: false, subject: false, message: false });
+  readonly contactAttempted   = signal(false);
+  readonly contactStatus      = signal<'idle' | 'sending' | 'success' | 'error'>('idle');
+  readonly contactMessage     = signal('');
+  readonly contactErrors      = computed(() => {
+    const form = this.contact();
+    return {
+      full_name: form.full_name.trim() ? '' : 'Full name is required.',
+      email: form.email.trim()
+        ? this.validateEmail(form.email.trim()) ? '' : 'Invalid email format.'
+        : 'Email is required.',
+      subject: form.subject.trim() ? '' : 'Subject is required.',
+      message: form.message.trim()
+        ? form.message.trim().length > 10 ? '' : 'Message should be more than 10 characters.'
+        : 'Message is required.',
+    };
+  });
+  readonly contactValid = computed(() => {
+    const errors = this.contactErrors();
+    return !errors.full_name && !errors.email && !errors.subject && !errors.message;
+  });
   readonly activeCmdIndex      = signal(0);
   readonly currentYear         = new Date().getFullYear();
  
+  private readonly contactService = inject(ContactService);
   private shellIdCounter   = 0;
   private cmdHistory: string[] = [];
   private cmdHistoryIndex  = -1;
@@ -201,6 +226,48 @@ export class Portfolio{
       const el = this.shellOutputRef?.nativeElement;
       if (el) el.scrollTop = el.scrollHeight;
     }, 50);
+  }
+
+  updateContact(field: keyof ContactForm, value: string): void {
+    this.contact.update(c => ({ ...c, [field]: value }));
+    this.contactTouched.update(t => ({ ...t, [field]: true }));
+    if (this.contactStatus() === 'error') {
+      this.contactStatus.set('idle');
+      this.contactMessage.set('');
+    }
+  }
+
+  private validateEmail(value: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  }
+
+  async sendContact(event: Event): Promise<void> {
+    event.preventDefault();
+    this.contactAttempted.set(true);
+    const payload = this.contact();
+    if (!this.contactValid()) {
+      const errors = this.contactErrors();
+      const firstError = errors.full_name || errors.email || errors.subject || errors.message;
+      this.contactStatus.set('error');
+      this.contactMessage.set(firstError ?? 'Please fix the highlighted fields.');
+      return;
+    }
+
+    this.contactStatus.set('sending');
+    this.contactMessage.set('Sending message...');
+
+    try {
+      await this.contactService.sendContact(payload);
+      this.contactStatus.set('success');
+      this.contactMessage.set('Message sent successfully.');
+      this.contact.set({ full_name: '', email: '', subject: '', message: '' });
+      this.contactTouched.set({ full_name: false, email: false, subject: false, message: false });
+      this.contactAttempted.set(false);
+    } catch (error) {
+      this.contactStatus.set('error');
+      this.contactMessage.set('Unable to send message. Please try again later.');
+      console.error('Contact form submit failed', error);
+    }
   }
  
   private parseCmd(raw: string): ShellEntry {
