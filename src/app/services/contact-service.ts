@@ -14,6 +14,6 @@ export class ContactService {
   private readonly http = inject(HttpClient);
 
   sendContact(payload: ContactForm): Promise<void> {
-    return firstValueFrom(this.http.post<void>('http://127.0.0.1:8000/api/contact/', payload));
+    return firstValueFrom(this.http.post<void>('https://portfolio-backend-hdr4.onrender.com/api/contact/', payload));
   }
 }
