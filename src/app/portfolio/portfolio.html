@@ -1,654 +1,217 @@
-<!-- ═══════════════════════════════════ NAV ═══════════════════════════════════ -->
-<nav class="nav" [class.nav--scrolled]="scrolled()">
-  <div class="nav-inner">
-    <button class="nav-logo" (click)="scrollTo('hero')">
-      <span class="nav-logo__bracket">[</span>DK<span class="nav-logo__bracket">]</span>
-    </button>
+<!-- First-visit intro: pure CSS, shown only when index.html adds html.intro-play -->
+<div class="intro" aria-hidden="true">
+  <div class="intro__panel intro__panel--accent"></div>
+  <div class="intro__panel">
+    <div class="intro__content">
+      <span class="intro__name">
+        @for (ch of introLetters; track $index) {
+          <span [style.--c]="$index">{{ ch === ' ' ? '\u00a0' : ch }}</span>
+        }
+      </span>
+      <span class="intro__count"></span>
+    </div>
+    <span class="intro__bar"></span>
+  </div>
+</div>
 
-    <ul class="nav-links" role="list">
-      @for (link of navLinks; track link.anchor) {
-        <li>
-          <button class="nav-link" [class.nav-link--active]="isActive(link.anchor)" (click)="scrollTo(link.anchor)">
-            <span class="nav-link__num">0{{ $index + 1 }}</span>
-            {{ link.label }}
-          </button>
-        </li>
-      }
-    </ul>
+<app-car-cursor />
+<div class="grain" aria-hidden="true"></div>
 
-    <a class="btn-os" href="/assets/dennis-kimani-cv.pdf" download>
-      <i class="fa-solid fa-download"></i> Download CV
+
+<a class="skip-link" href="#main" (click)="navigate('main', $event)">Skip to content</a>
+
+<header class="nav" [class.nav--scrolled]="scrolled() || menuOpen()" [class.nav--open]="menuOpen()" [class.nav--hidden]="navHidden()">
+  <div class="container nav__inner">
+    <a class="nav__brand" href="#top" (click)="navigate('top', $event)" aria-label="Dennis Kimani — back to top">
+      <span class="nav__mark" aria-hidden="true">DK</span>
+      <span class="nav__name">Dennis Kimani</span>
     </a>
 
-    <button class="burger" (click)="toggleMenu()" [attr.aria-expanded]="menuOpen()">
-      @if (menuOpen()) { <i class="fa-solid fa-xmark"></i> }
-      @else { <i class="fa-solid fa-bars"></i> }
-    </button>
+    <nav class="nav__links" aria-label="Primary">
+      <ul role="list">
+        @for (link of navLinks; track link.anchor) {
+          <li>
+            <a
+              #navLink
+              class="nav__link"
+              [href]="'#' + link.anchor"
+              [class.is-active]="isActive(link.anchor)"
+              [attr.aria-current]="isActive(link.anchor) ? 'location' : null"
+              (click)="navigate(link.anchor, $event)"
+            ><span class="roll" [attr.data-text]="link.label"><span>{{ link.label }}</span></span></a>
+          </li>
+        }
+      </ul>
+      <span
+        class="nav__indicator"
+        aria-hidden="true"
+        [class.is-visible]="indicator()"
+        [style.translate.px]="indicator()?.x ?? 0"
+        [style.width.px]="indicator()?.w ?? 0"
+      ></span>
+    </nav>
+
+    <div class="nav__actions">
+      <button type="button" class="nav__cmd" (click)="palette.show()" title="Search and shortcuts">
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <span class="sr-only">Open the command palette</span>
+        <kbd aria-hidden="true">{{ palette.modKey() }} K</kbd>
+      </button>
+      <button
+        type="button"
+        class="nav__tour"
+        [class.is-on]="tour.active()"
+        [attr.aria-pressed]="tour.active()"
+        title="A 30-second guided tour of this page"
+        (click)="tour.active() ? tour.end() : tour.start()"
+      >
+        <span class="nav__tour-icon" aria-hidden="true"><i class="fa-solid fa-route"></i></span>
+        <span class="nav__tour-label">Tour</span>
+        <span class="sr-only">— guided tour of this page</span>
+      </button>
+      @if (localTime()) {
+        <p class="nav__time">
+          <span class="sr-only">Local time in Nairobi:</span>
+          <span aria-hidden="true">NBO</span> {{ localTime() }}
+        </p>
+      }
+      <button
+        type="button"
+        class="icon-btn nav__theme"
+        (click)="toggleTheme($event)"
+        [attr.aria-label]="theme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'"
+      >
+        @if (theme() === 'dark') {
+          <i class="fa-solid fa-sun" aria-hidden="true"></i>
+        } @else {
+          <i class="fa-solid fa-moon" aria-hidden="true"></i>
+        }
+      </button>
+      <button type="button" class="btn btn--ghost btn--sm nav__cv" (click)="cv.download()" title="Download a one-page CV (PDF)">
+        <i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i> CV
+      </button>
+      <a class="btn btn--primary btn--sm nav__cta" appMagnetic href="#contact" (click)="navigate('contact', $event)">
+        Contact me
+      </a>
+      <button
+        type="button"
+        class="icon-btn nav__burger"
+        (click)="toggleMenu()"
+        [attr.aria-expanded]="menuOpen()"
+        aria-controls="mobile-menu"
+        [attr.aria-label]="menuOpen() ? 'Close menu' : 'Open menu'"
+      >
+        <span class="nav__burger-lines" aria-hidden="true"><i></i><i></i></span>
+      </button>
+    </div>
   </div>
 
-  @if (menuOpen()) {
-    <div class="nav-mobile">
-      @for (link of navLinks; track link.anchor) {
-        <button class="nav-mobile-link" (click)="scrollTo(link.anchor)">{{ link.label }}</button>
-      }
-      <a class="btn-os" href="/assets/dennis-kimani-cv.pdf" download>Download CV</a>
-    </div>
-  }
-</nav>
+  <div class="nav__progress" aria-hidden="true"></div>
+  <!-- a tiny car rides the tip of the progress line -->
+  <span class="nav__progress-car" aria-hidden="true"><app-car-icon /></span>
 
-<!-- ═══════════════════════════ CINEMATIC LAYOUT ══════════════════════════════ -->
-<div class="cinematic-layout">
-
-  <!-- ─── STICKY PORTRAIT PANEL ─── -->
-  <aside class="portrait-panel" aria-hidden="true">
-    <div class="portrait-panel__inner">
-      <app-portrait-scene [section]="activeSection()"></app-portrait-scene>
-    </div>
-  </aside>
-
-  <!-- ─── SCROLLABLE CONTENT ─── -->
-  <main class="content-panel">
-
-    <!-- ══════════════════════════ HERO ══════════════════════════ -->
-    <section id="hero" class="c-section c-section--hero">
-      <div class="c-section__inner">
-
-        <!-- OS window chrome -->
-        <div class="os-window reveal">
-          <div class="os-window__bar">
-            <span class="os-dot os-dot--red"></span>
-            <span class="os-dot os-dot--yellow"></span>
-            <span class="os-dot os-dot--green"></span>
-            <span class="os-window__title">dennis-kimani.sh</span>
-          </div>
-          <div class="os-window__body terminal">
-            @for (cmd of terminalCommands; track cmd.cmd; let i = $index) {
-              @if (i <= activeCmdIndex()) {
-                <div class="terminal__block" [class.terminal__block--active]="i === activeCmdIndex()">
-                  <p class="terminal__prompt">
-                    <span class="terminal__user">dennis</span><span class="terminal__at">&#64;</span><span class="terminal__host">portfolio</span><span class="terminal__sep">:~$</span>
-                    <span class="terminal__cmd">{{ cmd.cmd }}</span>
-                  </p>
-                  <p class="terminal__output">{{ cmd.out }}</p>
-                </div>
-              }
-            }
-          </div>
-        </div>
-
-        <div class="hero-text reveal reveal-delay-1">
-          <span class="eyebrow">
-            <span class="eyebrow__dot"></span>
-            Based in Nairobi, Kenya
-          </span>
-          <h1 class="hero-name">Dennis<br><span class="hero-name__accent">Kimani</span></h1>
-          <p class="hero-role">
-            <span class="hero-role__type">Full-Stack Developer</span>
-            <span class="hero-role__sep"> · </span>
-            <span class="hero-role__sub">Cybersecurity Enthusiast</span>
-          </p>
-          <p class="hero-tagline">I build systems that are fast, secure, and work even when nothing else does.</p>
-
-          <div class="hero-badges reveal reveal-delay-2">
-            <span class="hero-badge">Offline-first</span>
-            <span class="hero-badge">Secure APIs</span>
-            <span class="hero-badge">Production-ready</span>
-          </div>
-        </div>
-
-        <div class="hero-actions reveal reveal-delay-3">
-          <button class="btn-os btn-os--primary btn-os--lg" (click)="scrollTo('projects')">
-            <i class="fa-solid fa-terminal"></i> View projects
-          </button>
-          <button class="btn-os btn-os--ghost btn-os--lg" (click)="scrollTo('contact')">
-            <i class="fa-solid fa-arrow-right"></i> Get in touch
-          </button>
-        </div>
-
-        <!-- Stats as OS metrics -->
-        <div class="metrics reveal reveal-delay-4">
-          @for (stat of stats; track stat.label) {
-            <div class="metric">
-              <i [class]="stat.icon + ' metric__icon'"></i>
-              <span class="metric__value">{{ stat.value }}</span>
-              <span class="metric__label">{{ stat.label }}</span>
-            </div>
-          }
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ══════════════════════════ ABOUT ══════════════════════════ -->
-    <section id="about" class="c-section">
-      <div class="c-section__inner">
-        <div class="section-header reveal">
-          <span class="section-eyebrow">// about</span>
-          <h2 class="section-title">Who am I<span class="section-title__cursor">_</span></h2>
-        </div>
-
-        <div class="about-os reveal reveal-delay-1">
-          <!-- Left: bio panel -->
-          <div class="about-bio">
-            <div class="glass-panel">
-              <div class="glass-panel__header">
-                <i class="fa-solid fa-user glass-panel__icon"></i>
-                <span>profile.json</span>
-              </div>
-              <div class="glass-panel__body">
-                <div class="json-view">
-                  <p><span class="json-key">"name"</span>: <span class="json-str">"Dennis Kimani"</span>,</p>
-                  <p><span class="json-key">"role"</span>: <span class="json-str">"Full-Stack Developer"</span>,</p>
-                  <p><span class="json-key">"location"</span>: <span class="json-str">"Nairobi, Kenya"</span>,</p>
-                  <p><span class="json-key">"focus"</span>: [</p>
-                  <p class="json-indent"><span class="json-str">"Offline-first systems"</span>,</p>
-                  <p class="json-indent"><span class="json-str">"Secure API design"</span>,</p>
-                  <p class="json-indent"><span class="json-str">"Civic tech"</span></p>
-                  <p>],</p>
-                  <p><span class="json-key">"available"</span>: <span class="json-bool">true</span></p>
-                </div>
-              </div>
-            </div>
-
-            <p class="about-para">
-              I build full-stack systems from mobile apps to APIs to admin dashboards. My recent work focuses on offline-first architecture and election monitoring tools — systems that must be reliable in low-connectivity environments.
-            </p>
-            <p class="about-para">
-              Outside of shipping software, I'm in CTF competitions and studying how things break so I can build things that don't.
-            </p>
-
-            <div class="about-contacts">
-              <a class="os-link" href="mailto:machaariad196&#64;gmail.com">
-                <i class="fa-solid fa-envelope"></i> machaariad196&#64;gmail.com
-              </a>
-              <a class="os-link" href="https://github.com" target="_blank" rel="noopener">
-                <i class="fa-brands fa-github"></i> github.com/dennis-kimani
-              </a>
-            </div>
-          </div>
-
-          <!-- Right: security card -->
-          <div class="about-security">
-            <div class="glass-panel glass-panel--accent">
-              <div class="glass-panel__header">
-                <i class="fa-solid fa-shield-halved glass-panel__icon glass-panel__icon--red"></i>
-                <span>security.log</span>
-                <span class="glass-panel__badge glass-panel__badge--red">ACTIVE</span>
-              </div>
-              <div class="glass-panel__body">
-                <div class="security-items">
-                  <div class="security-item">
-                    <span class="security-item__status security-item__status--ok"></span>
-                    <span class="security-item__label">JWT Authentication</span>
-                    <span class="security-item__val">✓ Implemented</span>
-                  </div>
-                  <div class="security-item">
-                    <span class="security-item__status security-item__status--ok"></span>
-                    <span class="security-item__label">Role-based Access Control</span>
-                    <span class="security-item__val">✓ Implemented</span>
-                  </div>
-                  <div class="security-item">
-                    <span class="security-item__status security-item__status--ok"></span>
-                    <span class="security-item__label">Input Validation</span>
-                    <span class="security-item__val">✓ Always</span>
-                  </div>
-                  <div class="security-item">
-                    <span class="security-item__status security-item__status--warn"></span>
-                    <span class="security-item__label">CTF Labs</span>
-                    <span class="security-item__val">⟳ Ongoing</span>
-                  </div>
-                </div>
-                <div class="security-bar">
-                  <span class="security-bar__label">Threat awareness</span>
-                  <div class="security-bar__track">
-                    <div class="security-bar__fill" style="width: 78%"></div>
-                  </div>
-                  <span class="security-bar__val">78 / 100</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ══════════════════════════ SKILLS ══════════════════════════ -->
-    <section id="skills" class="c-section c-section--dark">
-      <div class="c-section__inner">
-        <div class="section-header reveal">
-          <span class="section-eyebrow">// skills</span>
-          <h2 class="section-title">Toolkit<span class="section-title__cursor">_</span></h2>
-        </div>
-
-        <!-- Category filter pills -->
-        <div class="skill-filter reveal reveal-delay-1">
-          @for (cat of skillCategories; track cat) {
-            <button
-              class="skill-filter__pill"
-              [class.skill-filter__pill--active]="activeSkillCategory() === cat"
-              (click)="setSkillCategory(cat)"
-            >{{ cat }}</button>
-          }
-        </div>
-
-        <!-- Skill cards grid -->
-        <div class="skills-grid reveal reveal-delay-2">
-          @for (skill of filteredSkills(); track skill.name) {
-            <div
-              class="skill-card"
-              [style.--skill-color]="skill.color"
+  <div id="mobile-menu" class="nav__mobile" [class.is-open]="menuOpen()" [attr.inert]="menuOpen() ? null : ''">
+    <nav class="container nav__mobile-inner" aria-label="Mobile">
+      <ul role="list" class="nav__mobile-list">
+        @for (link of navLinks; track link.anchor; let i = $index) {
+          <li [style.--i]="i">
+            <a
+              class="nav__mobile-link"
+              [href]="'#' + link.anchor"
+              [class.is-active]="isActive(link.anchor)"
+              (click)="navigate(link.anchor, $event)"
             >
-              <!-- Giant background logo -->
-              <div class="skill-card__bg-icon" aria-hidden="true">
-                <i [class]="skill.bgIcon"></i>
-              </div>
-
-              <!-- Glow blob -->
-              <div class="skill-card__glow" aria-hidden="true"></div>
-
-              <!-- Content -->
-              <div class="skill-card__content">
-                <div class="skill-card__header">
-                  <div class="skill-card__icon-wrap">
-                    <i [class]="skill.icon + ' skill-card__icon'"></i>
-                  </div>
-                  <span class="skill-card__pct">{{ skill.level }}<span class="skill-card__pct-sym">%</span></span>
-                </div>
-
-                <h3 class="skill-card__name">{{ skill.name }}</h3>
-                <p class="skill-card__desc">{{ skill.description }}</p>
-
-                <!-- Progress bar -->
-                <div class="skill-card__bar">
-                  <div class="skill-card__bar-fill" [style.width]="skill.level + '%'"></div>
-                </div>
-              </div>
-
-              <!-- Hover reveal panel -->
-              <div class="skill-card__reveal">
-                <i [class]="skill.bgIcon + ' skill-card__reveal-icon'" aria-hidden="true"></i>
-                <p class="skill-card__detail">{{ skill.detail }}</p>
-                <div class="skill-card__reveal-bar">
-                  <div class="skill-card__reveal-fill" [style.width]="skill.level + '%'"></div>
-                </div>
-                <span class="skill-card__reveal-label">Proficiency · {{ skill.level }}%</span>
-              </div>
-            </div>
-          }
-        </div>
+              <span class="nav__mobile-num" aria-hidden="true">0{{ i + 1 }}</span>{{ link.label }}
+            </a>
+          </li>
+        }
+      </ul>
+      <div class="nav__mobile-actions">
+        <a class="btn btn--primary" href="#contact" (click)="navigate('contact', $event)">Contact me</a>
+        <button type="button" class="btn btn--ghost" (click)="closeMenu(); cv.download()">
+          <i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i> Download CV
+        </button>
       </div>
-    </section>
+    </nav>
+  </div>
+</header>
 
-    <!-- ══════════════════════════ PROJECTS ══════════════════════════ -->
-    <section id="projects" class="c-section">
-      <div class="c-section__inner">
-        <div class="section-header reveal">
-          <span class="section-eyebrow">// projects</span>
-          <h2 class="section-title">Shipped<span class="section-title__cursor">_</span></h2>
-        </div>
+<main id="main">
+  <app-hero />
+  <app-projects />
+  <app-skills />
+  <app-experience />
+  <app-about />
+  <app-contact />
+</main>
 
-        <!-- Interactive project shell -->
-        <div class="proj-shell reveal reveal-delay-1">
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <p class="footer__name">{{ profile.name }}</p>
+      <p class="footer__tag">Full-stack engineer · {{ profile.location }}</p>
+    </div>
 
-          <!-- Shell top bar -->
-          <div class="proj-shell__bar">
-            <span class="os-dot os-dot--red"></span>
-            <span class="os-dot os-dot--yellow"></span>
-            <span class="os-dot os-dot--green"></span>
-            <span class="proj-shell__title">projects.sh — interactive</span>
-            <button class="proj-shell__clear" (click)="shellClear()">clear</button>
-          </div>
+    <nav class="footer__nav" aria-label="Footer">
+      <ul role="list">
+        @for (link of navLinks; track link.anchor) {
+          <li>
+            <a [href]="'#' + link.anchor" (click)="navigate(link.anchor, $event)"
+              ><span class="roll" [attr.data-text]="link.label"><span>{{ link.label }}</span></span></a>
+          </li>
+        }
+      </ul>
+    </nav>
 
-          <!-- Hint chips -->
-          <div class="proj-shell__hints">
-            <span class="proj-hint__label">Try:</span>
-            @for (project of projects; track project.id) {
-              <button
-                class="proj-hint"
-                [style.--proj-color]="project.color"
-                (click)="shellRun('open ' + project.id)"
-              >
-                <i [class]="project.icon"></i> open {{ project.id }}
-              </button>
-            }
-            <button class="proj-hint" (click)="shellRun('ls projects')">
-              <i class="fa-solid fa-list"></i> ls projects
-            </button>
-            <button class="proj-hint" (click)="shellRun('help')">
-              <i class="fa-solid fa-circle-question"></i> help
-            </button>
-          </div>
-
-          <!-- Shell output -->
-          <div class="proj-shell__output" #shellOutput>
-            @for (entry of shellHistory(); track entry.id) {
-              <div class="shell-entry" [class.shell-entry--new]="entry.fresh">
-
-                <!-- Command line -->
-                <div class="shell-entry__cmd">
-                  <span class="shell-entry__ps1">
-                    <span class="t-green">dennis</span><span class="t-dim">&#64;portfolio</span><span class="t-dim">:~/projects$</span>
-                  </span>
-                  <span class="shell-entry__text">{{ entry.cmd }}</span>
-                </div>
-
-                <!-- Output block -->
-                <div class="shell-entry__out">
-                  @switch (entry.type) {
-
-                    @case ('project') {
-                      <div class="shell-proj" [style.--proj-color]="entry.project!.color">
-                        <div class="shell-proj__header">
-                          <i [class]="entry.project!.icon + ' shell-proj__icon'"></i>
-                          <span class="shell-proj__name">{{ entry.project!.title }}</span>
-                          <span class="shell-proj__badge">{{ entry.project!.status }}</span>
-                        </div>
-                        <p class="shell-proj__desc">{{ entry.project!.description }}</p>
-
-                        <div class="shell-proj__section">
-                          <span class="shell-proj__label">STACK</span>
-                          <div class="tag-row">
-                            @for (tag of entry.project!.tags; track tag) {
-                              <span class="os-tag">{{ tag }}</span>
-                            }
-                          </div>
-                        </div>
-
-                        <div class="shell-proj__section">
-                          <span class="shell-proj__label">DETAILS</span>
-                          <div class="shell-proj__meta">
-                            <span><span class="t-dim">role</span> {{ entry.project!.role }}</span>
-                            <span><span class="t-dim">duration</span> {{ entry.project!.duration }}</span>
-                            <span><span class="t-dim">users</span> {{ entry.project!.users }}</span>
-                          </div>
-                        </div>
-
-                        <div class="shell-proj__section">
-                          <span class="shell-proj__label">ACHIEVEMENTS</span>
-                          @for (a of entry.project!.achievements; track a) {
-                            <div class="shell-proj__ach">
-                              <span class="shell-proj__ach-arrow">→</span> {{ a }}
-                            </div>
-                          }
-                        </div>
-
-                        <div class="shell-proj__links">
-                          @if (entry.project!.liveUrl) {
-                            <a class="btn-os btn-os--primary"
-                               [href]="entry.project!.liveUrl"
-                               target="_blank" rel="noopener">
-                              <i class="fa-solid fa-arrow-up-right-from-square"></i> Live demo
-                            </a>
-                          }
-                          @if (entry.project!.githubUrl) {
-                            <a class="btn-os btn-os--ghost"
-                               [href]="entry.project!.githubUrl"
-                               target="_blank" rel="noopener">
-                              <i class="fa-brands fa-github"></i> GitHub
-                            </a>
-                          }
-                          <button class="btn-os btn-os--ghost"
-                                  (click)="shellRun('ls projects')">
-                            <i class="fa-solid fa-arrow-left"></i> Back
-                          </button>
-                        </div>
-                      </div>
-                    }
-
-                    @case ('ls') {
-                      <div class="shell-ls">
-                        @for (project of projects; track project.id) {
-                          <button
-                            class="shell-ls__item"
-                            [style.--proj-color]="project.color"
-                            (click)="shellRun('open ' + project.id)"
-                          >
-                            <i [class]="project.icon + ' shell-ls__icon'"></i>
-                            <span class="shell-ls__name">{{ project.id }}/</span>
-                            <span class="shell-ls__desc">{{ project.title }}</span>
-                            <span class="shell-ls__status">{{ project.status }}</span>
-                          </button>
-                        }
-                        <p class="shell-ls__hint">
-                          <span class="t-dim">Tip:</span> type <span class="t-accent">open &lt;name&gt;</span> or click any project above
-                        </p>
-                      </div>
-                    }
-
-                    @case ('help') {
-                      <div class="shell-help">
-                        <p class="shell-help__title">Available commands</p>
-                        <div class="shell-help__row"><span class="t-accent">ls projects</span><span class="t-dim">List all projects</span></div>
-                        <div class="shell-help__row"><span class="t-accent">open &lt;id&gt;</span><span class="t-dim">Show project details (e.g. open votegrip)</span></div>
-                        <div class="shell-help__row"><span class="t-accent">clear</span><span class="t-dim">Clear terminal</span></div>
-                        <div class="shell-help__row"><span class="t-accent">help</span><span class="t-dim">Show this message</span></div>
-                      </div>
-                    }
-
-                    @case ('error') {
-                      <p class="shell-error">
-                        <i class="fa-solid fa-circle-xmark"></i>
-                        {{ entry.message }}
-                      </p>
-                    }
-
-                    @case ('text') {
-                      <p class="shell-text">{{ entry.message }}</p>
-                    }
-                  }
-                </div>
-              </div>
-            }
-          </div>
-
-          <!-- Input row -->
-          <div class="proj-shell__input-row">
-            <span class="proj-shell__ps1">
-              <span class="t-green">dennis</span><span class="t-dim">&#64;portfolio</span><span class="t-dim">:~/projects$</span>
-            </span>
-            <input
-              #shellInput
-              class="proj-shell__input"
-              type="text"
-              [value]="shellInputValue()"
-              (input)="onShellInput($event)"
-              (keydown)="onShellKey($event)"
-              placeholder="type a command or click a hint above..."
-              autocomplete="off"
-              spellcheck="false"
-            />
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ══════════════════════════ EXPERIENCE ══════════════════════════ -->
-    <section id="experience" class="c-section c-section--dark">
-      <div class="c-section__inner">
-        <div class="section-header reveal">
-          <span class="section-eyebrow">// experience</span>
-          <h2 class="section-title">Timeline<span class="section-title__cursor">_</span></h2>
-        </div>
-
-        <div class="timeline reveal reveal-delay-1">
-          @for (exp of experiences; track exp.role; let last = $last) {
-            <div class="timeline-item">
-              <div class="timeline-dot" [style.--exp-color]="exp.color">
-                <i [class]="exp.icon"></i>
-              </div>
-              @if (!last) { <div class="timeline-line"></div> }
-              <div class="timeline-card glass-panel">
-                <div class="timeline-card__header">
-                  <div>
-                    <p class="timeline-card__role">{{ exp.role }}</p>
-                    <p class="timeline-card__company">{{ exp.company }}</p>
-                  </div>
-                  <span class="timeline-card__period">{{ exp.period }}</span>
-                </div>
-                <p class="timeline-card__desc">{{ exp.description }}</p>
-                <div class="tag-row">
-                  @for (tag of exp.tags; track tag) {
-                    <span class="os-tag">{{ tag }}</span>
-                  }
-                </div>
-              </div>
-            </div>
-          }
-        </div>
-
-        <!-- Certifications grid -->
-        <div class="section-header reveal" style="margin-top: 56px">
-          <span class="section-eyebrow">// certifications</span>
-          <h2 class="section-title">Credentials<span class="section-title__cursor">_</span></h2>
-        </div>
-        <div class="certs-grid reveal reveal-delay-1">
-          @for (cert of certifications; track cert.name) {
-            <div class="cert-os" [style.--cert-color]="cert.color">
-              <i [class]="cert.iconClass + ' cert-os__icon'"></i>
-              <div>
-                <p class="cert-os__name">{{ cert.name }}</p>
-                <p class="cert-os__meta">{{ cert.issuer }} · {{ cert.year }}</p>
-              </div>
-            </div>
-          }
-        </div>
-      </div>
-    </section>
-
-    <!-- ══════════════════════════ CONTACT ══════════════════════════ -->
-    <section id="contact" class="c-section">
-      <div class="c-section__inner">
-        <div class="section-header reveal">
-          <span class="section-eyebrow">// contact</span>
-          <h2 class="section-title">Let's build<span class="section-title__cursor">_</span></h2>
-        </div>
-
-        <p class="contact-intro reveal reveal-delay-1">
-          I'm available for freelance, contract, and full-time roles. Whether it's a new system or something broken that needs fixing — reach out.
-        </p>
-
-        <div class="contact-os reveal reveal-delay-2">
-          <div class="contact-card-os">
-            <i class="fa-solid fa-envelope contact-card-os__icon"></i>
-            <span class="contact-card-os__label">Email</span>
-            <a class="contact-card-os__val" href="mailto:machaariad196&#64;gmail.com">machaariad196&#64;gmail.com</a>
-          </div>
-          <div class="contact-card-os">
-            <i class="fa-solid fa-phone contact-card-os__icon"></i>
-            <span class="contact-card-os__label">Phone</span>
-            <a class="contact-card-os__val" href="tel:+254799157137">+254 799 157 137</a>
-          </div>
-          <div class="contact-card-os">
-            <i class="fa-solid fa-location-dot contact-card-os__icon"></i>
-            <span class="contact-card-os__label">Location</span>
-            <span class="contact-card-os__val">Nairobi, Kenya</span>
-          </div>
-        </div>
-
-        <div class="contact-form-container reveal reveal-delay-3">
-          <form class="contact-form-os glass-panel" (submit)="sendContact($event)">
-            <div class="glass-panel__header">
-              <i class="fa-solid fa-paper-plane glass-panel__icon"></i>
-              <span>contact.json</span>
-            </div>
-            <div class="glass-panel__body">
-              <p class="contact-form__intro">Reach out with your project, question, or collaboration idea. The form posts directly to the API.</p>
-              <div class="contact-form__grid">
-                <label class="contact-field">
-                  <span>Full name</span>
-                  <input
-                    type="text"
-                    [value]="contact().full_name"
-                    (input)="updateContact('full_name', $any($event.target).value)"
-                    [attr.aria-invalid]="contactErrors().full_name && (contactTouched().full_name || contactAttempted()) ? 'true' : 'false'"
-                    placeholder="Your full name"
-                  />
-                  <span class="contact-field__error" *ngIf="(contactTouched().full_name || contactAttempted()) && contactErrors().full_name">
-                    {{ contactErrors().full_name }}
-                  </span>
-                </label>
-                <label class="contact-field">
-                  <span>Email</span>
-                  <input
-                    type="email"
-                    [value]="contact().email"
-                    (input)="updateContact('email', $any($event.target).value)"
-                    [attr.aria-invalid]="contactErrors().email && (contactTouched().email || contactAttempted()) ? 'true' : 'false'"
-                    placeholder="you@example.com"
-                  />
-                  <span class="contact-field__error" *ngIf="(contactTouched().email || contactAttempted()) && contactErrors().email">
-                    {{ contactErrors().email }}
-                  </span>
-                </label>
-                <label class="contact-field contact-field--full">
-                  <span>Subject</span>
-                  <input
-                    type="text"
-                    [value]="contact().subject"
-                    (input)="updateContact('subject', $any($event.target).value)"
-                    [attr.aria-invalid]="contactErrors().subject && (contactTouched().subject || contactAttempted()) ? 'true' : 'false'"
-                    placeholder="Project, collaboration, question..."
-                  />
-                  <span class="contact-field__error" *ngIf="(contactTouched().subject || contactAttempted()) && contactErrors().subject">
-                    {{ contactErrors().subject }}
-                  </span>
-                </label>
-                <label class="contact-field contact-field--full">
-                  <span>Message</span>
-                  <textarea
-                    rows="5"
-                    [value]="contact().message"
-                    (input)="updateContact('message', $any($event.target).value)"
-                    [attr.aria-invalid]="contactErrors().message && (contactTouched().message || contactAttempted()) ? 'true' : 'false'"
-                    placeholder="Write your message here..."
-                  ></textarea>
-                  <span class="contact-field__error" *ngIf="(contactTouched().message || contactAttempted()) && contactErrors().message">
-                    {{ contactErrors().message }}
-                  </span>
-                </label>
-              </div>
-              <br>
-              <div class="contact-form__actions">
-                <button
-                  class="btn-os btn-os--primary btn-os--lg"
-                  type="submit"
-                  [disabled]="contactStatus() === 'sending' || !contactValid()"
-                >
-                  <i class="fa-solid fa-paper-plane"></i>
-                  {{ contactStatus() === 'sending' ? 'Sending...' : 'Send message' }}
-                </button>
-                <span
-                  class="contact-form__status"
-                  [class.contact-form__status--success]="contactStatus() === 'success'"
-                  [class.contact-form__status--error]="contactStatus() === 'error'"
-                >
-                  {{ contactMessage() }}
-                </span>
-              </div>
-            </div>
-          </form>
-        </div>
-
-        <div class="contact-socials reveal reveal-delay-4">
-          <a class="social-os" href="https://github.com/dennis027" target="_blank" rel="noopener" aria-label="GitHub">
-            <i class="fa-brands fa-github"></i>
+    <ul class="footer__social" role="list" aria-label="Profiles">
+      @for (s of socials; track s.url) {
+        <li>
+          <a class="icon-btn" appMagnetic="0.4" [href]="s.url" target="_blank" rel="noopener noreferrer" [attr.aria-label]="s.label + ' (opens in a new tab)'">
+            <i [class]="s.icon" aria-hidden="true"></i>
           </a>
-          <a class="social-os" href="https://www.linkedin.com/in/dennis-kimani-6a965939b/" target="_blank" rel="noopener" aria-label="LinkedIn">
-            <i class="fa-brands fa-linkedin-in"></i>
-          </a>
-          <a class="social-os" href="https://x.com/deman_254" target="_blank" rel="noopener" aria-label="Twitter">
-            <i class="fa-brands fa-x-twitter"></i>
-          </a>
-        </div>
-      </div>
-    </section>
+        </li>
+      }
+      <li>
+        <a class="icon-btn" appMagnetic="0.4" [href]="'mailto:' + profile.email" aria-label="Email">
+          <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="container footer__base">
+    <p>© {{ currentYear }} {{ profile.name }}. Built with Angular 20.</p>
+    <a href="#top" (click)="navigate('top', $event)" class="footer__top">
+      Back to top <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+    </a>
+  </div>
+  <p class="footer__wordmark" aria-hidden="true" appProximity="360">
+    <span>@for (ch of introLetters.slice(0, 6); track $index) {<i [style.--c]="$index">{{ ch }}</i>}</span>
+    <span>@for (ch of introLetters.slice(7); track $index) {<i [style.--c]="$index">{{ ch }}</i>}</span>
+  </p>
+</footer>
 
-    <footer class="footer-os">
-      <span>© {{ currentYear }} Dennis Kimani</span>
-      <span class="footer-os__sep">·</span>
-      <span>Built with Angular 21</span>
-    </footer>
+<!-- Back to top: the ring fills with reading progress -->
+<a
+  class="to-top"
+  href="#top"
+  [class.is-visible]="showTop()"
+  [attr.tabindex]="showTop() ? null : -1"
+  [attr.aria-hidden]="showTop() ? null : 'true'"
+  (click)="navigate('top', $event)"
+  aria-label="Back to top"
+  appMagnetic="0.35"
+>
+  <svg viewBox="0 0 48 48" aria-hidden="true">
+    <circle class="to-top__track" cx="24" cy="24" r="22" pathLength="1" />
+    <circle class="to-top__ring" cx="24" cy="24" r="22" pathLength="1" />
+  </svg>
+  <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+</a>
 
-  </main>
-</div>
+<!-- The optional game layer comes last in the document, so keyboard and screen-reader users reach
+     the skip link, navigation and content first. Scroll progress as a road with section checkpoints: -->
+<app-road [links]="navLinks" [active]="activeSection()" (go)="navigate($event.anchor, $event.event)" />
+<app-trip-hud [links]="navLinks" [active]="activeSection()" />
+<app-tour-card />
+<app-print-cv />
+<app-command-palette #palette [commands]="commands()" />
