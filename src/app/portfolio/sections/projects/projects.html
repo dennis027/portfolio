@@ -1,0 +1,219 @@
+<section id="work" class="section section--band work" aria-labelledby="work-title">
+  <app-coin name="work" style="top: 150px; right: 34%" />
+  <div class="container">
+    <header class="section-head section-head--split has-ghost" data-num="01">
+      <p class="section-index" appReveal><b>01</b> <span appScramble>Selected work</span></p>
+      <h2 id="work-title" class="section-title" appSplit>
+        Products in production, <em>not just prototypes.</em>
+      </h2>
+      <p class="section-lede" appReveal="120">One product I built solo, team products I shipped features on, and tools I build to learn.</p>
+    </header>
+
+    <!-- ── Featured case study: the screenshot follows the story as you scroll ── -->
+    @let f = featured;
+    <article class="feature" [id]="'project-' + f.id" aria-labelledby="feature-title">
+      <header class="feature__intro">
+        <div class="feature__lead" appReveal>
+          <p class="feature__badge">
+            <span class="feature__num">01</span> Featured · solo build
+            <span [class]="statusClass(f.status)">{{ f.status }}</span>
+            <button type="button" class="share-btn" (click)="share.copyLink('project-' + f.id, f.name)" [attr.aria-label]="'Copy a link to ' + f.name" title="Copy a link to this project">
+              <i class="fa-solid fa-link" aria-hidden="true"></i>
+            </button>
+          </p>
+          <h3 id="feature-title" class="feature__title">{{ f.name }}</h3>
+          <p class="feature__summary">{{ f.summary }}</p>
+          <div class="feature__links">
+            @for (l of f.links; track l.url; let first = $first) {
+              <a [class]="first ? 'btn btn--primary btn--sm' : 'btn btn--ghost btn--sm'" [href]="l.url" target="_blank" rel="noopener noreferrer">
+                <i [class]="linkIcon(l)" aria-hidden="true"></i> {{ l.label }}
+                <span class="sr-only">(opens in a new tab)</span>
+              </a>
+            }
+          </div>
+        </div>
+
+        <dl class="feature__meta reveal-stagger" appReveal="100">
+          <div style="--i: 0">
+            <dt>Problem</dt>
+            <dd>{{ f.problem }}</dd>
+          </div>
+          <div style="--i: 1">
+            <dt>My role</dt>
+            <dd>{{ f.role }}</dd>
+          </div>
+          <div style="--i: 2">
+            <dt>Stack</dt>
+            <dd>
+              <ul class="tags" role="list">
+                @for (t of f.stack; track t) {
+                  <li class="tag">{{ t }}</li>
+                }
+              </ul>
+            </dd>
+          </div>
+        </dl>
+      </header>
+
+      <div class="story">
+        <div class="story__media">
+          <div class="browser" appSpotlight appTilt="5">
+            <div class="browser__bar" aria-hidden="true">
+              <span class="browser__dots"><i></i><i></i><i></i></span>
+              <span class="browser__url">dennis027.github.io/rental-incomes/{{ f.screenshots![shot()].label.toLowerCase() }}</span>
+            </div>
+            <!-- Mouse shortcut to the live demo; keyboard users have the Live demo button above -->
+            <a
+              class="browser__screen"
+              [href]="demo?.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              tabindex="-1"
+              data-cursor="Open demo"
+            >
+              @for (s of f.screenshots; track s.src; let i = $index) {
+                <img
+                  [src]="s.src"
+                  [alt]="s.alt"
+                  width="1440"
+                  height="940"
+                  loading="lazy"
+                  decoding="async"
+                  [class.is-active]="i === shot()"
+                  [attr.aria-hidden]="i === shot() ? null : 'true'"
+                />
+              }
+            </a>
+          </div>
+          <div class="story__nav" role="group" aria-label="Screenshots">
+            @for (s of f.screenshots; track s.src; let i = $index) {
+              <button type="button" class="story__tab" [attr.aria-pressed]="i === shot()" (click)="goTo(i)">
+                <span class="story__tab-bar" aria-hidden="true"></span>{{ s.label }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <ol class="story__steps" role="list" aria-label="What I built, screen by screen">
+          @for (s of f.screenshots; track s.src; let i = $index) {
+            <li class="step" #step [attr.data-step]="i" [class.is-active]="i === shot()">
+              <img class="step__shot" [src]="s.src" [alt]="s.alt" width="1440" height="940" loading="lazy" decoding="async" />
+              <p class="step__num">
+                <span>0{{ i + 1 }}</span> / 0{{ f.screenshots!.length }} — {{ s.label }}
+              </p>
+              <h4 class="step__title">{{ s.title }}</h4>
+              <p class="step__note">{{ s.note }}</p>
+            </li>
+          }
+        </ol>
+      </div>
+
+      @if (underTheHood) {
+        <p class="feature__hood" appReveal>
+          <span><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Under the hood</span>
+          {{ underTheHood }}.
+        </p>
+      }
+    </article>
+
+    <!-- ── Team & supporting products: alternating case-study rows ── -->
+    <div class="work__group-head">
+      <h3 class="work__group-title" appSplit>Team products</h3>
+      <p class="work__group-note" appReveal="80">Shipped with product teams — my contributions are listed on each.</p>
+      <span class="reveal-rule work__group-rule" appReveal></span>
+    </div>
+    <div class="work__cases">
+      @for (p of cases; track p.id; let i = $index; let odd = $odd) {
+        <app-project-card [project]="p" [index]="i + 2" [reverse]="odd" appReveal />
+      }
+    </div>
+
+    <!-- ── Smaller builds: an index, not more cards ── -->
+    <div class="work__group-head">
+      <h3 class="work__group-title" appSplit>Also built</h3>
+      <p class="work__group-note" appReveal="80">Security tooling, a marketplace, and what I'm building next.</p>
+      <span class="reveal-rule work__group-rule" appReveal></span>
+    </div>
+    <ul class="index reveal-stagger" role="list" appReveal>
+      @for (p of more; track p.id; let i = $index) {
+        <li class="index__row" [id]="'project-' + p.id" [style.--i]="i">
+          <span class="index__num" aria-hidden="true">0{{ cases.length + i + 2 }}</span>
+          <div class="index__main">
+            <h4 class="index__name">
+              <button
+                type="button"
+                class="index__toggle"
+                [attr.aria-expanded]="open() === p.id"
+                [attr.aria-controls]="'detail-' + p.id"
+                (click)="toggle(p.id)"
+              >{{ p.name }}<i class="fa-solid fa-plus index__arrow" aria-hidden="true"></i></button>
+            </h4>
+            <p class="index__summary">{{ p.summary }}</p>
+          </div>
+          <div class="index__meta">
+            <p class="index__kind">{{ p.kind }}</p>
+            <span [class]="statusClass(p.status)">{{ p.status }}</span>
+          </div>
+          <ul class="tags index__stack" role="list" aria-label="Stack">
+            @for (t of p.stack.slice(0, 4); track t) {
+              <li class="tag">{{ t }}</li>
+            }
+          </ul>
+          <div class="index__links">
+            @for (l of p.links; track l.url) {
+              <a class="text-link" [href]="l.url" target="_blank" rel="noopener noreferrer">
+                {{ l.label }} <i [class]="linkIcon(l)" aria-hidden="true"></i>
+                <span class="sr-only">— {{ p.name }} (opens in a new tab)</span>
+              </a>
+            } @empty {
+              <span class="index__private"><i class="fa-solid fa-lock" aria-hidden="true"></i> Private</span>
+            }
+            <button type="button" class="share-btn" (click)="share.copyLink('project-' + p.id, p.name)" [attr.aria-label]="'Copy a link to ' + p.name" title="Copy a link to this project">
+              <i class="fa-solid fa-link" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <!-- Case notes: closed by default so the index stays scannable -->
+          <div class="index__detail" [id]="'detail-' + p.id" [class.is-open]="open() === p.id" [attr.inert]="open() === p.id ? null : ''">
+            <div class="index__detail-inner">
+              <dl class="index__facts">
+                @if (p.problem) {
+                  <div>
+                    <dt>Problem</dt>
+                    <dd>{{ p.problem }}</dd>
+                  </div>
+                }
+                <div>
+                  <dt>My role</dt>
+                  <dd>{{ p.role }}</dd>
+                </div>
+                @if (p.stack.length > 4) {
+                  <div>
+                    <dt>Full stack</dt>
+                    <dd>{{ p.stack.join(' · ') }}</dd>
+                  </div>
+                }
+              </dl>
+              <div>
+                <p class="index__built-label">What I built</p>
+                <ul class="index__built" role="list">
+                  @for (c of p.contributions; track c) {
+                    <li>{{ c }}</li>
+                  }
+                </ul>
+              </div>
+            </div>
+          </div>
+        </li>
+      }
+    </ul>
+
+    <p class="work__more" appReveal>
+      More on GitHub —
+      <a class="text-link" href="https://github.com/dennis027" target="_blank" rel="noopener noreferrer">
+        github.com/dennis027 <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+        <span class="sr-only">(opens in a new tab)</span>
+      </a>
+    </p>
+  </div>
+</section>
