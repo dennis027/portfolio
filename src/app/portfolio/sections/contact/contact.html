@@ -1,0 +1,189 @@
+<section id="contact" class="section contact" aria-labelledby="contact-title">
+  <app-coin name="contact" style="top: 46%; left: 44%" />
+  <app-parking-spot style="top: calc(var(--section-y) + 130px); right: max(var(--gutter), calc(50% - 620px))" />
+  <div class="contact__glow" aria-hidden="true"></div>
+  <app-marquee class="contact__band" [items]="invite" [speed]="-45" [outline]="true" />
+  <div class="container">
+    <header class="contact__head has-ghost" data-num="05">
+      <p class="section-index" appReveal><b>05</b> <span appScramble>Contact</span></p>
+      <h2 id="contact-title" class="contact__title" appSplit>
+        Let's build something <em>that holds up.</em>
+      </h2>
+    </header>
+  </div>
+
+  <div class="container contact__grid">
+    <div class="contact__intro" appReveal>
+      <p class="contact__lede">Open to full-time, contract and freelance roles. I reply by email.</p>
+      @if (timeNote()) {
+        <p class="contact__time"><i class="fa-regular fa-clock" aria-hidden="true"></i> {{ timeNote() }}</p>
+      }
+
+      <div class="contact__email">
+        <a class="contact__mail" [href]="'mailto:' + profile.email" data-cursor="Say hello">
+          <span class="contact__mail-label">Email me</span>
+          <span class="contact__mail-addr">{{ profile.email }}</span>
+          <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+        </a>
+        <button type="button" class="contact__copy" data-cursor="Copy" (click)="copyEmail()" [class.is-done]="emailCopied()">
+          @if (emailCopied()) {
+            <i class="fa-solid fa-check" aria-hidden="true"></i> Copied
+          } @else {
+            <i class="fa-regular fa-copy" aria-hidden="true"></i> Copy address
+          }
+        </button>
+        <span class="sr-only" role="status">{{ emailCopied() ? 'Email address copied' : '' }}</span>
+      </div>
+
+      <ul class="channels" role="list">
+        <li>
+          <a class="channel" [href]="profile.phoneHref">
+            <span class="channel__label">Phone</span>
+            <span class="channel__value">{{ profile.phone }}</span>
+            <i class="fa-solid fa-arrow-right channel__go" aria-hidden="true"></i>
+          </a>
+        </li>
+        <li>
+          <button type="button" class="channel channel--button" (click)="cv.download()">
+            <span class="channel__label">CV</span>
+            <span class="channel__value">Download a one-page CV (PDF)</span>
+            <i class="fa-solid fa-file-arrow-down channel__go" aria-hidden="true"></i>
+          </button>
+        </li>
+        <li>
+          <div class="channel channel--static">
+            <span class="channel__label">Location</span>
+            <span class="channel__value">{{ profile.location }} · open to remote</span>
+          </div>
+        </li>
+      </ul>
+
+      <ul class="contact__socials" role="list" aria-label="Profiles">
+        @for (s of socials; track s.url) {
+          <li>
+            <a class="contact__social" [href]="s.url" target="_blank" rel="noopener noreferrer">
+              <i [class]="s.icon" aria-hidden="true"></i> {{ s.label }}
+              <span class="sr-only">(opens in a new tab)</span>
+            </a>
+          </li>
+        }
+      </ul>
+    </div>
+
+    <form class="form" novalidate (submit)="sendContact($event)" (keydown)="onFormKey($event)" appReveal="100" aria-labelledby="form-title">
+      <div class="form__head">
+        <h3 id="form-title" class="form__title">Send a message</h3>
+        <p class="form__sub">All fields are required.</p>
+      </div>
+
+      <div class="form__grid reveal-stagger" appReveal="150">
+        <div class="field" style="--i: 0" [class.field--invalid]="showError('full_name')">
+          <label for="cf-name">Full name</label>
+          <input
+            id="cf-name"
+            name="full_name"
+            type="text"
+            autocomplete="name"
+            [value]="contact().full_name"
+            (input)="updateContact('full_name', $any($event.target).value)"
+            [attr.aria-invalid]="showError('full_name') ? 'true' : 'false'"
+            [attr.aria-describedby]="showError('full_name') ? 'cf-name-err' : null"
+            placeholder="Your full name"
+          />
+          @if (showError('full_name')) {
+            <span class="field__error" id="cf-name-err">{{ showError('full_name') }}</span>
+          }
+        </div>
+
+        <div class="field" style="--i: 1" [class.field--invalid]="showError('email')">
+          <label for="cf-email">Email</label>
+          <input
+            id="cf-email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            inputmode="email"
+            [value]="contact().email"
+            (input)="updateContact('email', $any($event.target).value)"
+            [attr.aria-invalid]="showError('email') ? 'true' : 'false'"
+            [attr.aria-describedby]="showError('email') ? 'cf-email-err' : null"
+            placeholder="you@example.com"
+          />
+          @if (showError('email')) {
+            <span class="field__error" id="cf-email-err">{{ showError('email') }}</span>
+          }
+        </div>
+
+        <div class="field field--full" style="--i: 2" [class.field--invalid]="showError('subject')">
+          <label for="cf-subject">Subject</label>
+          <input
+            id="cf-subject"
+            name="subject"
+            type="text"
+            [value]="contact().subject"
+            (input)="updateContact('subject', $any($event.target).value)"
+            [attr.aria-invalid]="showError('subject') ? 'true' : 'false'"
+            [attr.aria-describedby]="showError('subject') ? 'cf-subject-err' : null"
+            placeholder="Role, project, collaboration…"
+          />
+          @if (showError('subject')) {
+            <span class="field__error" id="cf-subject-err">{{ showError('subject') }}</span>
+          }
+        </div>
+
+        <div class="field field--full" style="--i: 3" [class.field--invalid]="showError('message')">
+          <label for="cf-message">Message</label>
+          <textarea
+            id="cf-message"
+            name="message"
+            rows="5"
+            [value]="contact().message"
+            (input)="updateContact('message', $any($event.target).value)"
+            [attr.aria-invalid]="showError('message') ? 'true' : 'false'"
+            [attr.aria-describedby]="showError('message') ? 'cf-message-err' : null"
+            placeholder="What are you building, and how can I help?"
+          ></textarea>
+          <div class="field__meta">
+            @if (showError('message')) {
+              <span class="field__error" id="cf-message-err">{{ showError('message') }}</span>
+            }
+            <span class="field__count" [class.is-ok]="messageLength() >= messageMin" aria-live="polite">
+              @if (messageLength() >= messageMin) {
+                <i class="fa-solid fa-check" aria-hidden="true"></i>
+              }
+              {{ messageLength() }}<span class="sr-only"> characters</span>
+              @if (messageLength() < messageMin) {
+                <span> / {{ messageMin }} min</span>
+              }
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form__actions">
+        <button class="btn btn--primary" appMagnetic="0.2" type="submit" [disabled]="contactStatus() === 'sending'">
+          @if (contactStatus() === 'sending') {
+            <i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i> Sending...
+          } @else {
+            <i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Send message
+          }
+        </button>
+        <p class="form__shortcut" aria-hidden="true"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> to send · drafts are saved on this device</p>
+        <p
+          class="form__status"
+          role="status"
+          aria-live="polite"
+          [class.form__status--success]="contactStatus() === 'success'"
+          [class.form__status--error]="contactStatus() === 'error'"
+        >
+          @if (contactStatus() === 'success') {
+            <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+          } @else if (contactStatus() === 'error') {
+            <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+          }
+          {{ contactMessage() }}
+        </p>
+      </div>
+    </form>
+  </div>
+</section>
