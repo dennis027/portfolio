@@ -9,7 +9,7 @@
     "test": "ng test",
     "serve:ssr:portfolio": "node dist/portfolio/server/server.mjs",
     "build:gh": "ng build --configuration production --base-href /portfolio/",
-    "deploy": "npm run build:gh && npx angular-cli-ghpages --dir=dist/portfolio/browser"
+    "deploy": "npm run build:gh && cp dist/portfolio/browser/index.csr.html dist/portfolio/browser/404.html && npx angular-cli-ghpages --dir=dist/portfolio/browser --no-notfound"
   },
   "prettier": {
     "printWidth": 100,
