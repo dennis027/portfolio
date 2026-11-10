@@ -2,10 +2,77 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Dennis Kimani</title>
+  <title>Dennis Kimani — Full-Stack Engineer</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="assets/dennisk.png">
+  <meta name="description" content="Dennis Kimani is a full-stack engineer in Nairobi building secure, scalable products with Angular, Vue, Django, Laravel, Go and Flutter — from fintech wallets and multi-tenant commerce to rent billing and SMS infrastructure.">
+  <meta name="author" content="Dennis Kimani">
+  <meta name="theme-color" content="#0c0c0e">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Dennis Kimani — Full-Stack Engineer">
+  <meta property="og:description" content="Secure, scalable software from database to device. Projects, experience and contact.">
+  <meta property="og:url" content="https://dennis027.github.io/portfolio/">
+  <meta property="og:image" content="https://dennis027.github.io/portfolio/assets/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Dennis Kimani — Full-Stack Engineer, Nairobi, Kenya">
+  <meta property="og:site_name" content="Dennis Kimani">
+  <meta property="og:locale" content="en_GB">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Dennis Kimani — Full-Stack Engineer">
+  <meta name="twitter:description" content="Secure, scalable software from database to device. Projects, experience and contact.">
+  <meta name="twitter:image" content="https://dennis027.github.io/portfolio/assets/og-image.jpg">
+  <link rel="canonical" href="https://dennis027.github.io/portfolio/">
+
+  <!-- Structured data: who this site is about, for search engines -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Dennis Kimani",
+    "jobTitle": "Full-Stack Engineer",
+    "url": "https://dennis027.github.io/portfolio/",
+    "image": "https://dennis027.github.io/portfolio/assets/og-image.jpg",
+    "address": { "@type": "PostalAddress", "addressLocality": "Nairobi", "addressCountry": "KE" },
+    "alumniOf": { "@type": "CollegeOrUniversity", "name": "KCA University" },
+    "knowsAbout": ["Angular", "Vue", "Django", "Laravel", "Go", "Flutter", "PostgreSQL", "Docker", "Information security"],
+    "sameAs": [
+      "https://github.com/dennis027",
+      "https://www.linkedin.com/in/dennis-kimani-6a965939b/",
+      "https://x.com/deman_254"
+    ]
+  }
+  </script>
+  <meta name="twitter:site" content="@deman_254">
+
+  <link rel="icon" type="image/png" href="assets/icon-64.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="preload" as="image" href="assets/dennis-figure.webp" type="image/webp" fetchpriority="high">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+  <script>
+    // Apply the saved theme before first paint, and flag JS so scroll reveals only hide content when they can run.
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('js');
+      // Play the intro once per session — not under reduced motion, and not when arriving on a deep link or tour link
+      try {
+        if (!location.hash && !/[?&]tour/.test(location.search) && !sessionStorage.getItem('intro') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          root.classList.add('intro-play');
+          sessionStorage.setItem('intro', '1');
+        }
+      } catch (e) {}
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') root.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
   <app-root></app-root>
