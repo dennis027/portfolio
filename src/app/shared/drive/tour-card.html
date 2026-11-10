@@ -1,0 +1,122 @@
+@if (tour.active()) {
+  <!-- Spotlight: everything dims except the current stop -->
+  <div class="tour-dim" aria-hidden="true" [class.is-finished]="tour.finished()">
+    <div class="tour-spot" #spot></div>
+  </div>
+
+  <div
+    #card
+    class="tour"
+    [class.is-docked]="placement() === 'dock' || tour.finished()"
+    [class.is-right]="placement() === 'right' && !tour.finished()"
+    [class.is-left]="placement() === 'left' && !tour.finished()"
+    role="dialog"
+    aria-labelledby="tour-title"
+    aria-describedby="tour-text"
+    tabindex="-1"
+    [style.--step-ms.ms]="tour.durationMs()"
+  >
+    <header class="tour__head">
+      <div class="tour__tracks" role="group" aria-label="Tour length">
+        @for (id of trackIds; track id) {
+          <button type="button" [attr.aria-pressed]="tour.track() === id" (click)="tour.switchTrack(id)">
+            {{ tour.tracks[id].label }}
+          </button>
+        }
+      </div>
+      <button type="button" class="tour__btn tour__close" (click)="tour.end()" aria-label="Close the tour">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </header>
+
+    @if (!tour.finished()) {
+      <!-- Chapters: click any segment to jump to that stop -->
+      <ol class="tour__bar" role="list" aria-label="Stops">
+        @for (s of tour.stops(); track s.id; let i = $index) {
+          <li>
+            <button
+              type="button"
+              [class.is-done]="i < tour.index()"
+              [class.is-current]="i === tour.index()"
+              [class.is-paused]="!tour.playing()"
+              [attr.aria-current]="i === tour.index() ? 'step' : null"
+              [attr.aria-label]="'Stop ' + (i + 1) + ': ' + s.title"
+              [title]="s.title"
+              (click)="tour.goTo(i)"
+            ><i></i></button>
+          </li>
+        }
+      </ol>
+
+      <p class="tour__step">Stop {{ tour.index() + 1 }} of {{ tour.stops().length }}</p>
+      <!-- Captions are announced as they change -->
+      <div class="tour__caption" aria-live="polite">
+        @for (s of [tour.current()]; track s.id) {
+          <h2 id="tour-title" class="tour__title">{{ s.title }}</h2>
+          <p id="tour-text" class="tour__text">{{ s.text }}</p>
+
+          @if (s.actions?.length) {
+            <div class="tour__actions">
+              @for (a of s.actions; track a.label) {
+                @if (a.href) {
+                  <a class="tour__action" [href]="a.href" target="_blank" rel="noopener noreferrer" (click)="act(a)">
+                    <i [class]="a.icon" aria-hidden="true"></i> {{ a.label }}
+                    <span class="sr-only">(opens in a new tab)</span>
+                  </a>
+                } @else {
+                  <button type="button" class="tour__action" (click)="act(a)">
+                    <i [class]="a.icon" aria-hidden="true"></i> {{ a.label }}
+                  </button>
+                }
+              }
+            </div>
+          }
+        }
+      </div>
+
+      @if (tour.exploring()) {
+        <p class="tour__exploring">
+          <i class="fa-regular fa-compass" aria-hidden="true"></i> Paused while you explore.
+          <button type="button" (click)="tour.resume()">Back to the tour</button>
+        </p>
+      }
+
+      <div class="tour__controls">
+        <button type="button" class="tour__btn" (click)="tour.prev()" [disabled]="tour.index() === 0" aria-label="Previous stop">
+          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="tour__btn" (click)="tour.togglePlay()" [attr.aria-label]="tour.playing() ? 'Pause the tour' : 'Play the tour'">
+          <i [class]="tour.playing() ? 'fa-solid fa-pause' : 'fa-solid fa-play'" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="tour__next" (click)="tour.next()">
+          {{ tour.isLast() ? 'Finish' : 'Next' }}
+          <i [class]="tour.isLast() ? 'fa-solid fa-flag-checkered' : 'fa-solid fa-arrow-right'" aria-hidden="true"></i>
+        </button>
+        <p class="tour__keys" aria-hidden="true"><kbd>←</kbd><kbd>→</kbd> <kbd>Esc</kbd></p>
+      </div>
+    } @else {
+      <!-- Closing card: what to do next -->
+      <div class="tour__caption tour__done" aria-live="polite">
+        <p class="tour__step"><i class="fa-solid fa-flag-checkered" aria-hidden="true"></i> End of the {{ tour.track() === 'deep' ? 'deep dive' : 'tour' }}</p>
+        <h2 id="tour-title" class="tour__title">Thanks for riding along</h2>
+        <p id="tour-text" class="tour__text">If something here fits what you're building, I'd love to hear about it.</p>
+        <div class="tour__actions">
+          <a class="tour__action tour__action--primary" [href]="'mailto:' + email">
+            <i class="fa-solid fa-envelope" aria-hidden="true"></i> Email me
+          </a>
+          <button type="button" class="tour__action" (click)="copyShareLink()">
+            <i class="fa-solid fa-link" aria-hidden="true"></i> Share this tour
+          </button>
+          @if (tour.track() === 'quick') {
+            <button type="button" class="tour__action" (click)="tour.start('deep', 0)">
+              <i class="fa-solid fa-person-swimming" aria-hidden="true"></i> Take the deep dive
+            </button>
+          }
+          <button type="button" class="tour__action" (click)="tour.replay()">
+            <i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Replay
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+}
