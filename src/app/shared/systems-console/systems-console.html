@@ -1,0 +1,42 @@
+<div class="console" (focusin)="stopAutoplay()" (pointerenter)="stopAutoplay()">
+  <div class="console__bar">
+    <span class="console__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span class="console__file">{{ typed() ?? active().file }}@if (typed() !== null) {<span class="console__caret" aria-hidden="true"></span>}</span>
+    @if (autoplay()) {
+      <span class="console__auto" aria-hidden="true">auto</span>
+    }
+  </div>
+
+  <div class="console__tabs" role="tablist" aria-label="Systems I've built" (keydown)="onTabKey($event)">
+    @for (s of systems; track s.id; let i = $index) {
+      <button
+        type="button"
+        role="tab"
+        class="console__tab"
+        [id]="'sys-tab-' + s.id"
+        [attr.aria-selected]="i === activeIndex()"
+        [attr.aria-controls]="'sys-panel'"
+        [attr.tabindex]="i === activeIndex() ? 0 : -1"
+        (click)="select(i)"
+      >
+        {{ s.name }}
+        @if (i === activeIndex() && autoplay()) {
+          <span class="console__progress" aria-hidden="true"></span>
+        }
+      </button>
+    }
+  </div>
+
+  <div class="console__body" role="tabpanel" id="sys-panel" [attr.aria-labelledby]="'sys-tab-' + active().id">
+    @for (s of [active()]; track s.id) {
+      <div class="console__panel">
+        <app-flow-diagram [diagram]="s.diagram" />
+        <ul class="tags console__stack" role="list" aria-label="Stack">
+          @for (t of s.stack; track t) {
+            <li class="tag">{{ t }}</li>
+          }
+        </ul>
+      </div>
+    }
+  </div>
+</div>
