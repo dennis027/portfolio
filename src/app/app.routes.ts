@@ -3,13 +3,12 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () =>
-      import('./portfolio/portfolio').then(
-        (m) => m.Portfolio
-      ),
+    pathMatch: 'full',
+    loadComponent: () => import('./portfolio/portfolio').then((m) => m.Portfolio),
   },
   {
     path: '**',
-    redirectTo: '',
+    title: 'Page not found — Dennis Kimani',
+    loadComponent: () => import('./not-found/not-found').then((m) => m.NotFound),
   },
 ];
