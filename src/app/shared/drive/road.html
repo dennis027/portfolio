@@ -1,0 +1,20 @@
+<nav class="road" #road aria-hidden="true" [class.is-visible]="active() !== 'top'">
+  <div class="road__track">
+    <span class="road__lane"></span>
+    @for (cp of checkpoints(); track cp.id) {
+      <a
+        class="road__flag"
+        tabindex="-1"
+        [href]="'#' + cp.id"
+        [style.top]="'calc(' + cp.at + ' * (100% - 24px) + 7px)'"
+        [class.is-passed]="passed(cp.id)"
+        [class.is-current]="active() === cp.id"
+        (click)="go.emit({ anchor: cp.id, event: $event })"
+      >
+        <span class="road__label">{{ cp.label }}</span>
+        <span class="road__pole"><span class="road__cloth"></span></span>
+      </a>
+    }
+    <span class="road__car"><app-car-icon /></span>
+  </div>
+</nav>
