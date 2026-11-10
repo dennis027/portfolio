@@ -1,379 +1,275 @@
-import { Component, signal, computed, HostListener, inject, OnDestroy, afterNextRender, ViewChild, ElementRef } from '@angular/core';
-import { CommonModule, DOCUMENT } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
-import { PortraitSection, PortraitScene } from '../portrait-scene/portrait-scene';
-import { ContactForm, ContactService } from '../../app/services/contact-service';
-export interface Project {
-  id: string; title: string; description: string;
-  tags: string[]; role: string; duration: string; users: string;
-  achievements: string[]; liveUrl?: string; githubUrl?: string;
-  color: string; icon: string; status: string;
+import { Component, DOCUMENT, ElementRef, OnDestroy, afterNextRender, computed, inject, signal, viewChildren } from '@angular/core';
+import { ScrollService } from '../shared/scroll.service';
+import { CarCursor } from '../shared/drive/car-cursor';
+import { CarIcon } from '../shared/drive/car-icon';
+import { Road } from '../shared/drive/road';
+import { TripHud } from '../shared/drive/trip-hud';
+import { TripService } from '../shared/drive/trip.service';
+import { TourCard } from '../shared/drive/tour-card';
+import { TourService } from '../shared/drive/tour.service';
+import { CvService } from '../shared/cv/cv.service';
+import { PrintCv } from '../shared/cv/print-cv';
+import { Command, CommandPalette } from '../shared/command-palette/command-palette';
+import { ShareService } from '../shared/share.service';
+import { MagneticDirective } from '../shared/motion/magnetic.directive';
+import { prefersReducedMotion } from '../shared/motion/motion';
+import { ProximityDirective } from '../shared/motion/proximity.directive';
+import { startSmoothScroll } from '../shared/motion/smooth-scroll';
+import {
+  FEATURED_PROJECT,
+  MORE_PROJECTS,
+  NAV_LINKS,
+  PROFILE,
+  SOCIALS,
+  SUPPORTING_PROJECTS,
+  SectionId,
+  TEAM_PROJECTS,
+} from './portfolio.data';
+import { Hero } from './sections/hero/hero';
+import { About } from './sections/about/about';
+import { Projects } from './sections/projects/projects';
+import { Skills } from './sections/skills/skills';
+import { ExperienceSection } from './sections/experience/experience';
+import { Contact } from './sections/contact/contact';
+
+type Theme = 'dark' | 'light';
+
+interface Indicator {
+  x: number;
+  w: number;
 }
-export interface Skill {
-  name: string; description: string; icon: string;
-  level: number; category: string;
-  color: string;   /* neon accent for this skill   */
-  bgIcon: string;  /* large background icon class  */
-  detail: string;  /* one-liner shown on hover     */
-}
-export interface Stat { value: string; label: string; icon: string; }
-export interface Experience {
-  role: string; company: string; period: string;
-  description: string; tags: string[]; icon: string; color: string;
-}
-export interface Certification {
-  name: string; issuer: string; year: string; iconClass: string; color: string;
-}
-type ShellEntryType = 'project' | 'ls' | 'help' | 'error' | 'text';
-export interface ShellEntry {
-  id: number; cmd: string; type: ShellEntryType;
-  message?: string; project?: Project; fresh: boolean;
-}
+
 @Component({
   selector: 'app-portfolio',
-  imports: [CommonModule, HttpClientModule, PortraitScene],
+  imports: [Hero, About, Projects, Skills, ExperienceSection, Contact, CarCursor, CarIcon, Road, TripHud, TourCard, PrintCv, CommandPalette, MagneticDirective, ProximityDirective],
   templateUrl: './portfolio.html',
   styleUrl: './portfolio.css',
+  host: {
+    '(document:keydown.escape)': 'closeMenu()',
+    '(window:scroll)': 'onScroll()',
+    '(window:resize)': 'placeIndicator()',
+  },
 })
+export class Portfolio implements OnDestroy {
+  private readonly document = inject(DOCUMENT);
+  protected readonly scroll = inject(ScrollService);
+  protected readonly trip = inject(TripService);
+  protected readonly tour = inject(TourService);
+  protected readonly cv = inject(CvService);
+  private readonly share = inject(ShareService);
 
+  protected readonly navLinks = NAV_LINKS;
+  protected readonly profile = PROFILE;
+  protected readonly socials = SOCIALS;
+  protected readonly currentYear = new Date().getFullYear();
 
-export class Portfolio{
-    private readonly document = inject(DOCUMENT);
-  private observer: IntersectionObserver | null = null;
- 
-  @ViewChild('shellOutput') shellOutputRef!: ElementRef<HTMLDivElement>;
-  @ViewChild('shellInput')  shellInputRef!: ElementRef<HTMLInputElement>;
- 
-  // ── Signals ──────────────────────────────────────────
-  readonly menuOpen            = signal(false);
-  readonly scrolled            = signal(false);
-  readonly activeSection       = signal<PortraitSection>('hero');
-  readonly activeSkillCategory = signal('all');
-  readonly shellHistory        = signal<ShellEntry[]>([]);
-  readonly shellInputValue     = signal('');
-  readonly contact            = signal<ContactForm>({ full_name: '', email: '', subject: '', message: '' });
-  readonly contactTouched     = signal<Record<keyof ContactForm, boolean>>({ full_name: false, email: false, subject: false, message: false });
-  readonly contactAttempted   = signal(false);
-  readonly contactStatus      = signal<'idle' | 'sending' | 'success' | 'error'>('idle');
-  readonly contactMessage     = signal('');
-  readonly contactErrors      = computed(() => {
-    const form = this.contact();
-    return {
-      full_name: form.full_name.trim() ? '' : 'Full name is required.',
-      email: form.email.trim()
-        ? this.validateEmail(form.email.trim()) ? '' : 'Invalid email format.'
-        : 'Email is required.',
-      subject: form.subject.trim() ? '' : 'Subject is required.',
-      message: form.message.trim()
-        ? form.message.trim().length > 10 ? '' : 'Message should be more than 10 characters.'
-        : 'Message is required.',
-    };
-  });
-  readonly contactValid = computed(() => {
-    const errors = this.contactErrors();
-    return !errors.full_name && !errors.email && !errors.subject && !errors.message;
-  });
-  readonly activeCmdIndex      = signal(0);
-  readonly currentYear         = new Date().getFullYear();
- 
-  private readonly contactService = inject(ContactService);
-  private shellIdCounter   = 0;
-  private cmdHistory: string[] = [];
-  private cmdHistoryIndex  = -1;
- 
-  // ── Nav ──────────────────────────────────────────────
-  readonly navLinks = [
-    { label: 'About',      anchor: 'about' },
-    { label: 'Skills',     anchor: 'skills' },
-    { label: 'Projects',   anchor: 'projects' },
-    { label: 'Experience', anchor: 'experience' },
-    { label: 'Contact',    anchor: 'contact' },
-  ];
- 
-  // ── Stats ────────────────────────────────────────────
-  readonly stats: Stat[] = [
-    { value: '5+',  label: 'Projects shipped',   icon: 'fa-solid fa-rocket'  },
-    { value: '3+',  label: 'Production deploys', icon: 'fa-solid fa-server'  },
-    { value: '10+', label: 'APIs built',          icon: 'fa-solid fa-plug'    },
-    { value: '2+',  label: 'Years building',      icon: 'fa-solid fa-code'    },
-  ];
- 
-  // ── Skills ───────────────────────────────────────────
-  readonly skillCategories = ['all', 'frontend', 'backend', 'mobile', 'devops', 'security'];
- 
-  readonly skills: Skill[] = [
-    { name:'Angular',    description:'Web applications', icon:'fa-brands fa-angular',     level:90, category:'frontend', color:'#dd1b16', bgIcon:'fa-brands fa-angular',     detail:'Signals, standalone components, SSR, reactive forms' },
-    { name:'TypeScript', description:'Type-safe code',   icon:'fa-solid fa-code',          level:65, category:'frontend', color:'#3178c6', bgIcon:'fa-solid fa-code',          detail:'Strict types, generics, decorators, utility types' },
-    { name:'HTML / CSS', description:'Semantic markup',  icon:'fa-brands fa-html5',        level:75, category:'frontend', color:'#e34f26', bgIcon:'fa-brands fa-html5',        detail:'Semantic HTML5, CSS Grid, Flexbox, animations' },
-    { name:'Django',     description:'Backend APIs',     icon:'fa-solid fa-server',        level:65, category:'backend',  color:'#092e20', bgIcon:'fa-solid fa-server',        detail:'DRF, ORM, signals, celery, JWT auth' },
-    { name:'Laravel',    description:'PHP framework',    icon:'fa-brands fa-php',          level:50, category:'backend',  color:'#ff2d20', bgIcon:'fa-brands fa-laravel',      detail:'Eloquent ORM, queues, events, Docker' },
-    { name:'PostgreSQL', description:'Databases',        icon:'fa-solid fa-database',      level:60, category:'backend',  color:'#336791', bgIcon:'fa-solid fa-database',      detail:'Indexing, transactions, row locking, migrations' },
-    { name:'Flutter',    description:'Mobile apps',      icon:'fa-solid fa-mobile-screen', level:60, category:'mobile',   color:'#54c5f8', bgIcon:'fa-solid fa-mobile-screen', detail:'Hive, offline sync, BLoC/Provider, animations' },
-    { name:'Dart',       description:'Mobile language',  icon:'fa-solid fa-d',             level:60, category:'mobile',   color:'#0175c2', bgIcon:'fa-solid fa-d',             detail:'Async/await, streams, null safety' },
-    { name:'Docker',     description:'Containers',       icon:'fa-brands fa-docker',       level:55, category:'devops',   color:'#2496ed', bgIcon:'fa-brands fa-docker',       detail:'Compose, multi-stage builds, nginx, volumes' },
-    { name:'Git',        description:'Version control',  icon:'fa-brands fa-git-alt',      level:80, category:'devops',   color:'#f05032', bgIcon:'fa-brands fa-git-alt',      detail:'Branching, rebasing, hooks, CI pipelines' },
-    { name:'Linux',      description:'Server admin',     icon:'fa-brands fa-linux',        level:65, category:'devops',   color:'#fcc624', bgIcon:'fa-brands fa-linux',        detail:'Bash scripting, cron, systemd, SSH' },
-    { name:'Security',   description:'CTF & pentesting', icon:'fa-solid fa-shield-halved', level:75, category:'security', color:'#ef4444', bgIcon:'fa-solid fa-shield-halved', detail:'OWASP, SQL injection, XSS, CTF labs' },
-  ];
- 
-  readonly filteredSkills = computed(() => {
-    const cat = this.activeSkillCategory();
-    return cat === 'all' ? this.skills : this.skills.filter(s => s.category === cat);
-  });
- 
-  // ── Projects ─────────────────────────────────────────
-  readonly projects: Project[] = [
-    {
-      id: 'votegrip', title: 'VoteGrip',
-      description: 'Offline-first election monitoring platform for field agents. Resilient by design — works without connectivity, syncs when restored.',
-      tags: ['Flutter', 'Django', 'Angular', 'PostgreSQL', 'Swagger API'],
-      role: 'Full-stack & Mobile', duration: 'Ongoing', users: 'Field agents',
-      achievements: [
-        'SHA-256 offline credential caching with Hive',
-        'Background sync queue — zero data loss',
-        'Connectivity-aware UI with graceful degradation',
-        'Android manifest for split media permissions',
-      ],
-      githubUrl: 'https://github.com/dennis027/test-votegrip', color: '#6366f1', icon: 'fa-solid fa-shield-halved', status: 'Active',
-    },
-    {
-      id: 'fundi-jenga-pro', title: 'Fundi & Jenga Pro',
-      description: 'A digital marketplace that helps customers find, hire, and pay verified fundis (artisans and tradespeople) for home, construction, and maintenance services.',
-      tags: ['Django', 'Angular', 'PostgreSQL', 'REST API','Flutter'],
-      role: 'Full-stack Developer', duration: '5 months', users: 'Homeowners, fundis, and contractors',
-      achievements: [
-        'Role-based access control across all modules',
-        'JWT authentication with permission layers',
-        'Production deployment, zero-downtime release',
-      ],
-      liveUrl: 'https://github.com/dennis027/new-fundi-pro', githubUrl: '#', color: '#10b981', icon: 'fa-solid fa-book-open', status: 'Live',
-    },
-    {
-      id: 'bulk-sms', title: 'Bulk SMS Platform',
-      description: 'High-volume messaging system with campaign management, contact lists, delivery tracking, and a retry engine.',
-      tags: ['Laravel', 'Vue 3', 'MySQL', 'Docker', 'Redis'],
-      role: 'Backend Developer', duration: '2 months', users: 'Marketing teams',
-      achievements: [
-        'Atomic retry system for failed delivery',
-        'Race condition resolution in concurrent sends',
-        'Full Docker Compose containerisation',
-      ],
-      githubUrl: '#', color: '#f59e0b', icon: 'fa-solid fa-paper-plane', status: 'Deployed',
-    },
-    {
-      id: 'rental', title: 'Rental Management System',
-      description: 'Property and contract management dashboard with automated tracking, tenant records, and reactive state architecture.',
-      tags: ['Angular', 'Laravel', 'PostgreSQL', 'RxJS'],
-      role: 'Full-stack Developer', duration: '2 months', users: 'Property managers',
-      achievements: [
-        'Fixed forkJoin race conditions in contract loading',
-        'Angular Signals reactive state architecture',
-        'Custom typography and responsive sidebar',
-      ],
-      githubUrl: 'https://github.com/dennis027/rental-management', color: '#8b5cf6', icon: 'fa-solid fa-building', status: 'Deployed',
-    },
-  ];
- 
-  // ── Experience ───────────────────────────────────────
-  readonly experiences: Experience[] = [
-    {
-      role: 'Full-Stack Developer', company: 'Freelance / Contract', period: '2024 — Present',
-      description: 'Building and deploying full-stack web and mobile applications for clients in NGO, property, and civic-tech sectors.',
-      tags: ['Django', 'Angular', 'Flutter', 'Laravel'],
-      icon: 'fa-solid fa-laptop-code', color: '#6366f1',
-    },
-  {
-      role: 'Full-Stack Engineer', company: ' Contract', period: '2022 — 2024',
-      description: 'Building and deploying full-stack web and mobile banking systems.',
-      tags: ['Django', 'Angular', 'Flutter', 'SQL', 'MySQL', 'Docker','Apache'],
-      icon: 'fa-solid fa-laptop-code', color: '#6366f1',
-    },
-    {
-      role: 'Information Security and Forensics', company: 'KCA University', period: '2029 — 2023',
-      description: 'Studying computer science with a focus on software engineering and information security.',
-      tags: ['Algorithms', 'Networks', 'Security', 'Systems'],
-      icon: 'fa-solid fa-graduation-cap', color: '#10b981',
-    },
-  ];
- 
-  readonly certifications: Certification[] = [
-    { name: 'Cybersecurity Fundamentals', issuer: 'CTF Labs',             year: '2024', iconClass: 'fa-solid fa-shield-halved', color: '#ef4444' },
-    { name: 'Django REST Framework',      issuer: 'Project-based',        year: '2023', iconClass: 'fa-solid fa-server',         color: '#10b981' },
-    { name: 'Flutter Mobile Dev',         issuer: 'Project-based',        year: '2024', iconClass: 'fa-solid fa-mobile-screen',  color: '#6366f1' },
-    { name: 'CTF Competitions',           issuer: 'Ongoing participation', year: '2024', iconClass: 'fa-solid fa-flag',           color: '#f59e0b' },
-  ];
- 
-  // ── Hero terminal ─────────────────────────────────────
-  readonly terminalCommands = [
-    { cmd: 'whoami',            out: 'dennis-kimani — full-stack developer, cybersecurity enthusiast' },
-    { cmd: 'ls skills/',        out: 'angular/  django/  flutter/  docker/  security/' },
-    { cmd: 'git log --oneline', out: 'a3f91c2 feat: offline-first sync queue\nb8d04e1 fix: race condition in bulk send\n7c2a109 deploy: zero-downtime release' },
-    { cmd: 'cat status.txt',    out: '✓ Available for hire\n✓ Open to remote work\n✓ Based in Nairobi, Kenya' },
-  ];
- 
-  // ── Shell engine ──────────────────────────────────────
-  shellRun(cmd: string): void {
-    const raw = cmd.trim();
-    if (!raw) return;
-    this.cmdHistory.unshift(raw);
-    this.cmdHistoryIndex = -1;
-    this.shellHistory.update(h => h.map(e => ({ ...e, fresh: false })));
-    if (raw.toLowerCase() === 'clear') { this.shellClear(); return; }
-    const entry = this.parseCmd(raw);
-    this.shellHistory.update(h => [...h, entry]);
-    this.shellInputValue.set('');
-    setTimeout(() => {
-      const el = this.shellOutputRef?.nativeElement;
-      if (el) el.scrollTop = el.scrollHeight;
-    }, 50);
-  }
+  readonly menuOpen = signal(false);
+  readonly scrolled = signal(false);
+  /** The bar slides away while reading downwards and returns on any upward scroll. */
+  readonly navHidden = signal(false);
+  readonly showTop = signal(false);
+  /** Letters of the name for the intro curtain. */
+  protected readonly introLetters = [...'Dennis Kimani'];
+  readonly activeSection = signal<SectionId>('top');
+  readonly theme = signal<Theme>('dark');
+  /** Local time in Nairobi; empty during prerender so server and client markup match. */
+  readonly localTime = signal('');
+  readonly indicator = signal<Indicator | null>(null);
 
-  updateContact(field: keyof ContactForm, value: string): void {
-    this.contact.update(c => ({ ...c, [field]: value }));
-    this.contactTouched.update(t => ({ ...t, [field]: true }));
-    if (this.contactStatus() === 'error') {
-      this.contactStatus.set('idle');
-      this.contactMessage.set('');
-    }
-  }
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly linkEls = viewChildren<ElementRef<HTMLElement>>('navLink');
 
-  private validateEmail(value: string): boolean {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-  }
+  private spy?: IntersectionObserver;
+  private clock?: ReturnType<typeof setInterval>;
+  private frame = 0;
+  private lastY = 0;
+  private stopSmoothScroll?: () => void;
 
-  async sendContact(event: Event): Promise<void> {
-    event.preventDefault();
-    this.contactAttempted.set(true);
-    const payload = this.contact();
-    if (!this.contactValid()) {
-      const errors = this.contactErrors();
-      const firstError = errors.full_name || errors.email || errors.subject || errors.message;
-      this.contactStatus.set('error');
-      this.contactMessage.set(firstError ?? 'Please fix the highlighted fields.');
-      return;
-    }
-
-    this.contactStatus.set('sending');
-    this.contactMessage.set('Sending message...');
-
-    try {
-      await this.contactService.sendContact(payload);
-      this.contactStatus.set('success');
-      this.contactMessage.set('Message sent successfully.');
-      this.contact.set({ full_name: '', email: '', subject: '', message: '' });
-      this.contactTouched.set({ full_name: false, email: false, subject: false, message: false });
-      this.contactAttempted.set(false);
-    } catch (error) {
-      this.contactStatus.set('error');
-      this.contactMessage.set('Unable to send message. Please try again later.');
-      console.error('Contact form submit failed', error);
-    }
-  }
- 
-  private parseCmd(raw: string): ShellEntry {
-    const id    = ++this.shellIdCounter;
-    const lower = raw.toLowerCase().trim();
-    const parts = lower.split(/\s+/);
-    const verb  = parts[0];
-    const arg   = parts.slice(1).join(' ');
- 
-    if (verb === 'ls' || verb === 'list')
-      return { id, cmd: raw, type: 'ls', fresh: true };
- 
-    if (verb === 'help' || verb === '?')
-      return { id, cmd: raw, type: 'help', fresh: true };
- 
-    if (['open','show','cat','cd','inspect','view','run'].includes(verb)) {
-      const proj = this.projects.find(p => p.id === arg || p.title.toLowerCase() === arg);
-      if (proj) return { id, cmd: raw, type: 'project', project: proj, fresh: true };
-      return { id, cmd: raw, type: 'error', fresh: true,
-        message: `Project "${arg}" not found. Try: ${this.projects.map(p => p.id).join(', ')}` };
-    }
- 
-    const direct = this.projects.find(p => p.id === lower || p.title.toLowerCase() === lower);
-    if (direct) return { id, cmd: raw, type: 'project', project: direct, fresh: true };
- 
-    return { id, cmd: raw, type: 'error', fresh: true,
-      message: `Command not found: "${raw}". Type help for available commands.` };
-  }
- 
-  shellClear(): void { this.shellHistory.set([]); this.shellIdCounter = 0; }
- 
-  onShellInput(event: Event): void {
-    this.shellInputValue.set((event.target as HTMLInputElement).value);
-  }
- 
-  onShellKey(event: KeyboardEvent): void {
-    if (event.key === 'Enter') { this.shellRun(this.shellInputValue()); return; }
-    if (event.key === 'ArrowUp') {
-      event.preventDefault();
-      this.cmdHistoryIndex = Math.min(this.cmdHistoryIndex + 1, this.cmdHistory.length - 1);
-      this.shellInputValue.set(this.cmdHistory[this.cmdHistoryIndex] ?? '');
-    }
-    if (event.key === 'ArrowDown') {
-      event.preventDefault();
-      this.cmdHistoryIndex = Math.max(this.cmdHistoryIndex - 1, -1);
-      this.shellInputValue.set(this.cmdHistoryIndex >= 0 ? this.cmdHistory[this.cmdHistoryIndex] : '');
-    }
-    if (event.key === 'Tab') {
-      event.preventDefault();
-      const val = this.shellInputValue().replace(/^open\s*/i, '').toLowerCase();
-      const match = this.projects.find(p => p.id.startsWith(val));
-      if (match) this.shellInputValue.set('open ' + match.id);
-    }
-  }
- 
-  // ── Lifecycle ─────────────────────────────────────────
   constructor() {
     afterNextRender(() => {
-      this.observer = new IntersectionObserver(
-        entries => entries.forEach(e => {
-          if (e.isIntersecting) e.target.classList.add('reveal--visible');
-        }),
-        { threshold: 0.08 }
-      );
-      this.document.querySelectorAll('.reveal').forEach(el => this.observer!.observe(el));
-      this.runTerminal();
-      // boot shell with project listing
-      setTimeout(() => {
-        this.shellHistory.set([{
-          id: ++this.shellIdCounter, cmd: 'ls projects', type: 'ls', fresh: true,
-        }]);
-      }, 400);
+      const current = this.document.documentElement.getAttribute('data-theme');
+      this.theme.set(current === 'light' ? 'light' : 'dark');
+      this.trip.restore(this.navLinks.length);
+      this.onScroll();
+      this.observeSections();
+      this.startClock();
+      this.stopSmoothScroll = startSmoothScroll(this.document);
+      this.startTourFromLink();
+      // Arrived by a shared link (…#project-safaribucks): bring it into view and point it out
+      const hash = this.document.location.hash.slice(1);
+      if (hash && hash !== 'main') this.share.arrive(hash, 700);
     });
   }
- 
-  private async runTerminal(): Promise<void> {
-    for (let i = 0; i < this.terminalCommands.length; i++) {
-      await this.delay(800 + i * 600);
-      this.activeCmdIndex.set(i);
-    }
-  }
- 
-  private delay(ms: number): Promise<void> { return new Promise(r => setTimeout(r, ms)); }
- 
-  @HostListener('window:scroll')
-  onScroll(): void {
-    this.scrolled.set(window.scrollY > 40);
-    const sections: PortraitSection[] = ['hero','about','skills','projects','experience','contact'];
-    for (const id of sections) {
+
+  /** Highlights the nav link for whichever section crosses the upper-middle of the viewport. */
+  private observeSections(): void {
+    if (!('IntersectionObserver' in window)) return;
+    const ids: SectionId[] = ['top', ...this.navLinks.map((l) => l.anchor)];
+    this.spy = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            const id = entry.target.id as SectionId;
+            this.activeSection.set(id);
+            if (id !== 'top') this.trip.checkpoint(id);
+            this.placeIndicator();
+          }
+        }
+      },
+      { rootMargin: '-35% 0px -60% 0px' },
+    );
+    for (const id of ids) {
       const el = this.document.getElementById(id);
-      if (el) {
-        const rect = el.getBoundingClientRect();
-        if (rect.top <= 180 && rect.bottom > 180) { this.activeSection.set(id); break; }
-      }
+      if (el) this.spy.observe(el);
     }
   }
- 
-  toggleMenu(): void { this.menuOpen.update(v => !v); }
-  closeMenu():  void { this.menuOpen.set(false); }
-  scrollTo(anchor: string): void {
-    this.closeMenu();
-    this.document.getElementById(anchor)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  /**
+   * Shareable tour links: ?tour starts the quick tour, ?tour=deep the deep dive, ?tour=3 the
+   * quick tour at stop 3. Starts once the hero has settled.
+   */
+  private startTourFromLink(): void {
+    const value = new URLSearchParams(this.document.location.search).get('tour');
+    if (value === null) return;
+    const track = value === 'deep' ? 'deep' : 'quick';
+    const at = Math.max(0, (parseInt(value, 10) || 1) - 1);
+    setTimeout(() => this.tour.start(track, at), 1400);
   }
-  isActive(anchor: string): boolean { return this.activeSection() === anchor; }
-  setSkillCategory(cat: string): void { this.activeSkillCategory.set(cat); }
- 
-  ngOnDestroy(): void { this.observer?.disconnect(); }
+
+  /** Everything the command palette (Ctrl/⌘ + K) can do. */
+  protected readonly commands = computed<Command[]>(() => {
+    const projects = [FEATURED_PROJECT, ...TEAM_PROJECTS, ...SUPPORTING_PROJECTS, ...MORE_PROJECTS];
+    const open = (url: string) => () => this.document.defaultView?.open(url, '_blank', 'noopener');
+    const copy = (text: string, label: string) => () =>
+      navigator.clipboard?.writeText(text).then(
+        () => this.trip.toast('Copied', label),
+        () => this.trip.toast(label, text),
+      );
+    const live = FEATURED_PROJECT.links.find((l) => l.kind === 'live');
+    const source = FEATURED_PROJECT.links.find((l) => l.kind === 'code');
+    return [
+      { id: 'go-top', group: 'Navigate', label: 'Top of the page', icon: 'fa-solid fa-arrow-up', run: () => this.scroll.to('top') },
+      ...this.navLinks.map((l): Command => ({
+        id: `go-${l.anchor}`, group: 'Navigate', label: l.label, icon: 'fa-solid fa-hashtag', run: () => this.scroll.to(l.anchor),
+      })),
+      ...projects.map((p): Command => ({
+        id: `project-${p.id}`, group: 'Projects', label: p.name, hint: p.kind, icon: p.icon,
+        keywords: `${p.kind} ${p.stack.join(' ')}`, run: () => this.share.arrive(`project-${p.id}`),
+      })),
+      { id: 'cv', group: 'Actions', label: 'Download CV (PDF)', icon: 'fa-solid fa-file-arrow-down', keywords: 'resume print', run: () => this.cv.download() },
+      { id: 'email', group: 'Actions', label: 'Copy email address', hint: this.profile.email, icon: 'fa-regular fa-copy', keywords: 'contact mail', run: copy(this.profile.email, this.profile.email) },
+      { id: 'link', group: 'Actions', label: 'Copy a link to this page', icon: 'fa-solid fa-link', keywords: 'share url', run: copy(this.share.linkTo('top').replace('#top', ''), 'Page link') },
+      { id: 'tour', group: 'Actions', label: 'Take the 30-second tour', icon: 'fa-solid fa-route', keywords: 'guide walkthrough', run: () => this.tour.start('quick') },
+      { id: 'deep', group: 'Actions', label: 'Take the deep-dive tour', icon: 'fa-solid fa-person-swimming', keywords: 'guide walkthrough', run: () => this.tour.start('deep') },
+      {
+        id: 'theme', group: 'Actions', label: this.theme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme',
+        icon: this.theme() === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon', keywords: 'dark light mode', run: () => this.toggleTheme(),
+      },
+      ...this.socials.map((s): Command => ({
+        id: `social-${s.label}`, group: 'Links', label: s.label, hint: s.handle, icon: s.icon, run: open(s.url),
+      })),
+      ...(live ? [{ id: 'live', group: 'Links', label: 'Rental System — live demo', icon: 'fa-solid fa-arrow-up-right-from-square', run: open(live.url) } as Command] : []),
+      ...(source ? [{ id: 'source', group: 'Links', label: 'Rental System — source code', icon: 'fa-brands fa-github', run: open(source.url) } as Command] : []),
+    ];
+  });
+
+  /** Moves the pill behind the active nav link; hidden while the hero is in view. */
+  placeIndicator(): void {
+    const index = this.navLinks.findIndex((l) => l.anchor === this.activeSection());
+    const el = index >= 0 ? this.linkEls()[index]?.nativeElement : undefined;
+    if (!el || !el.offsetWidth) {
+      this.indicator.set(null);
+      return;
+    }
+    this.indicator.set({ x: el.offsetLeft, w: el.offsetWidth });
+  }
+
+  private startClock(): void {
+    const format = new Intl.DateTimeFormat('en-GB', {
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: this.profile.timeZone,
+    });
+    const tick = () => this.localTime.set(format.format(new Date()));
+    tick();
+    this.clock = setInterval(tick, 15_000);
+  }
+
+  onScroll(): void {
+    if (this.frame) return;
+    const win = this.document.defaultView;
+    if (!win) return;
+    this.frame = win.requestAnimationFrame(() => {
+      this.frame = 0;
+      const y = win.scrollY;
+      const delta = y - this.lastY;
+      this.lastY = y;
+      this.scrolled.set(y > 24);
+      this.showTop.set(y > win.innerHeight * 1.2);
+      if (this.menuOpen() || y < win.innerHeight * 0.6) this.navHidden.set(false);
+      else if (delta > 6) this.navHidden.set(true);
+      else if (delta < -6) this.navHidden.set(false);
+      const max = this.document.documentElement.scrollHeight - win.innerHeight;
+      // Written straight to the host (read by the nav hairline and the back-to-top ring):
+      // this runs every frame while scrolling.
+      this.host.nativeElement.style.setProperty('--progress', max > 0 ? (y / max).toFixed(4) : '0');
+    });
+  }
+
+  navigate(anchor: string, event: Event): void {
+    this.closeMenu();
+    this.scroll.to(anchor, event);
+  }
+
+  toggleMenu(): void {
+    this.menuOpen.update((v) => !v);
+    this.document.documentElement.classList.toggle('menu-open', this.menuOpen());
+  }
+
+  closeMenu(): void {
+    this.menuOpen.set(false);
+    this.document.documentElement.classList.remove('menu-open');
+  }
+
+  /**
+   * Switches theme. From a click, the new theme grows in a circle out of the toggle
+   * (View Transitions API where supported); otherwise it applies immediately.
+   */
+  toggleTheme(event?: MouseEvent): void {
+    const next: Theme = this.theme() === 'dark' ? 'light' : 'dark';
+    const apply = () => {
+      this.theme.set(next);
+      this.document.documentElement.setAttribute('data-theme', next);
+      this.document.querySelector('meta[name="theme-color"]')?.setAttribute('content', next === 'dark' ? '#0c0c0e' : '#f3f0e9');
+      try {
+        localStorage.setItem('theme', next);
+      } catch {
+        /* storage unavailable — theme still applies for this visit */
+      }
+    };
+    const doc = this.document as Document & { startViewTransition?: (cb: () => void) => unknown };
+    if (!event || !doc.startViewTransition || prefersReducedMotion()) {
+      apply();
+      return;
+    }
+    const root = this.document.documentElement;
+    const x = event.clientX;
+    const y = event.clientY;
+    const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    root.style.setProperty('--vt-x', `${x}px`);
+    root.style.setProperty('--vt-y', `${y}px`);
+    root.style.setProperty('--vt-r', `${r}px`);
+    doc.startViewTransition(apply);
+  }
+
+  isActive(anchor: SectionId): boolean {
+    return this.activeSection() === anchor;
+  }
+
+  ngOnDestroy(): void {
+    this.spy?.disconnect();
+    this.stopSmoothScroll?.();
+    if (this.clock) clearInterval(this.clock);
+    if (this.frame) cancelAnimationFrame(this.frame);
+  }
 }
- 
