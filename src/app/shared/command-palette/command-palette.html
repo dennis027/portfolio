@@ -1,0 +1,57 @@
+@if (open()) {
+  <div class="cp-backdrop" (click)="close()"></div>
+  <div class="cp" role="dialog" aria-modal="true" aria-label="Command palette">
+    <div class="cp__search">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+      <input
+        #field
+        type="text"
+        class="cp__field"
+        placeholder="Jump to a project, download the CV, start the tour…"
+        role="combobox"
+        aria-expanded="true"
+        aria-controls="cp-list"
+        aria-autocomplete="list"
+        [attr.aria-activedescendant]="results().length ? 'cmd-' + active() : null"
+        autocomplete="off"
+        spellcheck="false"
+        [value]="query()"
+        (input)="onInput($any($event.target).value)"
+        (keydown)="onKey($event)"
+      />
+      <kbd>Esc</kbd>
+    </div>
+
+    <ul #list id="cp-list" class="cp__list" role="listbox" aria-label="Commands">
+      @for (r of rows(); track r.c.id) {
+        @if (r.heading) {
+          <li class="cp__group" role="presentation">{{ r.heading }}</li>
+        }
+        <li
+          [id]="'cmd-' + r.i"
+          class="cp__item"
+          role="option"
+          [attr.aria-selected]="r.i === active()"
+          [class.is-active]="r.i === active()"
+          (pointermove)="active.set(r.i)"
+          (click)="run(r.c)"
+        >
+          <span class="cp__icon" aria-hidden="true"><i [class]="r.c.icon"></i></span>
+          <span class="cp__label">{{ r.c.label }}</span>
+          @if (r.c.hint) {
+            <span class="cp__hint">{{ r.c.hint }}</span>
+          }
+          <i class="fa-solid fa-arrow-turn-down cp__enter" aria-hidden="true"></i>
+        </li>
+      } @empty {
+        <li class="cp__empty" role="presentation">Nothing matches “{{ query() }}”.</li>
+      }
+    </ul>
+
+    <footer class="cp__foot" aria-hidden="true">
+      <span><kbd>↑</kbd><kbd>↓</kbd> move</span>
+      <span><kbd>↵</kbd> run</span>
+      <span><kbd>{{ modKey() }}</kbd><kbd>K</kbd> toggle</span>
+    </footer>
+  </div>
+}
