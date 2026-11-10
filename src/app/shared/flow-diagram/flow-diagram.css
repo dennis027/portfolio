@@ -1,0 +1,82 @@
+:host { display: block; }
+
+.flow { display: grid; justify-items: center; }
+
+.flow__row {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 1), minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+  max-width: calc(var(--cols, 1) * 220px);
+}
+
+.flow__node {
+  --tone: var(--cool);
+  position: relative;
+  display: grid; gap: 2px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--tone) 7%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--tone) 28%, transparent);
+  text-align: center;
+  min-width: 0;
+}
+.flow__node[data-tone='client'] { --tone: var(--text-muted); }
+.flow__node[data-tone='edge'] { --tone: var(--accent); }
+.flow__node[data-tone='service'] { --tone: var(--cool); }
+.flow__node[data-tone='data'] { --tone: var(--ok); }
+.flow__node[data-tone='external'] { --tone: #c084fc; }
+.flow__node[data-tone='planned'] {
+  --tone: var(--text-faint);
+  border-style: dashed;
+  background: transparent;
+}
+
+.flow__label {
+  font-family: var(--font-display); font-weight: 600; font-size: 0.9rem;
+  color: var(--text); line-height: 1.25;
+}
+.flow__detail {
+  font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-muted);
+  line-height: 1.35;
+}
+
+.flow__link {
+  position: relative;
+  width: 1px; height: 22px;
+  background: linear-gradient(var(--border-strong), var(--border-strong));
+}
+.flow__packet {
+  position: absolute; left: -2px; top: 0;
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  animation: packet 2.4s var(--ease) infinite;
+  animation-delay: calc(var(--i, 0) * 0.4s);
+  opacity: 0;
+}
+@keyframes packet {
+  0% { transform: translateY(0); opacity: 0; }
+  15% { opacity: 1; }
+  60% { transform: translateY(18px); opacity: 1; }
+  70%, 100% { transform: translateY(18px); opacity: 0; }
+}
+
+.flow__caption {
+  margin-top: 16px;
+  font-size: 0.82rem; color: var(--text-muted); text-align: center;
+  max-width: 44ch; margin-inline: auto;
+}
+
+/* Rows build top to bottom whenever a diagram is drawn */
+.flow__row { animation: row-in 0.7s var(--ease-out-expo) both; animation-delay: calc(var(--r, 0) * 110ms); }
+.flow__link { animation: link-in 0.5s var(--ease-out-expo) both; animation-delay: calc(var(--i, 0) * 110ms + 80ms); transform-origin: top; }
+@keyframes row-in { from { opacity: 0; transform: translateY(10px) scale(0.97); } }
+@keyframes link-in { from { transform: scaleY(0); } }
+
+.flow__node { transition: transform 0.4s var(--ease-out-expo), border-color 0.3s; }
+.flow__node:hover { transform: translateY(-2px); border-color: var(--tone); }
+
+@media (prefers-reduced-motion: reduce) {
+  .flow__packet { display: none; }
+}
