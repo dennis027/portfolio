@@ -1,0 +1,153 @@
+:host { display: block; scroll-margin-top: calc(var(--nav-h) + 24px); }
+
+.case__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: clamp(32px, 5vw, 80px);
+  align-items: center;
+}
+:host(.case--reverse) .case__visual { order: 2; }
+
+/* ── Visual panel ── */
+
+.case__visual {
+  position: relative;
+  min-height: clamp(340px, 34vw, 460px);
+  padding: 40px clamp(20px, 3vw, 40px) 28px;
+  display: grid; align-content: center;
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at 50% 0%, var(--accent-soft), transparent 60%),
+    radial-gradient(var(--dot) 1px, transparent 1.2px) 0 0 / 22px 22px,
+    var(--bg);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--lift, 0px));
+  transition: border-color 0.4s, transform 0.7s var(--ease-out-expo), box-shadow 0.6s var(--ease-out-expo);
+}
+.case__visual > app-project-visual { position: relative; z-index: 1; }
+.case__inner:hover .case__visual {
+  --lift: -6px;
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ── Content ── */
+
+.case__content { display: flex; flex-direction: column; gap: 16px; }
+
+.card__head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+/* Case number: outlined numeral that warms to the accent when the row is hovered */
+.case__index {
+  font-family: var(--font-display); font-weight: 800; font-stretch: 75%;
+  font-size: 2.6rem; line-height: 0.8; letter-spacing: -0.04em;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--text-faint);
+  transition: -webkit-text-stroke-color 0.4s;
+}
+.case__inner:hover .case__index { -webkit-text-stroke-color: var(--accent); }
+.card__kind {
+  font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--accent);
+}
+
+.card__title {
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  font-weight: 700; font-stretch: 86%;
+  line-height: 1; letter-spacing: -0.035em;
+}
+.card__summary { color: var(--text-muted); font-size: 1rem; max-width: 56ch; }
+
+.case__meta { display: grid; border-top: 1px solid var(--border); }
+.case__meta div {
+  display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 16px;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.case__meta dt, .case__label {
+  font-family: var(--font-mono); font-weight: 400; font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-faint); padding-top: 3px;
+}
+.case__meta dd { font-size: 0.9rem; color: var(--text); }
+.case__label { margin-top: 4px; padding: 0; }
+
+.card__list { display: grid; gap: 8px; list-style: none; }
+.card__list li {
+  position: relative; padding-left: 22px;
+  font-size: 0.92rem; color: var(--text-muted); line-height: 1.5;
+}
+.card__list li::before {
+  content: ''; position: absolute; left: 0; top: 0.68em;
+  width: 10px; height: 1px; background: var(--accent);
+}
+
+.card__more {
+  display: none;
+  align-self: flex-start;
+  align-items: center; gap: 8px;
+  font-size: 0.84rem; font-weight: 600; color: var(--accent);
+  padding: 2px 0;
+}
+.card__more i { font-size: 0.7em; transition: transform 0.3s var(--ease); }
+.card__more[aria-expanded='true'] i { transform: rotate(180deg); }
+
+.case__foot { display: grid; gap: 18px; margin-top: 6px; }
+.card__links { display: flex; flex-wrap: wrap; gap: 22px; }
+.card__private { font-size: 0.82rem; color: var(--text-faint); }
+.card__private i { margin-right: 6px; }
+
+@media (max-width: 960px) {
+  .case__inner { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  :host(.case--reverse) .case__visual { order: 0; }
+}
+
+@media (max-width: 640px) {
+  .card__list.is-collapsed li:nth-child(n + 3) { display: none; }
+  .card__more { display: inline-flex; }
+  .case__visual { min-height: 0; padding: 28px 12px 18px; }
+  .case__meta div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+}
+
+/* ── Arrival: the visual wipes up from its base, then the copy cascades in ──
+   (the host carries .reveal / .is-revealed from RevealDirective) */
+:host(.reveal) .case__visual {
+  -webkit-mask-image: linear-gradient(#000, #000); mask-image: linear-gradient(#000, #000);
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-position: 0 100%; mask-position: 0 100%;
+  -webkit-mask-size: 100% 0%; mask-size: 100% 0%;
+  transition: mask-size 1.3s var(--ease-out-expo), -webkit-mask-size 1.3s var(--ease-out-expo),
+              border-color 0.4s, transform 0.7s var(--ease-out-expo), box-shadow 0.6s var(--ease-out-expo);
+}
+:host(.reveal) app-project-visual { scale: 1.12; transition: scale 1.6s var(--ease-out-expo); }
+:host(.is-revealed) .case__visual { -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
+:host(.is-revealed) app-project-visual { scale: 1; }
+
+:host(.reveal) .case__content > * {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.8s var(--ease), transform 1s var(--ease-out-expo);
+}
+:host(.is-revealed) .case__content > * { opacity: 1; transform: none; }
+:host(.is-revealed) .case__content > :nth-child(2) { transition-delay: 80ms; }
+:host(.is-revealed) .case__content > :nth-child(3) { transition-delay: 160ms; }
+:host(.is-revealed) .case__content > :nth-child(4) { transition-delay: 240ms; }
+:host(.is-revealed) .case__content > :nth-child(5) { transition-delay: 300ms; }
+:host(.is-revealed) .case__content > :nth-child(n + 6) { transition-delay: 360ms; }
+
+/* list items draw their accent dash in sequence */
+:host(.reveal) .card__list li::before { transform: scaleX(0); transform-origin: left; transition: transform 0.6s var(--ease-out-expo); }
+:host(.is-revealed) .card__list li::before { transform: none; }
+:host(.is-revealed) .card__list li:nth-child(1)::before { transition-delay: 500ms; }
+:host(.is-revealed) .card__list li:nth-child(2)::before { transition-delay: 580ms; }
+:host(.is-revealed) .card__list li:nth-child(3)::before { transition-delay: 660ms; }
+:host(.is-revealed) .card__list li:nth-child(4)::before { transition-delay: 740ms; }
+
+/* Inside its frame, the illustration drifts slower than the page */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .case__visual > app-project-visual {
+      animation: visual-drift linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+  }
+}
+@keyframes visual-drift { from { translate: 0 36px; } to { translate: 0 -36px; } }
