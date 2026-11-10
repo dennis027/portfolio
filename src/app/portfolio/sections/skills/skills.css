@@ -1,0 +1,101 @@
+:host { display: block; }
+
+/* ── Core stack ── */
+
+.core { margin-bottom: clamp(64px, 8vw, 112px); }
+.core__label {
+  font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-faint); margin-bottom: 18px;
+}
+.core__list {
+  display: flex; flex-wrap: wrap; align-items: baseline;
+  gap: 0.1em 0;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5.4vw, 4.6rem);
+  font-weight: 700; font-stretch: 80%;
+  line-height: 1.05; letter-spacing: -0.035em;
+}
+.core__item {
+  display: inline-flex; align-items: baseline; gap: 0.18em;
+  color: var(--text);
+  cursor: default;
+  transition: color 0.3s;
+}
+/* slash separators between names */
+.core__item:not(:last-child)::after {
+  content: '/';
+  margin: 0 0.28em 0 0.22em;
+  font-weight: 300; color: var(--border-strong);
+}
+.core__item i {
+  font-size: 0.42em;
+  color: var(--text-faint);
+  transform: translateY(-0.2em);
+  transition: color 0.3s, transform 0.5s var(--ease-out-expo);
+}
+.core__list:hover .core__item { color: var(--text-faint); }
+.core__list .core__item:hover { color: var(--text); }
+.core__item:hover i { color: var(--accent); transform: translateY(-0.35em) rotate(-8deg); }
+
+/* ── Capability rows ── */
+
+.groups { list-style: none; border-top: 1px solid var(--border-strong); }
+.group {
+  position: relative;
+  display: grid;
+  grid-template-columns: 56px minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 16px 32px;
+  padding: 30px 0;
+  border-bottom: 1px solid var(--border);
+}
+.group::before {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
+  background: var(--accent);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.7s var(--ease-out-expo);
+}
+.group:hover::before { transform: none; }
+
+.group__num { font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); padding-top: 6px; }
+.group__title { font-size: clamp(1.25rem, 1.8vw, 1.5rem); font-stretch: 90%; margin-bottom: 6px; }
+
+.group__items { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; }
+.group__items li {
+  font-size: 0.86rem; color: var(--text);
+  padding: 5px 12px; border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  transition: border-color 0.25s, background-color 0.25s;
+}
+.group:hover .group__items li { border-color: var(--text-faint); }
+.group__items li:hover { background: var(--surface-2); }
+.group__seen { margin-top: 12px; font-size: 0.82rem; color: var(--text-muted); }
+.group__seen { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+.group__link {
+  color: var(--text); font-weight: 500;
+  background: linear-gradient(var(--accent), var(--accent)) 0 100% / 0% 1px no-repeat;
+  transition: background-size 0.4s var(--ease-out-expo), color 0.2s;
+}
+.group__link:hover { color: var(--accent); background-size: 100% 1px; }
+.group__seen span {
+  font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-faint); margin-right: 8px;
+}
+
+@media (max-width: 860px) {
+  .group { grid-template-columns: 40px minmax(0, 1fr); }
+  .group__detail { grid-column: 2; }
+}
+
+/* ── Arrival: chips pop in one after another once their row is revealed ── */
+.group.reveal .group__items li {
+  opacity: 0; transform: translateY(10px) scale(0.92);
+  transition: opacity 0.5s var(--ease), transform 0.7s var(--ease-out-expo), border-color 0.25s, background-color 0.25s;
+  transition-delay: calc(200ms + var(--j, 0) * 45ms);
+}
+.group.is-revealed .group__items li { opacity: 1; transform: none; }
+.group.is-revealed .group__items li:hover { transition-delay: 0ms; transform: translateY(-2px); }
+.group__num { transition: color 0.3s; }
+
+/* core stack names rise with a slight turn */
+.core__list.reveal > * { transform: translateY(40%) rotate(4deg); }
+.core__list.is-revealed > * { transform: none; }
