@@ -1,0 +1,8 @@
+@if (enabled()) {
+  <div class="drive-trail" #trail aria-hidden="true"><span class="drive-bubble" #bubble>BEEP!</span></div>
+  <div class="drive-car" #car aria-hidden="true" [class.is-turbo]="trip.turbo()">
+    <span class="drive-car__flame"></span>
+    <app-car-icon />
+    <span class="drive-car__ring"></span>
+  </div>
+}
