@@ -1,0 +1,67 @@
+.road {
+  position: fixed; z-index: 80;
+  right: clamp(14px, 1.4vw, 26px);
+  top: calc(var(--nav-h) + 40px); bottom: 96px;
+  width: 18px;
+  opacity: 0; translate: 16px 0;
+  pointer-events: none;
+  transition: opacity 0.5s var(--ease), translate 0.7s var(--ease-out-expo);
+}
+.road.is-visible { opacity: 1; translate: 0 0; pointer-events: auto; }
+
+/* asphalt strip with edge lines */
+.road__track {
+  position: absolute; inset: 0;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--surface-2) 85%, transparent);
+  box-shadow: inset 1px 0 0 var(--border-strong), inset -1px 0 0 var(--border-strong);
+}
+/* centre dashes that travel with the page */
+.road__lane {
+  position: absolute; left: 50%; top: 6px; bottom: 6px; width: 2px; margin-left: -1px;
+  background: repeating-linear-gradient(to bottom, var(--text-faint) 0 7px, transparent 7px 16px);
+  background-position: 0 calc(var(--road-p, 0) * -900px);
+  opacity: 0.6;
+}
+
+/* checkpoint flags */
+.road__flag {
+  position: absolute; right: 100%; margin-right: 6px;
+  display: flex; align-items: center; gap: 8px;
+  translate: 0 -50%;
+}
+.road__pole { position: relative; width: 2px; height: 16px; background: var(--text-faint); border-radius: 1px; }
+.road__cloth {
+  position: absolute; left: 2px; top: 0;
+  width: 10px; height: 7px;
+  background: var(--surface-3);
+  clip-path: polygon(0 0, 100% 15%, 85% 50%, 100% 85%, 0 100%);
+  transform-origin: left center;
+  transition: background-color 0.4s;
+}
+.road__flag.is-passed .road__cloth { background: var(--accent); animation: wave 1.6s ease-in-out infinite; }
+.road__flag.is-passed .road__pole { background: var(--accent); }
+@keyframes wave { 50% { transform: scaleX(0.75) skewY(6deg); } }
+
+.road__label {
+  font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 3px 8px; border-radius: 999px;
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  opacity: 0; translate: 6px 0;
+  transition: opacity 0.3s, translate 0.5s var(--ease-out-expo), color 0.3s;
+}
+.road__flag:hover .road__label, .road__flag.is-current .road__label { opacity: 1; translate: 0 0; }
+.road__flag.is-current .road__label { color: var(--accent); }
+
+/* the car drives down the road with scroll, and turns round when you scroll back up */
+.road__car {
+  position: absolute; left: 50%; top: calc(var(--road-p, 0) * (100% - 24px));
+  width: 26px;
+  translate: -50% 0;
+  rotate: 90deg;
+  transition: rotate 0.45s var(--ease-out-expo);
+}
+.road.is-reverse .road__car { rotate: -90deg; }
+
+@media (max-width: 1200px) { .road { display: none; } }
