@@ -1,0 +1,85 @@
+<section id="experience" class="section section--band experience" aria-labelledby="experience-title">
+  <app-coin name="experience" style="bottom: 70px; left: 46%" />
+  <div class="container">
+    <header class="section-head section-head--split has-ghost" data-num="03">
+      <p class="section-index" appReveal><b>03</b> <span appScramble>Experience</span></p>
+      <h2 id="experience-title" class="section-title" appSplit>
+        Where I've been <em>building.</em>
+      </h2>
+      <p class="section-lede" appReveal="120">Contract and freelance work across banking, property and civic tech.</p>
+    </header>
+
+    <div class="exp__grid">
+      <div class="timeline">
+        <!-- Line that fills in as the timeline scrolls through the viewport -->
+        <span class="timeline__track" aria-hidden="true"><span class="timeline__fill"></span><span class="timeline__head"></span></span>
+        <ol class="timeline__list" role="list">
+          @for (r of roles; track r.role + r.period; let first = $first) {
+            <li class="timeline__item" [class.is-current]="first" appReveal>
+              <span class="timeline__marker" aria-hidden="true"></span>
+              <p class="timeline__period">{{ r.period }}</p>
+              <div class="timeline__body">
+                <h3 class="timeline__role">{{ r.role }}</h3>
+                <p class="timeline__org">{{ r.org }}</p>
+                <ul class="timeline__points" role="list">
+                  @for (pt of r.points; track pt) {
+                    <li>{{ pt }}</li>
+                  }
+                </ul>
+                <ul class="tags" role="list" aria-label="Technologies">
+                  @for (t of r.tags; track t) {
+                    <li class="tag">{{ t }}</li>
+                  }
+                </ul>
+              </div>
+            </li>
+          }
+          <li class="timeline__item" appReveal>
+            <span class="timeline__marker timeline__marker--edu" aria-hidden="true"></span>
+            <p class="timeline__period">{{ education.period }}</p>
+            <div class="timeline__body">
+              <h3 class="timeline__role">{{ education.course }}</h3>
+              <p class="timeline__org">{{ education.school }}</p>
+              <p class="timeline__desc">{{ education.description }}</p>
+              <ul class="tags" role="list" aria-label="Subjects">
+                @for (t of education.tags; track t) {
+                  <li class="tag">{{ t }}</li>
+                }
+              </ul>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <aside class="exp__aside" aria-labelledby="highlights-title">
+        <div class="highlights" appReveal="100">
+          <h3 id="highlights-title" class="highlights__title">Achievements</h3>
+          <ol class="highlights__list" role="list">
+            @for (h of highlights; track h.title; let i = $index) {
+              <li class="highlight" [style.--i]="i">
+                <span class="highlight__num" aria-hidden="true">0{{ i + 1 }}</span>
+                <div>
+                  <h4 class="highlight__head">{{ h.title }}</h4>
+                  <p class="highlight__body">{{ h.body }}</p>
+                  <p class="highlight__project">{{ h.project }}</p>
+                </div>
+              </li>
+            }
+          </ol>
+        </div>
+
+        <div class="practice" appReveal="160">
+          <h3 class="practice__title">Security practice</h3>
+          <ul class="practice__list" role="list">
+            @for (p of practice; track p.title) {
+              <li>
+                <i [class]="p.icon" aria-hidden="true"></i>
+                <span><strong>{{ p.title }}</strong> {{ p.detail }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
