@@ -1,0 +1,45 @@
+<section id="about" class="section about" aria-labelledby="about-title">
+  <app-coin name="about" style="top: 120px; right: 12%" />
+  <div class="container">
+    <header class="section-head about__head has-ghost" data-num="04">
+      <p class="section-index" appReveal><b>04</b> <span appScramble>About</span></p>
+      <h2 id="about-title" class="section-title" appSplit>
+        Engineering for the places <em>where things break.</em>
+      </h2>
+    </header>
+
+    <div class="about__grid">
+      <div class="about__copy">
+        <!-- Each word brightens as it scrolls through the reading line (CSS scroll-driven animation) -->
+        <p class="statement">
+          <span class="sr-only">{{ statement }}</span>
+          <span aria-hidden="true">
+            @for (w of words; track $index) {
+              <span class="statement__word" [class.statement__word--em]="w.em">{{ w.text }}</span>{{ ' ' }}
+            }
+          </span>
+        </p>
+
+        <dl class="facts reveal-stagger" appReveal="80">
+          <div style="--i: 0">
+            <dt>Based in</dt>
+            <dd>{{ profile.location }} · open to remote</dd>
+          </div>
+          <div style="--i: 1">
+            <dt>Studied</dt>
+            <dd>{{ education.course }}, {{ education.school }}</dd>
+          </div>
+          <div style="--i: 2">
+            <dt>Building now</dt>
+            <dd>Sentinel ASM — attack surface monitoring</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="about__console" appReveal="120">
+        <p class="about__console-label">Systems I've built <span>— from the repos</span></p>
+        <app-systems-console />
+      </div>
+    </div>
+  </div>
+</section>
