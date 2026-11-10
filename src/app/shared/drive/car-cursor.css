@@ -1,0 +1,79 @@
+.drive-trail, .drive-car { pointer-events: none; }
+
+.drive-trail { position: fixed; inset: 0; z-index: 398; overflow: hidden; }
+.drive-trail :is(i, b) { position: absolute; left: 0; top: 0; opacity: 0; will-change: transform, opacity; }
+/* tire mark: a short smudge aligned with the direction of travel */
+.drive-trail i {
+  width: 6px; height: 2.4px; margin: -1.2px 0 0 -3px; border-radius: 2px;
+  background: var(--text-faint);
+}
+.drive-trail i.is-turbo { background: var(--accent); width: 9px; }
+.drive-trail i.is-drift { background: var(--text-muted); width: 8px; height: 3px; }
+.drive-trail b.is-flame { background: radial-gradient(circle, #fff3c4 0%, #ffb02e 40%, rgba(255, 90, 30, 0) 70%); }
+.drive-trail b.is-spark { width: 14px; height: 14px; background: radial-gradient(circle, #fff6d8, var(--accent) 45%, transparent 70%); }
+.drive-trail b {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--text-faint) 70%, transparent), transparent 70%);
+}
+
+.drive-car {
+  position: fixed; left: 0; top: 0; z-index: 400;
+  width: 44px; height: 24px;
+  transform-origin: 22px 12px;
+  transform: translate3d(-100px, -100px, 0);
+  opacity: 0;
+  transition: opacity 0.4s;
+  will-change: transform;
+  --headlight: 0;
+}
+.drive-car.is-on { opacity: 1; }
+/* steps aside over text fields so it never sits on what you're typing */
+.drive-car.is-yield { opacity: 0.2; }
+
+/* Over something clickable: headlights on and a small hop */
+.drive-car.is-hover { --headlight: 1; }
+.drive-car app-car-icon { transition: scale 0.3s var(--ease-out-expo); }
+.drive-car.is-hover app-car-icon { animation: drive-hop 0.45s var(--ease-out-expo); }
+@keyframes drive-hop {
+  0% { scale: 1; }
+  35% { scale: 1.18; }
+  100% { scale: 1; }
+}
+
+.drive-car.is-turbo app-car-icon { filter: drop-shadow(0 0 6px var(--accent)); }
+
+/* Drifting: the body leans a touch out of the slide */
+.drive-car.is-drift app-car-icon { scale: 1.04 0.94; }
+
+/* Nitro: flickering flames out of the exhaust */
+.drive-car__flame {
+  position: absolute; right: 100%; top: 50%;
+  width: 22px; height: 10px; margin: -5px -4px 0 0;
+  border-radius: 50% 0 0 50%;
+  background: linear-gradient(to left, #fff3c4, #ffb02e 40%, rgba(255, 70, 20, 0));
+  transform-origin: right center;
+  opacity: 0; scale: 0.2 1;
+  transition: opacity 0.15s, scale 0.2s var(--ease-out-expo);
+}
+.drive-car.is-nitro .drive-car__flame { opacity: 1; scale: 1 1; animation: flicker 0.08s steps(2) infinite; }
+@keyframes flicker { 50% { scale: 0.7 0.8; } }
+
+/* Horn: a shock ring around the car */
+.drive-car__ring {
+  position: absolute; inset: -10px -4px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  opacity: 0;
+}
+.drive-car.is-honk .drive-car__ring { animation: honk-ring 0.6s var(--ease-out-expo); }
+@keyframes honk-ring { from { opacity: 0.9; scale: 0.6; } to { opacity: 0; scale: 1.8; } }
+/* Horn bubble lives in the unrotated trail layer so it always reads level */
+.drive-trail .drive-bubble {
+  position: absolute; left: 0; top: 0;
+  padding: 4px 8px; border-radius: 8px 8px 8px 2px;
+  background: var(--accent); color: var(--accent-ink);
+  font-family: var(--font-display); font-weight: 800; font-stretch: 80%; font-size: 0.72rem; letter-spacing: 0.04em;
+  white-space: nowrap;
+  opacity: 0;
+}
+
