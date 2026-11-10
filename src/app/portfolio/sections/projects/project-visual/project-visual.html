@@ -1,0 +1,129 @@
+<figure class="pv" [attr.data-kind]="kind()">
+  <div class="pv__stage" role="img" [attr.aria-label]="copy().label">
+    @switch (kind()) {
+      <!-- ── SilkCommerce: one catalogue, two storefront themes ── -->
+      @case ('storefronts') {
+        <div class="sf" aria-hidden="true">
+          <div class="sf__source">
+            <i class="fa-solid fa-boxes-stacked"></i> store catalogue
+          </div>
+          <div class="sf__windows">
+            <div class="sf__win sf__win--one">
+              <div class="sf__bar"><i></i><i></i><i></i><span>theme-one</span></div>
+              <div class="sf__body">
+                <div class="sf__hero"></div>
+                <div class="sf__grid">
+                  @for (t of tiles; track t) {
+                    <div class="sf__tile"><b></b><s></s></div>
+                  }
+                </div>
+              </div>
+            </div>
+            <div class="sf__win sf__win--two">
+              <div class="sf__bar"><i></i><i></i><i></i><span>theme-two</span><em>my build</em></div>
+              <div class="sf__body sf__body--two">
+                <div class="sf__slides"><span></span><span></span><span></span></div>
+                <div class="sf__cats">
+                  @for (t of [0, 1, 2, 3]; track t) { <span></span> }
+                </div>
+                <div class="sf__list">
+                  @for (t of [0, 1, 2]; track t) {
+                    <div class="sf__row"><b></b><s></s><u></u></div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- ── SafariBucks: PIN gate + rate-limited routes ── -->
+      @case ('pin') {
+        <div class="pin" aria-hidden="true">
+          <div class="phone">
+            <div class="phone__notch"></div>
+            <p class="phone__title">Confirm with your PIN</p>
+            <div class="phone__dots"><span></span><span></span><span></span><span></span></div>
+            <div class="phone__keys">
+              @for (k of keys; track $index) {
+                <span [class.is-empty]="!k">{{ k }}</span>
+              }
+            </div>
+          </div>
+          <div class="routes">
+            <div class="routes__head">
+              <span>PIN routes</span>
+              <em><i class="fa-solid fa-gauge-high"></i> throttle:pin</em>
+            </div>
+            <ul>
+              <li><b>GET</b> /pin/status</li>
+              <li><b>POST</b> /pin</li>
+              <li class="is-hot"><b>POST</b> /pin/verify</li>
+              <li><b>PUT</b> /pin</li>
+              <li><b>POST</b> /pin/reset</li>
+            </ul>
+            <p class="routes__foot"><i class="fa-solid fa-flask-vial"></i> feature-tested</p>
+          </div>
+        </div>
+      }
+
+      <!-- ── Bulk SMS: per-message gateway routing ── -->
+      @case ('routing') {
+        <div class="rt" aria-hidden="true">
+          <div class="rt__head"><span>message</span><span>gateway</span><span>callback</span></div>
+          <div class="rt__row">
+            <span class="rt__msg"><i class="fa-regular fa-message"></i> campaign</span>
+            <span class="rt__wire"></span>
+            <span class="rt__gw">Infobip</span>
+            <span class="rt__wire"></span>
+            <span class="rt__st rt__st--ok"><i class="fa-solid fa-check"></i> delivered</span>
+          </div>
+          <div class="rt__row">
+            <span class="rt__msg"><i class="fa-solid fa-code"></i> API send</span>
+            <span class="rt__wire"></span>
+            <span class="rt__gw">Onfon</span>
+            <span class="rt__wire"></span>
+            <span class="rt__st rt__st--ok"><i class="fa-solid fa-check"></i> delivered</span>
+          </div>
+          <div class="rt__row">
+            <span class="rt__msg"><i class="fa-regular fa-message"></i> campaign</span>
+            <span class="rt__wire"></span>
+            <span class="rt__gw">Onfon</span>
+            <span class="rt__wire rt__wire--bad"></span>
+            <span class="rt__st rt__st--bad"><i class="fa-solid fa-xmark"></i> failed</span>
+          </div>
+          <div class="rt__out">
+            <span><i class="fa-solid fa-chart-column"></i> delivery analytics by provider</span>
+            <span><i class="fa-solid fa-inbox"></i> failed-SMS outbox</span>
+          </div>
+        </div>
+      }
+
+      <!-- ── VoteGrip: offline queue, sync on reconnect ── -->
+      @case ('offline') {
+        <div class="off" aria-hidden="true">
+          <div class="phone phone--wide">
+            <div class="phone__notch"></div>
+            <p class="off__net"><i class="fa-solid fa-signal"></i> No network</p>
+            <ul class="off__queue">
+              <li><span>Election-day check-in</span><em>queued</em></li>
+              <li><span>Incident report</span><em>queued</em></li>
+              <li class="is-sync"><span>Form 34A submission</span><em>syncing</em></li>
+            </ul>
+            <p class="off__auth"><i class="fa-solid fa-key"></i> cached credentials · Hive</p>
+          </div>
+          <div class="off__link">
+            <span class="off__pulse"></span>
+            <small>on reconnect</small>
+          </div>
+          <div class="off__api">
+            <i class="fa-solid fa-server"></i>
+            <b>Django API</b>
+            <small>device-based 2FA</small>
+          </div>
+        </div>
+      }
+    }
+  </div>
+  <figcaption class="pv__caption">{{ copy().caption }}</figcaption>
+</figure>
