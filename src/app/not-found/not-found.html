@@ -1,0 +1,40 @@
+<main class="nf">
+  <div class="nf__bg" aria-hidden="true"></div>
+
+  <header class="container nf__top">
+    <a class="nf__brand" routerLink="/" aria-label="Dennis Kimani — home">
+      <span class="nf__mark" aria-hidden="true">DK</span>
+      <span>{{ profile.name }}</span>
+    </a>
+    <p class="nf__code">Error <b>404</b> · page not found</p>
+  </header>
+
+  <div class="container nf__body">
+    <p class="nf__ghost" aria-hidden="true">404</p>
+    <h1 class="nf__title">Wrong turn. <em>This road isn't on the map.</em></h1>
+    <p class="nf__lede">The page you asked for doesn't exist or has moved. Everything worth seeing is back on the main road.</p>
+    <div class="nf__actions">
+      <a class="btn btn--primary" routerLink="/">
+        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Drive back home
+      </a>
+      <a class="btn btn--ghost" routerLink="/" fragment="work">See the projects</a>
+      <a class="btn btn--ghost" routerLink="/" fragment="contact">Contact me</a>
+    </div>
+  </div>
+
+  <!-- The road ends here: the car pulls up to the barrier, brakes, and waits -->
+  <div class="nf__scene" aria-hidden="true">
+    <div class="nf__road">
+      <span class="nf__lane"></span>
+      <span class="nf__car"><app-car-icon /></span>
+      <span class="nf__barrier">
+        <span class="nf__lamp"></span>
+        <span class="nf__board"></span>
+        <span class="nf__lamp"></span>
+      </span>
+      <span class="nf__cone nf__cone--a"></span>
+      <span class="nf__cone nf__cone--b"></span>
+      <span class="nf__sign">Road closed</span>
+    </div>
+  </div>
+</main>
