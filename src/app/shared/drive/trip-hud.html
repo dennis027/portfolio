@@ -1,0 +1,107 @@
+@if (ready()) {
+  <div class="trip" [class.is-away]="active() === 'top' && !open()">
+    <button
+      #toggle
+      type="button"
+      class="trip__toggle"
+      [class.is-bump]="bump()"
+      [attr.aria-expanded]="open()"
+      aria-controls="trip-panel"
+      (click)="toggleOpen()"
+    >
+      <i class="fa-solid fa-flag-checkered" aria-hidden="true"></i>
+      <span class="trip__name">Trip</span>
+      <span class="trip__score">{{ score() }}<span>/{{ total() }}</span></span>
+      <span class="sr-only">— checkpoints and achievements</span>
+    </button>
+
+    <div
+      #panel
+      id="trip-panel"
+      class="trip__panel"
+      role="dialog"
+      aria-label="Road trip: checkpoints and achievements"
+      tabindex="-1"
+      [class.is-open]="open()"
+      [attr.inert]="open() ? null : ''"
+    >
+      <header class="trip__head">
+        <p class="trip__title">Road trip</p>
+        <p class="trip__sub">An optional little game. Nothing here hides any content.</p>
+      </header>
+
+      <p class="trip__group">Checkpoints</p>
+      <ol class="trip__list" role="list">
+        @for (l of links(); track l.anchor) {
+          <li [class.is-done]="passed(l.anchor)">
+            <i [class]="passed(l.anchor) ? 'fa-solid fa-flag' : 'fa-regular fa-flag'" aria-hidden="true"></i>
+            {{ l.label }}
+            <span class="sr-only">{{ passed(l.anchor) ? '— passed' : '— not yet' }}</span>
+          </li>
+        }
+      </ol>
+
+      <p class="trip__group">Achievements</p>
+      <ul class="trip__list" role="list">
+        @for (a of achievements(); track a.id) {
+          <li [class.is-done]="isUnlocked(a.id)">
+            <i [class]="isUnlocked(a.id) ? 'fa-solid fa-trophy' : 'fa-solid fa-lock'" aria-hidden="true"></i>
+            <span>
+              <b>{{ a.secret && !isUnlocked(a.id) ? 'Secret' : a.title }}</b>
+              <small>{{ a.hint }}</small>
+            </span>
+            <span class="sr-only">{{ isUnlocked(a.id) ? '— unlocked' : '— locked' }}</span>
+          </li>
+        }
+      </ul>
+
+      @if (trip.carEnabled()) {
+        <p class="trip__group">Coins <span class="trip__count">{{ trip.coins().length }}/{{ coinCount }}</span></p>
+        <div class="trip__coins" aria-hidden="true">
+          @for (n of [0, 1, 2, 3, 4, 5]; track n) {
+            <span [class.is-found]="n < trip.coins().length"></span>
+          }
+        </div>
+
+        <p class="trip__group">Garage</p>
+        <div class="trip__paints" role="group" aria-label="Car paint">
+          @for (p of trip.paints(); track p.id) {
+            <button
+              type="button"
+              class="trip__paint"
+              [style.--swatch]="p.mid"
+              [attr.aria-pressed]="trip.paint() === p.id"
+              [disabled]="!p.open"
+              [attr.title]="p.open ? p.name : p.name + ' — unlock at ' + p.needs + ' achievements'"
+              (click)="trip.setPaint(p.id)"
+            >
+              <span class="sr-only">{{ p.name }}{{ p.open ? '' : ' (locked)' }}</span>
+              @if (!p.open) {
+                <i class="fa-solid fa-lock" aria-hidden="true"></i>
+              }
+            </button>
+          }
+        </div>
+
+        <p class="trip__controls">
+          <kbd>Shift</kbd> nitro · <kbd>H</kbd> or click empty space to honk
+        </p>
+        <button type="button" class="trip__sound" [attr.aria-pressed]="trip.sound()" (click)="trip.toggleSound()">
+          <i [class]="trip.sound() ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark'" aria-hidden="true"></i>
+          Horn sound {{ trip.sound() ? 'on' : 'off' }}
+        </button>
+      }
+
+      <button type="button" class="trip__reset" (click)="reset()">Reset trip</button>
+    </div>
+  </div>
+}
+
+<div class="toasts" role="status" aria-live="polite">
+  @for (t of trip.toasts(); track t.id) {
+    <div class="toast">
+      <i class="fa-solid fa-trophy" aria-hidden="true"></i>
+      <span><small>{{ t.title }}</small>{{ t.text }}</span>
+    </div>
+  }
+</div>
