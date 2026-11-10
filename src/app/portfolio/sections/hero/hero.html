@@ -1,0 +1,98 @@
+<section id="top" class="hero" aria-labelledby="hero-title" #hero>
+  <app-coin name="hero" style="top: 46%; left: 14%" />
+  <div class="hero__bg" aria-hidden="true">
+    <div class="hero__dots"></div>
+    <div class="hero__dots hero__dots--lit"></div>
+    <app-packet-field class="hero__packets" />
+    <div class="hero__glow"></div>
+  </div>
+
+  <div class="container hero__top">
+    <p class="hero__meta hero-in" style="--d: 900ms">
+      <span class="hero__meta-key">Role</span> <span appScramble>{{ profile.role }}</span>
+    </p>
+    <p class="hero__meta hero__meta--right hero-in" style="--d: 980ms">
+      <span class="hero__meta-key">Based in</span> <span appScramble>{{ profile.location }}</span>
+      <span class="hero__coords">{{ profile.coordinates }}</span>
+    </p>
+  </div>
+
+  <div class="hero__stage">
+    <h1 id="hero-title" class="hero__name">
+      <span class="sr-only">{{ profile.name }}</span>
+      <span class="hero__word hero__word--back" aria-hidden="true">
+        @for (ch of first; track $index) {
+          <span class="hero__char" [style.--c]="$index"><span>{{ ch }}</span></span>
+        }
+      </span>
+      <span class="hero__word hero__word--front" aria-hidden="true">
+        @for (ch of last; track $index) {
+          <span class="hero__char" [style.--c]="$index + 3"><span>{{ ch }}</span></span>
+        }
+      </span>
+    </h1>
+
+    <div class="hero__figure">
+      <img
+        src="assets/dennis-figure.webp"
+        alt="Illustrated portrait of Dennis Kimani in a dark shirt, tie and gold-trimmed scarf"
+        width="560"
+        height="914"
+        fetchpriority="high"
+        decoding="async"
+      />
+    </div>
+  </div>
+
+  <div class="container hero__bottom">
+    <div class="hero__intro">
+      <p class="hero__lede hero-in" style="--d: 1050ms">
+        Full-stack engineer in Nairobi. I build payment, messaging and billing systems
+        <em>that keep working when networks don't.</em>
+      </p>
+      <div class="hero__actions hero-in" style="--d: 1150ms">
+        <a class="btn btn--primary" appMagnetic href="#work" (click)="scroll.to('work', $event)">
+          Explore my projects <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
+        </a>
+        <a class="btn btn--ghost" appMagnetic href="#contact" (click)="scroll.to('contact', $event)">
+          Contact me <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+        </a>
+        <button type="button" class="btn btn--ghost hero__cv" appMagnetic (click)="cv.download()" title="Download my CV as a PDF">
+          <i class="fa-solid fa-file-arrow-down" aria-hidden="true"></i> Download CV
+        </button>
+      </div>
+      <button type="button" class="hero__tour hero-in" style="--d: 1250ms" (click)="tour.start()">
+        <span class="hero__tour-icon" aria-hidden="true"><i class="fa-solid fa-play"></i></span>
+        Take the 30-second tour
+      </button>
+    </div>
+
+    <div class="hero__aside hero-in" style="--d: 1250ms">
+      <p class="hero__avail">
+        <span class="hero__avail-main"><span class="hero__pulse" aria-hidden="true"></span>Available for new work</span>
+        <span class="hero__avail-sub">Full-time · contract · freelance</span>
+      </p>
+      <ul class="hero__socials" role="list" aria-label="Profiles">
+        @for (s of socials; track s.url) {
+          <li>
+            <a class="icon-btn" appMagnetic="0.45" [href]="s.url" target="_blank" rel="noopener noreferrer" [attr.aria-label]="s.label + ' (opens in a new tab)'">
+              <i [class]="s.icon" aria-hidden="true"></i>
+            </a>
+          </li>
+        }
+        <li>
+          <a class="icon-btn" appMagnetic="0.45" [href]="'mailto:' + profile.email" [attr.aria-label]="'Email ' + profile.email">
+            <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <a class="hero__scroll hero-in" style="--d: 1400ms" href="#work" (click)="scroll.to('work', $event)" aria-label="Scroll to Work">
+    <span>Scroll</span>
+    <span class="hero__scroll-line" aria-hidden="true"></span>
+  </a>
+</section>
+
+<app-marquee class="hero-band" [items]="capabilities" [speed]="60" />
