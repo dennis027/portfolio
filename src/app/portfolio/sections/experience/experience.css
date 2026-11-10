@@ -1,0 +1,161 @@
+:host { display: block; }
+
+.exp__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: clamp(40px, 6vw, 96px);
+  align-items: start;
+}
+
+/* ── Timeline ── */
+
+.timeline { position: relative; }
+.timeline__list { display: grid; list-style: none; }
+
+.timeline__track {
+  position: absolute; left: 5px; top: 12px; bottom: 12px; width: 1px;
+  background: var(--border-strong);
+}
+.timeline__fill {
+  position: absolute; inset: 0;
+  background: linear-gradient(var(--accent), var(--accent-line));
+  transform-origin: top;
+}
+/* Fills with the scroll where supported; otherwise it is simply drawn */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .timeline__fill {
+      animation: fill-line linear both;
+      animation-timeline: view();
+      animation-range: entry 40% cover 65%;
+    }
+  }
+}
+@keyframes fill-line { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+/* A glowing head rides the end of the fill */
+.timeline__head { display: none; }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .timeline__head {
+      display: block;
+      position: absolute; left: -4px; top: 0;
+      width: 9px; height: 9px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-soft), 0 0 18px var(--accent);
+      animation: head-travel linear both;
+      animation-timeline: view();
+      animation-range: entry 40% cover 65%;
+    }
+  }
+}
+@keyframes head-travel { from { top: 0; } to { top: calc(100% - 9px); } }
+
+.timeline__item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 8px 28px;
+  padding: 0 0 48px 40px;
+}
+.timeline__item:last-child { padding-bottom: 0; }
+
+.timeline__marker {
+  position: absolute; left: 0; top: 6px;
+  width: 11px; height: 11px; border-radius: 50%;
+  background: var(--bg-elev); border: 1px solid var(--text-faint);
+}
+.timeline__item.is-current .timeline__marker {
+  background: var(--accent); border-color: var(--accent);
+  box-shadow: 0 0 0 5px var(--accent-soft);
+}
+.timeline__marker--edu { border-radius: 2px; transform: rotate(45deg); }
+
+.timeline__period {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent);
+  padding-top: 2px; white-space: nowrap;
+}
+.timeline__body { display: grid; gap: 4px; }
+.timeline__role { font-size: clamp(1.3rem, 2vw, 1.65rem); font-stretch: 90%; letter-spacing: -0.02em; }
+.timeline__org { font-size: 0.92rem; color: var(--text); font-weight: 500; }
+.timeline__points { display: grid; gap: 6px; margin: 8px 0 14px; list-style: none; }
+.timeline__points li {
+  position: relative; padding-left: 20px;
+  font-size: 0.94rem; color: var(--text-muted);
+}
+.timeline__points li::before {
+  content: ''; position: absolute; left: 0; top: 0.7em; width: 10px; height: 1px; background: var(--accent);
+}
+.timeline__desc { font-size: 0.94rem; color: var(--text-muted); margin: 6px 0 12px; max-width: 58ch; }
+
+/* ── Highlights ── */
+
+.exp__aside { display: grid; gap: 20px; position: sticky; top: calc(var(--nav-h) + 32px); }
+
+.highlights {
+  padding: clamp(22px, 3vw, 32px);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.highlights__title, .practice__title {
+  font-family: var(--font-mono); font-weight: 400; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 20px;
+}
+.highlights__list { display: grid; gap: 20px; list-style: none; }
+.highlight { display: grid; grid-template-columns: 28px 1fr; gap: 12px; }
+.highlight + .highlight { padding-top: 20px; border-top: 1px solid var(--border); }
+.highlight__num { font-family: var(--font-mono); font-size: 0.74rem; color: var(--accent); padding-top: 3px; }
+.highlight__head { font-size: 1.05rem; font-stretch: 92%; margin-bottom: 4px; letter-spacing: -0.01em; }
+.highlight__body { font-size: 0.88rem; color: var(--text-muted); line-height: 1.55; }
+.highlight__project {
+  margin-top: 6px;
+  font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-faint);
+}
+
+.practice {
+  padding: 22px 26px;
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--border-strong);
+}
+.practice__title { margin-bottom: 12px; }
+.practice__list { display: grid; gap: 10px; list-style: none; }
+.practice__list li { display: flex; align-items: baseline; gap: 12px; font-size: 0.9rem; color: var(--text-muted); }
+.practice__list i { color: var(--accent); width: 16px; text-align: center; }
+.practice__list strong { color: var(--text); font-weight: 600; margin-right: 6px; }
+
+@media (max-width: 960px) {
+  .exp__grid { grid-template-columns: minmax(0, 1fr); }
+  .exp__aside { position: static; }
+}
+@media (max-width: 600px) {
+  .timeline__item { grid-template-columns: minmax(0, 1fr); padding-left: 32px; }
+}
+
+/* ── Arrival ── */
+.timeline__item.reveal .timeline__marker { scale: 0; transition: scale 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.25s; }
+.timeline__item.is-revealed .timeline__marker { scale: 1; }
+.timeline__item.is-current .timeline__marker::after {
+  content: ''; position: absolute; inset: -6px; border-radius: 50%;
+  border: 1px solid var(--accent); opacity: 0;
+  animation: marker-ping 2.6s ease-out infinite;
+}
+@keyframes marker-ping { 0% { transform: scale(0.5); opacity: 0.9; } 100% { transform: scale(2); opacity: 0; } }
+
+.timeline__item.reveal .timeline__body > * {
+  opacity: 0; transform: translateX(-16px);
+  transition: opacity 0.7s var(--ease), transform 0.9s var(--ease-out-expo);
+}
+.timeline__item.is-revealed .timeline__body > * { opacity: 1; transform: none; }
+.timeline__item.is-revealed .timeline__body > :nth-child(2) { transition-delay: 70ms; }
+.timeline__item.is-revealed .timeline__body > :nth-child(3) { transition-delay: 140ms; }
+.timeline__item.is-revealed .timeline__body > :nth-child(4) { transition-delay: 210ms; }
+
+.highlights.reveal .highlight {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity 0.7s var(--ease), transform 0.9s var(--ease-out-expo);
+  transition-delay: calc(200ms + var(--i, 0) * 110ms);
+}
+.highlights.is-revealed .highlight { opacity: 1; transform: none; }
+.highlight { transition: transform 0.5s var(--ease-out-expo); }
+.highlights.is-revealed .highlight:hover { transform: translateX(6px); transition-delay: 0ms; }
