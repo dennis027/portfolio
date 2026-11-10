@@ -1,0 +1,140 @@
+.trip {
+  position: fixed; left: clamp(12px, 2vw, 24px); bottom: clamp(12px, 2vw, 24px); z-index: 95;
+  transition: opacity 0.4s var(--ease), translate 0.6s var(--ease-out-expo), visibility 0s;
+}
+/* kept off the first screen so nothing competes with the hero's actions */
+.trip.is-away { opacity: 0; translate: 0 16px; visibility: hidden; transition: opacity 0.3s var(--ease), translate 0.4s var(--ease), visibility 0s linear 0.4s; }
+@media (max-width: 600px) {
+  .trip__name { display: none; }
+  .trip__toggle { padding: 0 12px; }
+}
+
+.trip__toggle {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 40px; padding: 0 14px 0 12px; border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--border-strong);
+  font-size: 0.8rem; color: var(--text-muted);
+  transition: border-color 0.2s, color 0.2s, transform 0.4s var(--ease-out-expo);
+}
+.trip__toggle:hover, .trip__toggle[aria-expanded='true'] { border-color: var(--accent-line); color: var(--text); }
+.trip__toggle i { color: var(--accent); }
+.trip__name { font-weight: 600; }
+.trip__score { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text); font-variant-numeric: tabular-nums; }
+.trip__score span { color: var(--text-faint); }
+.trip__toggle.is-bump { animation: bump 0.6s var(--ease-out-expo); }
+@keyframes bump { 30% { transform: scale(1.12); border-color: var(--accent); } }
+
+.trip__panel {
+  position: absolute; left: 0; bottom: calc(100% + 10px);
+  width: min(300px, calc(100vw - 24px));
+  max-height: min(70svh, 520px); overflow-y: auto;
+  padding: 18px 18px 14px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-lg);
+  opacity: 0; translate: 0 10px; scale: 0.97; transform-origin: bottom left;
+  visibility: hidden;
+  transition: opacity 0.25s var(--ease), translate 0.4s var(--ease-out-expo), scale 0.4s var(--ease-out-expo), visibility 0s linear 0.4s;
+}
+.trip__panel.is-open { opacity: 1; translate: 0 0; scale: 1; visibility: visible; transition-delay: 0s; }
+.trip__panel:focus { outline: none; }
+
+.trip__title { font-family: var(--font-display); font-weight: 700; font-stretch: 88%; font-size: 1.1rem; }
+.trip__sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+
+.trip__group {
+  margin: 16px 0 8px;
+  font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-faint);
+}
+.trip__list { display: grid; gap: 6px; list-style: none; }
+.trip__list li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 0.86rem; color: var(--text-faint);
+}
+.trip__list li i { width: 14px; margin-top: 3px; text-align: center; font-size: 0.8rem; }
+.trip__list li.is-done { color: var(--text); }
+.trip__list li.is-done i { color: var(--accent); }
+.trip__list b { display: block; font-weight: 600; }
+.trip__list small { display: block; font-size: 0.74rem; color: var(--text-faint); }
+
+.trip__count { margin-left: 6px; color: var(--accent); }
+.trip__coins { display: flex; gap: 6px; }
+.trip__coins span {
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 1px dashed var(--border-strong);
+  transition: background 0.3s, border-color 0.3s;
+}
+.trip__coins span.is-found {
+  border: 0;
+  background: radial-gradient(circle at 35% 30%, #fff3c4, #f2b84b 45%, #b67c14 100%);
+}
+
+.trip__paints { display: flex; gap: 8px; }
+.trip__paint {
+  position: relative;
+  display: grid; place-items: center;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--swatch);
+  box-shadow: inset 0 -4px 6px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s var(--ease-out-expo), box-shadow 0.2s;
+}
+.trip__paint:hover:not(:disabled) { transform: translateY(-2px); }
+.trip__paint[aria-pressed='true'] { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--accent); }
+.trip__paint:disabled { opacity: 0.35; cursor: not-allowed; }
+.trip__paint i { font-size: 0.6rem; color: #fff; }
+
+.trip__controls { margin-top: 16px; font-size: 0.74rem; color: var(--text-muted); line-height: 1.8; }
+.trip__controls kbd {
+  font-family: var(--font-mono); font-size: 0.68rem;
+  padding: 1px 6px; border-radius: 4px;
+  border: 1px solid var(--border-strong); border-bottom-width: 2px;
+  color: var(--text);
+}
+.trip__sound {
+  display: inline-flex; align-items: center; gap: 8px; margin-top: 8px;
+  padding: 5px 10px; border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  font-size: 0.76rem; color: var(--text-muted);
+  transition: color 0.2s, border-color 0.2s;
+}
+.trip__sound[aria-pressed='true'] { color: var(--accent); border-color: var(--accent-line); }
+
+.trip__reset {
+  display: block; margin-top: 14px;
+  font-size: 0.74rem; color: var(--text-faint);
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.trip__reset:hover { color: var(--text); }
+
+/* Toasts rise from the trip counter */
+.toasts {
+  /* bottom centre: clear of the hero buttons, the trip counter and back-to-top */
+  position: fixed; left: 50%; bottom: clamp(16px, 3vw, 28px); z-index: 96;
+  translate: -50% 0;
+  display: grid; justify-items: center; gap: 8px;
+  pointer-events: none;
+}
+.toast {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 16px 10px 12px; border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--accent-line);
+  box-shadow: var(--shadow-md);
+  font-size: 0.86rem; font-weight: 600; color: var(--text);
+  animation: toast-in 0.6s var(--ease-out-expo) both, toast-out 0.4s var(--ease) 3s forwards;
+}
+.toast i {
+  display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px;
+  background: var(--accent); color: var(--accent-ink); font-size: 0.8rem;
+}
+.toast small {
+  display: block;
+  font-family: var(--font-mono); font-size: 0.62rem; font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--accent);
+}
+@keyframes toast-in { from { opacity: 0; transform: translateY(14px) scale(0.96); } }
+@keyframes toast-out { to { opacity: 0; transform: translateY(-6px); } }
