@@ -1,0 +1,79 @@
+<article class="cv">
+  <header class="cv__head">
+    <div>
+      <h1 class="cv__name">{{ profile.name }}</h1>
+      <p class="cv__role">{{ profile.role }} · {{ profile.location }}</p>
+    </div>
+    <ul class="cv__contact">
+      <li>{{ profile.email }}</li>
+      <li>{{ profile.phone }}</li>
+      <li>{{ portfolio }}</li>
+      @for (s of socials; track s.url) {
+        <li>{{ s.short }}</li>
+      }
+    </ul>
+  </header>
+
+  <section class="cv__section">
+    <h2>Profile</h2>
+    <p>{{ summary }}</p>
+  </section>
+
+  <section class="cv__section">
+    <h2>Experience</h2>
+    @for (r of experience; track r.role + r.period) {
+      <div class="cv__item">
+        <p class="cv__line"><b>{{ r.role }}</b> — {{ r.org }} <span>{{ r.period }}</span></p>
+        <ul>
+          @for (pt of r.points; track pt) {
+            <li>{{ pt }}</li>
+          }
+        </ul>
+        <p class="cv__tags">{{ r.tags.join(' · ') }}</p>
+      </div>
+    }
+  </section>
+
+  <section class="cv__section">
+    <h2>Selected projects</h2>
+    @for (p of projects; track p.id) {
+      <div class="cv__item">
+        <p class="cv__line"><b>{{ p.name }}</b> — {{ p.kind }} <span>{{ p.status }}</span></p>
+        <p>{{ p.summary }} <i>{{ p.role }}.</i></p>
+        <ul>
+          @for (c of p.contributions.slice(0, 3); track c) {
+            <li>{{ c }}</li>
+          }
+        </ul>
+        <p class="cv__tags">
+          {{ p.stack.join(' · ') }}
+          @for (l of p.links; track l.url) {
+            <span class="cv__link">{{ shortUrl(l.url) }}</span>
+          }
+        </p>
+      </div>
+    }
+    <p class="cv__also">
+      <b>Also built:</b>
+      @for (p of more; track p.id; let last = $last) {
+        {{ p.name }} ({{ p.kind.toLowerCase() }}){{ last ? '.' : ';' }}
+      }
+    </p>
+  </section>
+
+  <section class="cv__section cv__section--split">
+    <div>
+      <h2>Skills</h2>
+      @for (g of skills; track g.title) {
+        <p class="cv__skill"><b>{{ g.title }}:</b> {{ g.items.join(', ') }}</p>
+      }
+    </div>
+    <div>
+      <h2>Education</h2>
+      <p class="cv__line"><b>{{ education.course }}</b> <span>{{ education.period }}</span></p>
+      <p>{{ education.school }} — {{ education.description }}</p>
+    </div>
+  </section>
+
+  <footer class="cv__foot">Generated from {{ portfolio }} — the live version has project screenshots and demos.</footer>
+</article>
