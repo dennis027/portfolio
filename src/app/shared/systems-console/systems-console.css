@@ -1,0 +1,78 @@
+:host { display: block; }
+
+
+.console {
+  position: relative;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, var(--surface-2), var(--surface));
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+.console::before {
+  /* hairline highlight along the top edge */
+  content: ''; position: absolute; inset: 0 0 auto; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-line), transparent);
+}
+
+.console__bar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.console__dots { display: inline-flex; gap: 6px; }
+.console__dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--surface-3); }
+.console__file {
+  font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-faint);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.console__auto {
+  margin-left: auto;
+  font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.console__tabs {
+  display: flex; gap: 4px;
+  padding: 10px 12px 0;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.console__tab {
+  position: relative;
+  padding: 10px 12px 12px;
+  font-size: 0.84rem; font-weight: 500;
+  color: var(--text-faint);
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+.console__tab:hover { color: var(--text-muted); }
+.console__tab[aria-selected='true'] { color: var(--text); }
+.console__tab[aria-selected='true']::after {
+  content: ''; position: absolute; left: 12px; right: 12px; bottom: -1px; height: 2px;
+  background: var(--border-strong);
+}
+.console__progress {
+  position: absolute; left: 12px; right: 12px; bottom: -1px; height: 2px; z-index: 1;
+  background: var(--accent);
+  transform-origin: left;
+  animation: progress 7s linear forwards;
+}
+@keyframes progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+.console__body { padding: 24px 22px 22px; min-height: 360px; display: grid; }
+.console__panel { animation: fade-in 0.5s var(--ease); display: grid; align-content: center; }
+@keyframes fade-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.console__stack { justify-content: center; margin-top: 18px; }
+
+@media (max-width: 640px) {
+  .console__body { padding: 22px 14px 20px; min-height: 0; }
+}
+
+.console__caret {
+  display: inline-block; width: 7px; height: 0.95em; margin-left: 2px; vertical-align: -0.1em;
+  background: var(--accent);
+  animation: caret 0.8s steps(1) infinite;
+}
+@keyframes caret { 50% { opacity: 0; } }
