@@ -1,0 +1,10 @@
+<div class="marquee__track" #track>
+  @for (copy of copies; track copy) {
+    <div class="marquee__group">
+      @for (item of items(); track $index) {
+        <span class="marquee__item">{{ item }}</span>
+        <span class="marquee__sep"></span>
+      }
+    </div>
+  }
+</div>
