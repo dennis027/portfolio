@@ -1,0 +1,125 @@
+:host { display: block; }
+
+.nf {
+  position: relative; isolation: isolate;
+  min-height: 100svh;
+  display: grid; grid-template-rows: auto 1fr auto;
+  overflow: hidden;
+}
+.nf__bg {
+  position: absolute; inset: 0; z-index: -1;
+  background:
+    radial-gradient(60% 50% at 78% 100%, var(--accent-soft), transparent 70%),
+    radial-gradient(circle, var(--dot) 1px, transparent 1.5px) 0 0 / 28px 28px;
+  mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 80%, transparent);
+}
+
+.nf__top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 18px; }
+.nf__brand {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-family: var(--font-display); font-weight: 700; font-stretch: 90%; text-transform: uppercase; font-size: 0.9rem;
+}
+.nf__mark {
+  display: grid; place-items: center; width: 34px; height: 34px; border-radius: 9px;
+  background: var(--accent); color: var(--accent-ink); font-size: 0.78rem;
+}
+.nf__code {
+  font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-faint);
+}
+.nf__code b { color: var(--accent); font-weight: 500; }
+
+.nf__body { position: relative; align-self: center; padding-block: clamp(32px, 6vw, 72px); }
+.nf__ghost {
+  position: absolute; right: var(--gutter); top: 50%; z-index: -1;
+  translate: 0 -55%;
+  font-family: var(--font-display); font-weight: 800; font-stretch: 75%;
+  font-size: clamp(11rem, 34vw, 30rem); line-height: 0.8; letter-spacing: -0.04em;
+  color: transparent; -webkit-text-stroke: 1px var(--border-strong);
+  user-select: none;
+  animation: nf-fade 1.4s var(--ease) both;
+}
+.nf__title {
+  max-width: 14ch;
+  font-family: var(--font-display); font-weight: 700; font-stretch: 86%;
+  font-size: clamp(2.6rem, 7.2vw, 6rem); line-height: 0.98; letter-spacing: -0.04em;
+  animation: nf-rise 1s var(--ease-out-expo) 0.1s both;
+}
+.nf__title em {
+  display: block;
+  font-family: var(--font-serif); font-weight: 400; font-style: italic; letter-spacing: -0.02em;
+  color: var(--accent);
+}
+.nf__lede {
+  max-width: 44ch; margin-top: 24px;
+  font-size: clamp(1rem, 1.3vw, 1.15rem); line-height: 1.55; color: var(--text-muted);
+  animation: nf-rise 1s var(--ease-out-expo) 0.2s both;
+}
+.nf__actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px; animation: nf-rise 1s var(--ease-out-expo) 0.3s both; }
+
+/* ── Scene ── */
+.nf__scene { padding-bottom: clamp(28px, 5vw, 56px); }
+.nf__road {
+  position: relative; height: 76px;
+  background: var(--surface);
+  border-block: 1px solid var(--border-strong);
+}
+.nf__lane {
+  position: absolute; left: 0; right: 0; top: 50%; height: 2px; translate: 0 -50%;
+  background: repeating-linear-gradient(90deg, var(--text-faint) 0 26px, transparent 26px 52px);
+  opacity: 0.55;
+}
+.nf__car {
+  position: absolute; top: 50%; left: 0; width: 74px;
+  translate: -120% -50%;
+  --headlight: 1;
+  animation: nf-drive 2.6s cubic-bezier(0.2, 0.7, 0.2, 1) 0.5s forwards, nf-idle 0.5s ease-in-out 3.2s infinite, nf-brake 2.6s linear 0.5s forwards;
+}
+.nf__barrier {
+  position: absolute; top: -10px; bottom: -10px; left: 72%;
+  display: grid; grid-template-rows: auto 1fr auto; justify-items: center;
+  width: 14px;
+}
+.nf__board {
+  width: 10px; border-radius: 3px;
+  background: repeating-linear-gradient(-45deg, var(--accent) 0 9px, var(--accent-ink) 9px 18px);
+  box-shadow: 0 0 0 1px var(--border-strong);
+}
+.nf__lamp { width: 10px; height: 10px; border-radius: 50%; background: var(--danger); animation: nf-blink 1.2s steps(1) infinite; }
+.nf__lamp:last-child { animation-delay: 0.6s; }
+.nf__cone {
+  position: absolute; left: calc(72% + 44px); top: 16px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: radial-gradient(circle, #fff 0 22%, #f0803c 24% 62%, #c45a1e 64%);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+.nf__cone--b { left: calc(72% + 78px); top: auto; bottom: 16px; }
+.nf__sign {
+  position: absolute; left: calc(72% + 26px); bottom: calc(100% + 12px);
+  font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--accent); white-space: nowrap;
+}
+
+@keyframes nf-drive { to { left: 72%; translate: calc(-100% - 22px) -50%; } }
+@keyframes nf-idle { 50% { transform: translateY(0.6px); } }
+@keyframes nf-brake { 0%, 55% { --brake: 0; } 70%, 100% { --brake: 1; } }
+@keyframes nf-blink { 50% { opacity: 0.2; } }
+@keyframes nf-rise { from { opacity: 0; transform: translateY(24px); } }
+@keyframes nf-fade { from { opacity: 0; } }
+
+@media (max-width: 640px) {
+  .nf__code { display: none; }
+  .nf__actions .btn { flex: 1 1 auto; }
+  .nf__barrier, .nf__sign { left: 78%; }
+  .nf__sign { left: auto; right: 12px; }
+  .nf__cone { display: none; }
+  @keyframes nf-drive { to { left: 78%; translate: calc(-100% - 18px) -50%; } }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nf__ghost, .nf__title, .nf__lede, .nf__actions, .nf__lamp { animation: none; }
+  .nf__car { animation: none; left: 72%; translate: calc(-100% - 22px) -50%; --brake: 1; }
+}
+@media (prefers-reduced-motion: reduce) and (max-width: 640px) {
+  .nf__car { left: 78%; translate: calc(-100% - 18px) -50%; }
+}
