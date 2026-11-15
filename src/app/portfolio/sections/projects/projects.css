@@ -313,3 +313,6 @@
   .index__links { grid-auto-flow: column; justify-content: start; gap: 20px; padding-top: 0; }
   .index__row::before { display: none; }
 }
+
+/* Solo builds sit directly under the featured case study */
+.work__cases--solo { margin-top: clamp(72px, 9vw, 128px); }

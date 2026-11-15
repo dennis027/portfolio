@@ -14,7 +14,7 @@ export const PROFILE = {
   location: 'Nairobi, Kenya',
   coordinates: '1°17′S 36°49′E',
   timeZone: 'Africa/Nairobi',
-  email: 'machaariad196@gmail.com',
+  email: 'machariad196@gmail.com',
   phone: '+254 799 157 137',
   phoneHref: 'tel:+254799157137',
   /** Set to e.g. 'assets/dennis-kimani-cv.pdf' once the file is added to src/assets. */
@@ -124,22 +124,22 @@ export const HERO_SYSTEMS: HeroSystem[] = [
   },
   {
     id: 'sentinel',
-    name: 'Sentinel ASM',
+    name: 'Densight',
     file: 'sentinel-asm / stack',
     diagram: {
       rows: [
-        [{ label: 'Django + DRF', detail: 'API · health checks', tone: 'service' }],
-        [{ label: 'Redis', detail: 'broker + cache', tone: 'edge' }],
+        [{ label: 'Angular 20', detail: 'web app', tone: 'client' }],
+        [{ label: 'Django + DRF', detail: 'API · JWT · rate limits', tone: 'service' }],
         [
-          { label: 'Celery worker', detail: 'scan jobs', tone: 'service' },
-          { label: 'Celery beat', detail: 'daily monitoring', tone: 'service' },
+          { label: 'Redis', detail: 'job broker', tone: 'edge' },
+          { label: 'Celery workers', detail: 'scan jobs · schedules', tone: 'service' },
         ],
         [
-          { label: 'Postgres 16', detail: 'assets · findings', tone: 'data' },
-          { label: 'Scanners', detail: 'planned', tone: 'planned' },
+          { label: 'Postgres', detail: 'assets · findings', tone: 'data' },
+          { label: '25 scanners', detail: 'subfinder · nmap · nuclei', tone: 'external' },
         ],
       ],
-      caption: 'Attack surface management, in development: the stack is up; scanners come next.',
+      caption: 'Attack surface management: find every host, scan it, grade the risk.',
     },
     stack: ['Django', 'Celery', 'Redis', 'Postgres'],
   },
@@ -235,6 +235,84 @@ export const FEATURED_PROJECT: Project = {
   ],
 };
 
+/** Solo builds shown straight after the featured project, each with its own screenshots. */
+export const SOLO_PROJECTS: Project[] = [
+  {
+    id: 'fundi-jenga-pro',
+    name: 'Fundi & Jenga Pro',
+    kind: 'Construction workforce platform',
+    summary: 'Construction workers log their gigs. Contractors verify them and pay by M-Pesa.',
+    problem: 'Day-rate site work leaves no record a worker can show a lender.',
+    role: 'Full-stack developer',
+    contributions: [
+      'Verified gigs build a worker credit score and a shareable certificate',
+      'M-Pesa payments, payroll and attendance for contractors',
+      'English and Kiswahili, installable as an app',
+    ],
+    stack: ['Angular 20', 'Django', 'PostgreSQL', 'Docker'],
+    links: [
+      { label: 'Live demo', url: 'https://dennis027.github.io/Jenga-and-Fundi-Pro/jenga-pro/', kind: 'live' },
+      { label: 'Source', url: 'https://github.com/dennis027/Jenga-and-Fundi-Pro', kind: 'code' },
+    ],
+    status: 'Live',
+    icon: 'fa-solid fa-screwdriver-wrench',
+    screenshots: [
+      {
+        src: 'assets/projects/fundi-jenga-contractor.webp',
+        alt: 'Jenga Pro contractor dashboard listing gigs waiting for verification, with quick actions',
+        label: 'Contractor',
+      },
+      {
+        src: 'assets/projects/fundi-jenga-worker.webp',
+        alt: 'Fundi Pro worker dashboard with credit score, gigs to finish and completed work',
+        label: 'Worker',
+      },
+      {
+        src: 'assets/projects/fundi-jenga-score.webp',
+        alt: 'Fundi Pro credit score page with score history and a shareable verified work certificate',
+        label: 'Credit score',
+      },
+    ],
+  },
+  {
+    id: 'sentinel-asm',
+    name: 'Densight',
+    kind: 'Attack surface management',
+    summary: 'Point it at a domain you own. It finds every host, scans each one, and tells you what to fix first.',
+    problem: 'Teams lose track of what they expose to the internet.',
+    role: 'Sole developer',
+    contributions: [
+      '25 scanners, 21 of them written for this project',
+      'Risk grades, a ranked fix plan, and daily change tracking',
+      'Two-factor sign-in, rate limits and an audit log',
+    ],
+    stack: ['Angular 20', 'Django', 'Celery', 'PostgreSQL', 'Docker'],
+    links: [
+      { label: 'Live demo', url: 'https://dennis027.github.io/sentinel-asm/', kind: 'live' },
+      { label: 'Source', url: 'https://github.com/dennis027/sentinel-asm', kind: 'code' },
+    ],
+    status: 'Live',
+    icon: 'fa-solid fa-satellite-dish',
+    screenshots: [
+      {
+        src: 'assets/projects/densight-dashboard.webp',
+        alt: 'Densight dashboard with a plain-English summary, risk grade and open issue counts',
+        label: 'Dashboard',
+      },
+      {
+        src: 'assets/projects/densight-map.webp',
+        alt: 'Densight attack surface map showing every host around the domain, coloured by risk grade',
+        label: 'Surface map',
+      },
+      {
+        src: 'assets/projects/densight-findings.webp',
+        alt: 'Densight findings list sorted by severity, from critical to high',
+        label: 'Findings',
+      },
+    ],
+  },
+];
+
 /** Team products — larger cards with an architecture visual. */
 export const TEAM_PROJECTS: Project[] = [
   {
@@ -317,38 +395,6 @@ export const SUPPORTING_PROJECTS: Project[] = [
 
 /** Compact cards. */
 export const MORE_PROJECTS: Project[] = [
-  {
-    id: 'sentinel-asm',
-    name: 'Sentinel ASM',
-    kind: 'Security platform',
-    summary: 'Attack surface monitoring — subdomains, ports, SSL and risk scores. The stack runs; scanners are next.',
-    problem: 'Teams lose track of what they expose to the internet.',
-    role: 'Personal project · in development',
-    contributions: [
-      'Health endpoint that proves the API can reach Postgres and Redis end to end',
-      'One image runs the API, Celery worker and beat; all config comes from the environment',
-    ],
-    stack: ['Django', 'DRF', 'Celery', 'Redis', 'Postgres 16', 'Docker'],
-    links: [],
-    status: 'In development',
-    icon: 'fa-solid fa-satellite-dish',
-  },
-  {
-    id: 'fundi-jenga-pro',
-    name: 'Fundi & Jenga Pro',
-    kind: 'Services marketplace',
-    summary: 'A marketplace to find, hire and pay verified tradespeople (fundis).',
-    problem: '',
-    role: 'Full-stack developer',
-    contributions: ['Role-based access control across all modules', 'JWT authentication with permission layers'],
-    stack: ['Django', 'Angular', 'Flutter', 'PostgreSQL'],
-    links: [
-      { label: 'Web app', url: 'https://github.com/dennis027/new-fundi-pro', kind: 'code' },
-      { label: 'API', url: 'https://github.com/dennis027/jenga-backend', kind: 'code' },
-    ],
-    status: 'Built',
-    icon: 'fa-solid fa-screwdriver-wrench',
-  },
   {
     id: 'nmap',
     name: 'Network Scanner',

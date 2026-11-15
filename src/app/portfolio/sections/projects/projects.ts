@@ -6,7 +6,7 @@ import { SplitDirective } from '../../../shared/motion/split.directive';
 import { SpotlightDirective } from '../../../shared/spotlight.directive';
 import { TiltDirective } from '../../../shared/motion/tilt.directive';
 import { ShareService } from '../../../shared/share.service';
-import { FEATURED_PROJECT, MORE_PROJECTS, SUPPORTING_PROJECTS, TEAM_PROJECTS } from '../../portfolio.data';
+import { FEATURED_PROJECT, MORE_PROJECTS, SOLO_PROJECTS, SUPPORTING_PROJECTS, TEAM_PROJECTS } from '../../portfolio.data';
 import { ProjectCard, linkIcon, statusClass } from './project-card';
 
 @Component({
@@ -17,6 +17,7 @@ import { ProjectCard, linkIcon, statusClass } from './project-card';
 })
 export class Projects implements OnDestroy {
   protected readonly featured = FEATURED_PROJECT;
+  protected readonly solo = SOLO_PROJECTS;
   protected readonly cases = [...TEAM_PROJECTS, ...SUPPORTING_PROJECTS];
   protected readonly more = MORE_PROJECTS;
   /** Feature contributions are told through the screenshots; the last one (security) is shown separately. */

@@ -19,7 +19,7 @@ export function statusClass(status: string): string {
   return 'status';
 }
 
-/** A case-study row: project illustration on one side, problem → role → contributions on the other. */
+/** A case-study row: screenshots or a project illustration on one side, problem → role → contributions on the other. */
 @Component({
   selector: 'app-project-card',
   imports: [ProjectVisual, SpotlightDirective, TiltDirective],
@@ -40,6 +40,8 @@ export class ProjectCard {
   /** On narrow screens only the first few contributions show until expanded (see CSS). */
   protected readonly preview = 2;
   protected readonly expanded = signal(false);
+  /** Index of the screenshot on show, for projects that have screenshots. */
+  protected readonly shot = signal(0);
 
   protected readonly linkIcon = linkIcon;
   protected readonly statusClass = statusClass;

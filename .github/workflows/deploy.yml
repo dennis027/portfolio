@@ -1,0 +1,56 @@
+name: Deploy to GitHub Pages
+
+# Tests, builds and publishes the site to the gh-pages branch on every push to main.
+# Can also be started by hand from the Actions tab.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write # push to the gh-pages branch
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Test
+        run: npm test -- --watch=false --browsers=ChromeHeadless
+
+      # The build downloads Google Fonts to inline them, which fails now and then: retry.
+      - name: Build
+        run: |
+          for attempt in 1 2 3; do
+            npm run build:gh && exit 0
+            echo "Build attempt $attempt failed; retrying in 10s"
+            sleep 10
+          done
+          exit 1
+
+      # GitHub Pages serves 404.html for unknown URLs; give it the client-side app shell.
+      - name: Add 404 page
+        run: cp dist/portfolio/browser/index.csr.html dist/portfolio/browser/404.html
+
+      - name: Publish to gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          npx angular-cli-ghpages
+          --dir=dist/portfolio/browser
+          --no-notfound
+          --repo=https://github.com/${{ github.repository }}.git
+          --name="github-actions[bot]"
+          --email="41898282+github-actions[bot]@users.noreply.github.com"

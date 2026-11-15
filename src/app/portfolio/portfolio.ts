@@ -18,6 +18,7 @@ import { startSmoothScroll } from '../shared/motion/smooth-scroll';
 import {
   FEATURED_PROJECT,
   MORE_PROJECTS,
+  SOLO_PROJECTS,
   NAV_LINKS,
   PROFILE,
   SOCIALS,
@@ -138,7 +139,7 @@ export class Portfolio implements OnDestroy {
 
   /** Everything the command palette (Ctrl/⌘ + K) can do. */
   protected readonly commands = computed<Command[]>(() => {
-    const projects = [FEATURED_PROJECT, ...TEAM_PROJECTS, ...SUPPORTING_PROJECTS, ...MORE_PROJECTS];
+    const projects = [FEATURED_PROJECT, ...SOLO_PROJECTS, ...TEAM_PROJECTS, ...SUPPORTING_PROJECTS, ...MORE_PROJECTS];
     const open = (url: string) => () => this.document.defaultView?.open(url, '_blank', 'noopener');
     const copy = (text: string, label: string) => () =>
       navigator.clipboard?.writeText(text).then(

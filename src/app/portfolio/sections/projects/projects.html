@@ -116,6 +116,13 @@
       }
     </article>
 
+    <!-- ── Other solo builds, with screenshots ── -->
+    <div class="work__cases work__cases--solo">
+      @for (p of solo; track p.id; let i = $index; let odd = $odd) {
+        <app-project-card [project]="p" [index]="i + 2" [reverse]="odd" appReveal />
+      }
+    </div>
+
     <!-- ── Team & supporting products: alternating case-study rows ── -->
     <div class="work__group-head">
       <h3 class="work__group-title" appSplit>Team products</h3>
@@ -124,20 +131,20 @@
     </div>
     <div class="work__cases">
       @for (p of cases; track p.id; let i = $index; let odd = $odd) {
-        <app-project-card [project]="p" [index]="i + 2" [reverse]="odd" appReveal />
+        <app-project-card [project]="p" [index]="solo.length + i + 2" [reverse]="odd" appReveal />
       }
     </div>
 
     <!-- ── Smaller builds: an index, not more cards ── -->
     <div class="work__group-head">
       <h3 class="work__group-title" appSplit>Also built</h3>
-      <p class="work__group-note" appReveal="80">Security tooling, a marketplace, and what I'm building next.</p>
+      <p class="work__group-note" appReveal="80">A smaller security tool.</p>
       <span class="reveal-rule work__group-rule" appReveal></span>
     </div>
     <ul class="index reveal-stagger" role="list" appReveal>
       @for (p of more; track p.id; let i = $index) {
         <li class="index__row" [id]="'project-' + p.id" [style.--i]="i">
-          <span class="index__num" aria-hidden="true">0{{ cases.length + i + 2 }}</span>
+          <span class="index__num" aria-hidden="true">0{{ solo.length + cases.length + i + 2 }}</span>
           <div class="index__main">
             <h4 class="index__name">
               <button

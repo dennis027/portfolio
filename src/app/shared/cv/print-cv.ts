@@ -8,6 +8,7 @@ import {
   PORTFOLIO_URL,
   PROFILE,
   SKILL_GROUPS,
+  SOLO_PROJECTS,
   SOCIALS,
   SUPPORTING_PROJECTS,
   TEAM_PROJECTS,
@@ -30,7 +31,7 @@ export class PrintCv {
   protected readonly socials = SOCIALS.map((s) => ({ ...s, short: s.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '') }));
   protected readonly experience = EXPERIENCE;
   protected readonly education = EDUCATION;
-  protected readonly projects = [FEATURED_PROJECT, ...TEAM_PROJECTS, ...SUPPORTING_PROJECTS];
+  protected readonly projects = [FEATURED_PROJECT, ...SOLO_PROJECTS, ...TEAM_PROJECTS, ...SUPPORTING_PROJECTS];
   protected readonly more = MORE_PROJECTS;
   protected readonly skills = SKILL_GROUPS;
 

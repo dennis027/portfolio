@@ -1,7 +1,37 @@
 @let p = project();
 
 <article class="case__inner" [attr.aria-labelledby]="'project-title-' + p.id">
-  @if (p.visual) {
+  @if (p.screenshots?.length) {
+    <div class="case__shots">
+      <div class="shots" appSpotlight appTilt="5">
+        <div class="shots__bar" aria-hidden="true">
+          <span class="shots__dots"><i></i><i></i><i></i></span>
+          <span class="shots__url">{{ p.name }} — {{ p.screenshots![shot()].label }}</span>
+        </div>
+        <div class="shots__screen">
+          @for (s of p.screenshots; track s.src; let i = $index) {
+            <img
+              [src]="s.src"
+              [alt]="s.alt"
+              width="1440"
+              height="757"
+              loading="lazy"
+              decoding="async"
+              [class.is-active]="i === shot()"
+              [attr.aria-hidden]="i === shot() ? null : 'true'"
+            />
+          }
+        </div>
+      </div>
+      <div class="shots__nav" role="group" [attr.aria-label]="p.name + ' screenshots'">
+        @for (s of p.screenshots; track s.src; let i = $index) {
+          <button type="button" class="shots__tab" [attr.aria-pressed]="i === shot()" (click)="shot.set(i)">
+            <span class="shots__tab-bar" aria-hidden="true"></span>{{ s.label }}
+          </button>
+        }
+      </div>
+    </div>
+  } @else if (p.visual) {
     <div class="case__visual" appSpotlight appTilt="7">
       <app-project-visual [kind]="p.visual" />
     </div>

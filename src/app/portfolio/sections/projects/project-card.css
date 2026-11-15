@@ -6,7 +6,63 @@
   gap: clamp(32px, 5vw, 80px);
   align-items: center;
 }
-:host(.case--reverse) .case__visual { order: 2; }
+:host(.case--reverse) .case__visual,
+:host(.case--reverse) .case__shots { order: 2; }
+
+/* ── Screenshot panel: a browser frame with one tab per screen ── */
+
+.case__shots { min-width: 0; }
+.shots {
+  border-radius: var(--radius);
+  overflow: hidden;
+  transform: perspective(1400px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.7s var(--ease-out-expo);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-2);
+  box-shadow: var(--shadow-lg);
+}
+.shots > * { position: relative; z-index: 1; }
+.shots__bar {
+  display: flex; align-items: center; gap: 14px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.shots__dots { display: inline-flex; gap: 6px; }
+.shots__dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--surface-3); }
+.shots__url {
+  flex: 1; min-width: 0;
+  padding: 4px 12px; border-radius: 999px;
+  background: var(--bg-elev);
+  font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-faint);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.shots__screen {
+  position: relative;
+  aspect-ratio: 1440 / 757;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.shots__screen img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: top left;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+}
+.shots__screen img.is-active { opacity: 1; }
+
+.shots__nav { display: flex; gap: 6px; margin-top: 16px; }
+.shots__tab {
+  flex: 1; min-width: 0;
+  display: grid; gap: 8px; justify-items: start;
+  padding: 0 0 4px;
+  font-size: 0.8rem; font-weight: 500; color: var(--text-faint); text-align: left;
+  transition: color 0.25s;
+}
+.shots__tab-bar { width: 100%; height: 2px; border-radius: 2px; background: var(--border); transition: background 0.3s; }
+.shots__tab:hover { color: var(--text); }
+.shots__tab[aria-pressed='true'] { color: var(--text); }
+.shots__tab[aria-pressed='true'] .shots__tab-bar { background: var(--accent); }
 
 /* ── Visual panel ── */
 
@@ -97,7 +153,8 @@
 
 @media (max-width: 960px) {
   .case__inner { grid-template-columns: minmax(0, 1fr); gap: 28px; }
-  :host(.case--reverse) .case__visual { order: 0; }
+  :host(.case--reverse) .case__visual,
+  :host(.case--reverse) .case__shots { order: 0; }
 }
 
 @media (max-width: 640px) {
